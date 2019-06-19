@@ -1,0 +1,251 @@
+<template name="AddTasks">
+    <!-- for admin-->
+    <!-- {{init}} -->
+    {{#if isInRole 'admin'}}
+        {{> clock}}
+        <table class="addtasks">
+            <thead>
+                <tr>
+                    <th>Time Span</th>
+                    <th>Part Number</th>
+                    <th>Plan</th>
+                    <th>Actual</th>
+                    <th>Status</th>
+                    <th>Reason</th>
+                    <th>Name1</th>
+                    <th>Name2</th>
+                    <th>Name3</th>
+                    <th>Time Eearned</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each tasks}}
+                <tr>
+                    <td>5-6am</td>
+                    <td>{{text}}</td>
+                    <td>Added by</td>
+                    <td>Added by</td>
+                    <td>Added by</td>
+                    <td>{{> roundbox}}</td>
+                    <td>{{operator}}</td>
+                    <td>{{operator}}</td>
+                    <td>{{operator}}</td>
+                    <td>zero</td>
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    {{else}}
+        <!-- for operator-->
+        <!-- <h1>Not Authorized</h1> -->
+            <!-- <button class="settesttime">testtime</button> -->
+
+        {{> clock}}
+        <div class="{{addtasks}}">
+            <div class="addtask-popup">
+                <i class="fa fa-close close-addtask-popup"></i>
+                <h3>Hour Complete</h3>
+                <table class="addtasks">
+                    <thead>
+                        <tr>
+                            <th>Time Span</th>
+                            <th>Part Number</th>
+                            <th>Work Time</th>
+                            <th>Plan</th>
+                            <th>Actual</th>
+                            <th>Reason</th>
+                            <th>Comment</th>
+                            <th>Status</th>
+                            <th></th>
+                        </tr>
+                        <tr>
+                            <td>{{recordedtimespan}}</td>
+                            <td>{{recordedpartnumber}}</td>
+                            <td>{{recordedworktime}}</td>
+                            <td>{{recordedplantoactual}}</td>
+                            <td><input style="width: 40px;" type="text" id="popupinput" class="calculatestatus"></td>
+                            <td>{{recordedcomment}}</td>
+                            <td><input id="commentsinput" style="width: 300px;" type="comment" class="inputreports"></td>
+                            <td><div name="Ignore Select" id="popupselect" style="background:rgba(099,099,099,.2);" class="outline"></div> </td>
+                            <td><button class="toggle-submit">Submit</button></td>
+                        </tr>
+                    </thead>
+                </table>
+                <h3>What went Wrong?</h3>
+                {{> gowrongcheck}}
+
+            </div>
+        </div>
+<!--             <div style="width: 250px;" id="">
+                <h4>Building:</h4>{{> selectbuilding}}
+            </div>
+            <div style="width: 250px;" id="">
+                <h4>Cell:</h4>{{> selectcell}}
+            </div> -->
+        <table class="{{addtasks}}">
+            <thead>
+                <tr>
+                    <td>
+                        <h4>Building:</h4>
+                    </td>
+                    <td style="width: 270px;">
+                        {{> selectbuilding}}
+                    </td>
+                    <td>
+                        <h4>Cell:</h4>
+                    </td>
+                    <td style="width: 270px;">
+                        {{> selectcell}}
+                    </td>
+                    <!-- <td><input type="text" id="nameinput" class="operatorname"></td> -->
+                    <td>
+                        {{> selectinput}}
+                    </td>
+                    <td>
+                        <button class="add-operator">Add Operator</button>   
+                    </td>
+                    
+                    <td>
+                    {{#if displayoperatorone}}
+                        <div style="width: 75px;" data-id="1" class="tagsname" id="nametag_one">
+                            <ul>
+                            <li><a><span>{{operatorone}}</span><i class="fa fa-close"></i></a></li>
+                            </ul>
+                        </div>
+                    {{/if}}
+                    </td>
+                    <td>
+                    {{#if displayoperatortwo}}                       
+                        <div style="width: 75px;" data-id="2" class="tagsname" id="nametag_two">
+                            <ul>
+                            <li><a><span>{{operatortwo}}</span><i class="fa fa-close"></i></a></li>
+                            </ul>
+                        </div>
+                    {{/if}}
+                    </td>
+                    <td>
+                    {{#if displayoperatorthree}}
+                        <div style="width: 75px;" data-id="3" class="tagsname" id="nametag_three">
+                            <ul>
+                            <li><a><span>{{operatorthree}}</span><i class="fa fa-close"></i></a></li>
+                            </ul>
+                        </div>
+                    {{/if}}
+                    </td>
+                    <td>
+                        <button class="toggle-Test-mode">TestMode</button>   
+                    </td>
+                </tr>
+            </thead>
+        </table>
+
+        <table class="{{addtasks}}">
+            <thead>
+                <tr>
+                    <th>Time Span</th>
+                    <th>Work Time</th>
+                    <th>Part Number</th>
+                    <th>Plan</th>
+                    <th>Actual</th>
+                    <th>Status</th>
+                    <th>Reason</th>
+                    <th>Comment</th>
+                    <th></th>
+
+                </tr>
+            </thead>
+            <tbody>
+               {{#each clienttaskworktime}}
+<!--                    {{@index}}
+                   {{displayRow}} -->
+                   {{#if timepassed @index displayRow}}
+                    <tr>
+                        <td>{{timespan}}</td>
+                        <td>{{worktime}}</td>
+        <!--                     {{#if isDisabled @index}} -->
+                        <td class ="partnumberchange" data-id="{{@index}}">{{> selectbox}}</td>
+
+        <!--                     {{else}}
+                            <td>{{part}}</td> -->
+        <!--                     {{/if}} -->
+                        <!-- <td><input style="width: 40px;" type="text" id="a"></td> -->
+        <!--                     {{#if displaydata @index}} -->
+                        <td type="text">{{plantoactual}}</td>
+                        <td type="text">{{actual}}</td>
+                        <!-- <td type="text">{{planmask @index}}</td> -->
+        <!--                     {{else}}
+                            <td id="plannumber" type="text">0</td>
+                        {{/if}} -->
+
+                        {{#if isred}}
+                            <td><div name="Ignore Select" id="select" style="background:rgba(224, 97, 0,1);" class="outlineinactive"></div></td>
+                        {{else}}
+                            {{#if isgreen}}
+                                <td><div name="Ignore Select" id="select" style="background:rgba(141,198,63,1);" class="outlineinactive"></div></td>
+                            {{else}}
+                                <td><div name="Ignore Select" id="select" style="background:rgba(099,099,099,.2);" class="outlineinactive"></div></td>
+                            {{/if}}
+                        {{/if}}
+                        <td>{{reason}}</td>
+                        <td>{{comment}}</td>
+                        <!-- {{#if @index '==' }} -->
+                        {{#if $eq @index displayRow}}
+                        <!-- {{#if displaybutton @index displayRow}} -->
+                            {{gettaskdata}}
+                            <td>
+                                <button class="toggle-jobComplete">Job Complete</button>
+                            </td>
+                        {{else}}
+                            <td>  </td>
+                        {{/if}}
+                        </tr>
+                        {{/if}}
+
+                    {{/each}}
+                </tbody>
+            </table>
+
+    {{/if}}
+</template>
+
+
+<template name="task">
+  <li class="collection-item">
+    {{text}}: <strong>Added by {{operator}}</strong>
+    <a herf="#" class="delete-note secondary-content">
+      <!-- <i class="material-icons">close</i> -->
+    </a>
+  </li>
+</template>
+
+
+
+<template name="roundbox">
+    <div class="wrap">
+<!--       <a href="#"><div name="Ignore Select" id="select" style="background:rgba(099,099,099,.2);" class="outline"></div></a> -->
+      <div name="Ignore Select" id="select" style="background:rgba(099,099,099,.2);"    class="outline"></div>
+    </div>
+</template>
+
+<template name="gowrongcheck">
+    <div class="icon-row">
+        <a href="#commentsinput" id="a1"><i herf="#commentsinput" class="fa fa-commenting">
+            <i1>Meeting/Training</i1>
+        </i></a>
+        <a href="#commentsinput" id="a2"><i herf="#commentsinput" class="fa fa-cogs">
+            <i1>Machine Down</i1>
+        </i></a>
+        <a href="#commentsinput" id="a3"><i herf="#commentsinput" class="fa fa-ban">
+            <i1>Quality</i1>
+        </i></a>
+        <a href="#commentsinput" id="a4"><i herf="#commentsinput" class="fa fa-exclamation-triangle">
+            <i1>Safety</i1>
+        </i></a>
+        <a href="#commentsinput" id="a5"><i herf="#commentsinput" class="fa fa-pause">
+            <i1>Waiting on Material</i1>
+        </i></a>
+        <a href="#commentsinput" id="a6"><i herf="#commentsinput" class="fa fa-pencil-square-o">
+            <i1>Write In</i1>
+        </i></a>
+    </div>
+</template>

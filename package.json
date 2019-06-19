@@ -1,0 +1,28 @@
+{
+  "name": "blazebase",
+  "version": "1.0.0",
+  "description": "Clone or download this repo. Browse to wherever downloaded in your terminal.",
+  "main": "routes.js",
+  "dependencies": {
+    "moment": "^2.24.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    //"url": "git+https://github.com/leveluptuts/Blaze-Base.git"
+  },
+  "author": "Chenyu",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/leveluptuts/Blaze-Base/issues"
+  },
+  "meteor": {
+    "mainModule": {
+      "client": "client/main.js",
+      "server": "server/main.js"
+    },
+  //"homepage": "https://github.com/leveluptuts/Blaze-Base#readme"
+}

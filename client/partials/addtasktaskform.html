@@ -1,0 +1,33 @@
+<template name="addtasktaskform">
+	<table class="addtasks">
+            <thead>
+                <tr>
+                    <th>Time Span</th>
+                    <th>Work Time</th>
+                    <th>Part Number</th>
+                    <th>Plan</th>
+                    <th>Actual</th>
+                    <th>Status</th>
+                    <th>Comments</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+               {{#each tasks}}
+                <tr>
+                    <td>5-6am</td>
+                    <td>{{text}}</td>
+                    <td>Added by</td>
+                    <td>Added by</td>
+                    <td>Added by</td>
+                    <td>{{> roundbox}}</td>
+                    <td>{{operator}}</td>
+                    <td>{{operator}}</td>
+                    <td>{{operator}}</td>
+                    <td>zero</td>
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
+
+</template>

@@ -1,0 +1,11 @@
+<template name="selectcell">
+    <div class="styled-select">
+        <select class="change-cell">
+            <option selected>Select</option>
+            {{#each cell}}
+                <option>{{cellname}}</option>
+            {{/each}}
+        </select>
+        <div class="select-button"><div class="small-arrow-down"></div></div>
+    </div>
+</template>

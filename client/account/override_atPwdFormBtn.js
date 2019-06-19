@@ -1,0 +1,1 @@
+Template['override_atPwdFormBtn'].replaces('atPwdFormBtn')
