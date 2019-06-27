@@ -1,4 +1,4 @@
-import { Tasks, Partnumber, Taskworktime, Cell, Plan, Operator } from '/lib/collections.js';
+import { Tasks, Partnumber, Taskworktime, Cell, Plan, Operator, EarnedTimePP } from '/lib/collections.js';
 //publish all user
 Meteor.publish('allUsers', function(){
 	//security
@@ -36,4 +36,8 @@ Meteor.publish('plan', function(){
 
 Meteor.publish('operator', function(){
 	return Operator.find({});
+});
+
+Meteor.publish('earnedTimePPiece', function(){
+	return EarnedTimePP.find({});
 });

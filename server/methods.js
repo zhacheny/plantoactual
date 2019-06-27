@@ -1,6 +1,9 @@
 import { Tasks, Partnumber, Taskworktime, Plan } from '/lib/collections.js';
 //run on your server
 Meteor.methods({
+	updatechangeover(curId) {
+		return;
+	},
 	checkIsnull() {
 		return;
 	},

@@ -661,3 +661,48 @@ a {
         list-style: none;
     }
 }
+
+//one row clock added by Chenyu
+.clock-row {
+    width: 100%;
+    i {
+        cursor: pointer;
+    }
+    il {
+        float: left;
+    }
+}
+
+//Changeover added by Chenyu
+.changover-popup{
+    text-align: center;
+    width: 100%;
+    position: relative;
+    //left:450px;
+    //top: 250px;
+    background: #FFF;
+    padding: 20px;
+    //width: 280px;
+    //display: none;
+    opacity: 0;
+    overflow: hidden;
+    max-height:0;
+    transition: max-height 0.7s ease-in; 
+    //transition: all 0.4s cubic-bezier(0.68, -0.65, 0.265, 1.20);
+    @include card(2);
+    .close-addtask-popup {
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding: 20px;
+        font-size: 1.2em;
+        font-transform: uppercase;
+        cursor: pointer;
+    }
+}
+
+.toggle-changeover .changover-popup{
+    opacity: 1;
+    //display: inline-block;
+    max-height:250px;
+}

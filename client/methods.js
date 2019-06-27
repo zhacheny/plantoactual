@@ -1,8 +1,38 @@
 import { ClientTaskworktime } from '/client/main.js';
+import moment from 'moment';
 //methods on client side
 var index = ['a1','a2','a3','a4','a5','a6'];
 
 Meteor.methods({
+
+	updatechangeover(isfinish,currentTime) {
+
+		// var lastobject = ClientTaskworktime.findOne({id:curId});
+		//get the change over time
+	    var starttime = Session.get('changeover-starttime');
+	    //calcule the time over according to the mode toggle
+	    if (Session.get('test-mode-time') != null){
+			var changeoverDuration = moment(currentTime-starttime).format('ss');
+			//changeoverCounter = Math.floor((changeoverCounter/60)*worktime);
+	    }else{
+	    	var changeoverDuration = moment(currentTime-starttime).format('mm');
+	    	console.log(currentTime);
+	    	console.log(starttime);
+	    }
+	    var curId = Session.get('tempchangeoverid') + Session.get('addtaskcountsum');
+	    var lastwortime = ClientTaskworktime.findOne({id:curId}).worktime.substring(0,2);
+	    console.log(changeoverDuration);
+	    console.log(lastwortime);
+	    if(isfinish){
+			ClientTaskworktime.update({id:curId}, {
+				$set: { worktime: lastwortime - changeoverDuration + 'min'},
+			});
+	    }else{
+			ClientTaskworktime.update({id:curId}, {
+				$set: { worktime: lastwortime - changeoverDuration + 'min', comment: 'Not finish'},
+			});
+	    }
+	},
 	checkIsnull(operatorinitial,initial,operatorcount){
 		for (i = 0; i < operatorinitial.length; i++){
 			if(operatorinitial[i] == initial){

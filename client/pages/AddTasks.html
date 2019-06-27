@@ -8,6 +8,7 @@
                 <tr>
                     <th>Time Span</th>
                     <th>Part Number</th>
+                    <th>Work Time</th>
                     <th>Plan</th>
                     <th>Actual</th>
                     <th>Status</th>
@@ -15,21 +16,24 @@
                     <th>Name1</th>
                     <th>Name2</th>
                     <th>Name3</th>
+                    <th>Comments</th>
                     <th>Time Eearned</th>
                 </tr>
             </thead>
             <tbody>
                 {{#each tasks}}
                 <tr>
-                    <td>5-6am</td>
-                    <td>{{text}}</td>
-                    <td>Added by</td>
-                    <td>Added by</td>
-                    <td>Added by</td>
+                    <td>{{timespan}}</td>
+                    <td>{{partnumber}}</td>
+                    <td>{{worktime}}</td>
+                    <td>{{plan}}</td>
+                    <td>{{actual}}</td>
                     <td>{{> roundbox}}</td>
+                    <td>{{reason}}</td>
                     <td>{{operator}}</td>
                     <td>{{operator}}</td>
                     <td>{{operator}}</td>
+                    <td>{{comment}}</td>
                     <td>zero</td>
                 </tr>
                 {{/each}}
@@ -41,8 +45,19 @@
             <!-- <button class="settesttime">testtime</button> -->
 
         {{> clock}}
+        <div class="{{changeover}}">
+            <div class="changover-popup">
+                <h3>Change Over</h3>
+                <h3>{{changeoverCounter}}</h3>
+                <button class="changeover-close">Finish</button>
+            </div>
+        </div>
+
         <div class="{{addtasks}}">
             <div class="addtask-popup">
+<!--                 <div class="clock-row">
+                <a><il id="counter">{{changeoverCounter}}<i class="fa fa-close close-addtask-popup"></i></il></a>
+                </div> -->
                 <i class="fa fa-close close-addtask-popup"></i>
                 <h3>Hour Complete</h3>
                 <table class="addtasks">
@@ -63,7 +78,7 @@
                             <td>{{recordedpartnumber}}</td>
                             <td>{{recordedworktime}}</td>
                             <td>{{recordedplantoactual}}</td>
-                            <td><input style="width: 40px;" type="text" id="popupinput" class="calculatestatus"></td>
+                            <td><input style="width: 50px;" type="text" id="popupinput" class="calculatestatus"></td>
                             <td>{{recordedcomment}}</td>
                             <td><input id="commentsinput" style="width: 300px;" type="comment" class="inputreports"></td>
                             <td><div name="Ignore Select" id="popupselect" style="background:rgba(099,099,099,.2);" class="outline"></div> </td>
@@ -162,20 +177,9 @@
                     <tr>
                         <td>{{timespan}}</td>
                         <td>{{worktime}}</td>
-        <!--                     {{#if isDisabled @index}} -->
                         <td class ="partnumberchange" data-id="{{@index}}">{{> selectbox}}</td>
-
-        <!--                     {{else}}
-                            <td>{{part}}</td> -->
-        <!--                     {{/if}} -->
-                        <!-- <td><input style="width: 40px;" type="text" id="a"></td> -->
-        <!--                     {{#if displaydata @index}} -->
                         <td type="text">{{plantoactual}}</td>
                         <td type="text">{{actual}}</td>
-                        <!-- <td type="text">{{planmask @index}}</td> -->
-        <!--                     {{else}}
-                            <td id="plannumber" type="text">0</td>
-                        {{/if}} -->
 
                         {{#if isred}}
                             <td><div name="Ignore Select" id="select" style="background:rgba(224, 97, 0,1);" class="outlineinactive"></div></td>
