@@ -52,7 +52,6 @@ Template.SearchData.events({
 		var start = new Date(startdate);
 		var end = new Date(enddate);
 		if(operator == "All" || !operator){
-			if()
 			var data = Tasks.find({partnumber:partnumber,createdAt : { $gte : start, $lt: end }}).fetch();
 		}else{
 
