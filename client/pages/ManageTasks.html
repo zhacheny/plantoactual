@@ -1,0 +1,47 @@
+<template name="ManageTasks">
+    <!-- {{> clock}} -->
+    <div class="toggle-searchpage">
+        <div class="search-fadeaway">
+            <div>{{> SearchData}}</div>
+        </div>
+    </div>
+
+    {{#if displaytable}}
+    <table class="addtasks">
+        <thead>
+            <tr>
+                <th>Time Span</th>
+                <th>Part Number</th>
+                <th>Work Time</th>
+                <th>Plan</th>
+                <th>Actual</th>
+                <th>Status</th>
+                <th>Reason</th>
+                <th>Name1</th>
+                <th>Name2</th>
+                <th>Name3</th>
+                <th>Comments</th>
+                <th>Time Eearned</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each tasks}}
+            <tr>
+                <td>{{timespan}}</td>
+                <td>{{partnumber}}</td>
+                <td>{{worktime}}</td>
+                <td>{{plan}}</td>
+                <td>{{actual}}</td>
+                <td>{{> roundbox}}</td>
+                <td>{{reason}}</td>
+                <td>{{operator}}</td>
+                <td>{{operator}}</td>
+                <td>{{operator}}</td>
+                <td>{{comment}}</td>
+                <td>zero</td>
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
+    {{/if}}
+</template>

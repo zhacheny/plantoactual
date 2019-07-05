@@ -1,4 +1,5 @@
 import { Tasks, Partnumber, Taskworktime, Plan } from '/lib/collections.js';
+
 //run on your server
 Meteor.methods({
 	updatechangeover(curId) {
@@ -29,7 +30,7 @@ Meteor.methods({
 	      $set: { actual: input },
 	    });
 	},
-	inserttask(id, timespan, partnumber, worktime, plantoactual, actual, reason, status,createdAt,comment,operator) {
+	inserttask(id, timespan, partnumber, worktime, plantoactual, actual, reason, status,createdAt,comment,operator,earnedtime) {
 		Tasks.insert({
 			id: id,
 		      timespan: timespan,
@@ -42,6 +43,7 @@ Meteor.methods({
 		      comment:comment,
 		      createdAt: createdAt,
 		      operator:operator,
+		      earnedtime:earnedtime + ' min',
 		      // owner: Meteor.userId(),
 		      // username: Meteor.user().username,
 		    });

@@ -221,10 +221,13 @@ table {
         transform: translate3d(300px, 0, 0);
     }
     &.add-tasks {
-        transform: translate3d(0, 100px, 0);
+        transform: translate3d(0, 80px, 0);
     }
     &.add-tasks-expand {
-        transform: translate3d(0, 150px, 0);
+        transform: translate3d(0, 130px, 0);
+    }
+    &.toggle-changeover {
+        transform: translate3d(0, 100px, 0);
     }
 
  /*   thead1{
@@ -286,7 +289,7 @@ table {
     //left:450px;
     //top: 250px;
     background: #FFF;
-    padding: 20px;
+    //padding: 20px;
     //width: 280px;
     //display: none;
     opacity: 0;
@@ -307,11 +310,13 @@ table {
 }
 
 .add-tasks .addtask-popup{
+    padding: 20px;
     opacity: 1;
     //display: inline-block;
     max-height:250px;
 }
 .add-tasks-expand .addtask-popup{
+    padding: 20px;
     opacity: 1;
     //display: inline-block;
     max-height:520px;
@@ -678,31 +683,97 @@ a {
     text-align: center;
     width: 100%;
     position: relative;
-    //left:450px;
-    //top: 250px;
     background: #FFF;
-    padding: 20px;
-    //width: 280px;
-    //display: none;
+    //padding: 20px;
     opacity: 0;
     overflow: hidden;
     max-height:0;
     transition: max-height 0.7s ease-in; 
     //transition: all 0.4s cubic-bezier(0.68, -0.65, 0.265, 1.20);
     @include card(2);
-    .close-addtask-popup {
-        position: absolute;
-        top: 0;
-        right: 0;
-        padding: 20px;
-        font-size: 1.2em;
-        font-transform: uppercase;
-        cursor: pointer;
-    }
+
 }
 
 .toggle-changeover .changover-popup{
+    padding: 20px;
     opacity: 1;
-    //display: inline-block;
     max-height:250px;
+}
+
+
+//Search Page added by Chenyu
+.toggle-searchpage{
+    //text-align: center;
+    margin: 30px auto;
+    //max-width: 500px;
+    padding: 10px;
+    width: 50%;
+    position: relative;
+    background: #FFF;
+    padding: 20px;
+    opacity: 1;
+    //overflow: hidden;
+    height:450px;
+    transition: max-height 0.7s ease-in; 
+    //transition: all 0.4s cubic-bezier(0.68, -0.65, 0.265, 1.20);
+    @include card(2);
+
+}
+
+.toggle-searchpage .search-fadeaway{
+    padding: 20px;
+    opacity: 1;
+    max-height:250px;
+}
+
+//input box added by Chenyu
+
+.group:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+.left {
+    float: left;
+    padding:5px;
+}
+.right {
+    float: right;
+    padding:5px;
+}
+form {
+  width: 30em;
+  margin: 0 auto;
+}
+form div.group > div {
+    width: 46%;
+    margin: 0 0 .5em;
+}
+
+//check box added by Chenyu
+
+input[type=checkbox] {
+  display:none;
+}
+
+input[type=checkbox] + label:before {
+  content: '';
+  display: inline-block;
+  border: 2px solid #68696D;
+    margin-right: 10px;
+  height: 20px;
+  width: 20px;
+    vertical-align: middle;
+  transition: all .1s linear;
+}
+
+input[type=checkbox]:checked + label:before {
+  border-color: #68696D;
+  border-left-width: 5px;
+  border-bottom-width: 5px;
+  border-top-width: 0px;
+  border-right-width: 0px;
+    transform: rotate(-45deg) translate(2px, -2px);
+  height: 11px;
+  width: 20px;
 }

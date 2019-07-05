@@ -35,6 +35,13 @@ adminRoutes.route('/addtasks',{
     }
 });
 
+adminRoutes.route('/managetasks',{
+    name: 'managetasks',
+    action() {
+        BlazeLayout.render("AppLayout", {main: "ManageTasks"});
+    }
+});
+
 adminRoutes.route('/chart',{
     name: 'chart',
     action() {

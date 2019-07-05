@@ -11,7 +11,7 @@ Template.selectinput.onCreated(function(){
 
 Template.selectinput.helpers({
 	operators: function(){
-		return Operator.find();
+        return Operator.find({}, { sort: { operatorID: 1 }} );
 	},
 });
 

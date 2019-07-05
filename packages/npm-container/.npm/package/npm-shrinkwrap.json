@@ -1,0 +1,21 @@
+{
+  "dependencies": {
+    "json2xml": {
+      "version": "0.1.2",
+      "resolved": "https://registry.npmjs.org/json2xml/-/json2xml-0.1.2.tgz",
+      "from": "json2xml@0.1.2"
+    },
+    "jszip": {
+      "version": "2.5.0",
+      "resolved": "https://registry.npmjs.org/jszip/-/jszip-2.5.0.tgz",
+      "from": "jszip@2.5.0",
+      "dependencies": {
+        "pako": {
+          "version": "0.2.9",
+          "resolved": "https://registry.npmjs.org/pako/-/pako-0.2.9.tgz",
+          "from": "pako@>=0.2.5 <0.3.0"
+        }
+      }
+    }
+  }
+}

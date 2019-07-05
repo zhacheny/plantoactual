@@ -5,7 +5,7 @@ var index = ['a1','a2','a3','a4','a5','a6'];
 
 Meteor.methods({
 
-	updatechangeover(isfinish,currentTime) {
+	updatechangeover(isfinish,currentTime,count) {
 
 		// var lastobject = ClientTaskworktime.findOne({id:curId});
 		//get the change over time
@@ -16,20 +16,22 @@ Meteor.methods({
 			//changeoverCounter = Math.floor((changeoverCounter/60)*worktime);
 	    }else{
 	    	var changeoverDuration = moment(currentTime-starttime).format('mm');
-	    	console.log(currentTime);
-	    	console.log(starttime);
+	    	// console.log(currentTime);
+	    	// console.log(starttime);
 	    }
-	    var curId = Session.get('tempchangeoverid') + Session.get('addtaskcountsum');
-	    var lastwortime = ClientTaskworktime.findOne({id:curId}).worktime.substring(0,2);
+	    var curId = Session.get('tempchangeoverid') + count;
 	    console.log(changeoverDuration);
+	    console.log(curId);
+	    var lastwortime = ClientTaskworktime.findOne({id:curId}).worktime.substring(0,2);
 	    console.log(lastwortime);
+	    //check whether the change over duration is out of time span
 	    if(isfinish){
 			ClientTaskworktime.update({id:curId}, {
-				$set: { worktime: lastwortime - changeoverDuration + 'min'},
+				$set: { worktime: lastwortime - changeoverDuration + ' min'},
 			});
 	    }else{
 			ClientTaskworktime.update({id:curId}, {
-				$set: { worktime: lastwortime - changeoverDuration + 'min', comment: 'Not finish'},
+				$set: { worktime: lastwortime - changeoverDuration + ' min', comment: 'Not finish'},
 			});
 	    }
 	},
