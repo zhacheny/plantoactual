@@ -2,6 +2,9 @@ import { Tasks, Partnumber, Taskworktime, Plan } from '/lib/collections.js';
 
 //run on your server
 Meteor.methods({
+	deletetask(Id){
+		Tasks.remove({_id: Id});
+	},
 	updatechangeover(curId) {
 		return;
 	},

@@ -1,8 +1,79 @@
 <template name="ManageTasks">
     <!-- {{> clock}} -->
-    <div class="toggle-searchpage">
-        <div class="search-fadeaway">
-            <div>{{> SearchData}}</div>
+    <h1 class="page-title">Manage Tasks</h1>
+    <div class="{{searchpage}}">
+        <div class="search-shrink">
+            <div class="search-nav">
+                <ul></ul>
+                  <li class="label-search"><a href=""><span>Date Range</span></a></li>
+                  <li class="label-searchID"><a href=""><span>Find Entry</span></a></li>
+            </div>
+ <!--            {{#if toggleSearch}} -->
+            <form class="dateRange">
+              <div class="group">
+                <div class="left">
+                    <label>Start Date</label>
+                    <input type="text" id="picker-1" placeholder="Start Date">
+                </div>
+                <div class="right">
+                    <label>End Date</label>
+                  <input type="text" id="picker-2" placeholder="End Date">
+                </div>
+              </div>
+              <div class="group">
+                <div class="left">
+                    <label>Building</label>
+                    {{> selectbuilding}}
+                </div>
+                <div class="right">
+                    <label>Cell</label>
+                    {{> selectcell}}
+                </div>
+              </div>
+                <div class="group">
+                    <div class="left">
+                        <label>Partnumber</label>
+                        <div class ="partnumberchange">{{> selectbox}}</div>
+                    </div>
+                </div>
+                <div class="group">
+                    <div class="left">
+                        <label>Operator</label>
+                        {{> selectinput}}
+                    </div>
+                </div>
+                <div class="group">
+                    <div class="left">
+                        <input type="checkbox" id="checkbox1">
+                        <label for="checkbox1">First Shift</label>
+                    </div>
+                    <div class="right">
+                        <input type="checkbox" id="checkbox2">
+                        <label for="checkbox2">Second Shift</label>
+                    </div>
+                </div>
+                <hr>
+                <div class="group">
+                    <div class="left">
+                        <input type="checkbox" id="checkbox3">
+                        <label for="checkbox3">Download</label>
+                    </div>
+                    <div class="right">
+                        <button class="search">Search!</button>
+                    </div>
+                </div>
+            </form>
+            <!-- {{else}} -->
+            <form class="findEntry">
+                <div class="iwg-input-container">
+                    <input class="inputID" placeholder="Document ID" />
+                    <div class="iwg-input-border"></div>
+                    <div class="iwg-input-border"></div>
+                </div>
+<!--                     <hr> -->
+                <!-- <button class="searchID">Search!</button> -->
+            </form>
+            <!-- {{/if}} -->
         </div>
     </div>
 
@@ -17,11 +88,11 @@
                 <th>Actual</th>
                 <th>Status</th>
                 <th>Reason</th>
-                <th>Name1</th>
-                <th>Name2</th>
-                <th>Name3</th>
+                <th>Name</th>
                 <th>Comments</th>
                 <th>Time Eearned</th>
+                <th></th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -32,16 +103,88 @@
                 <td>{{worktime}}</td>
                 <td>{{plan}}</td>
                 <td>{{actual}}</td>
-                <td>{{> roundbox}}</td>
+                {{#if isred}}
+                    <td><div name="Ignore Select" id="select" style="background:rgba(224, 97, 0,1);" class="outlineinactive"></div></td>
+                {{else}}
+                    <td><div name="Ignore Select" id="select" style="background:rgba(141,198,63,1);" class="outlineinactive"></div></td>
+                {{/if}}
                 <td>{{reason}}</td>
                 <td>{{operator}}</td>
-                <td>{{operator}}</td>
-                <td>{{operator}}</td>
                 <td>{{comment}}</td>
-                <td>zero</td>
+                <td>{{earnedtime}}</td>
+                <td><button class="search-edit">Edit</button></td>
+                <td><button class="search-delete" >Delete</button></td>
             </tr>
             {{/each}}
         </tbody>
     </table>
     {{/if}}
+
+    <div class="popup-modal {{$.Session.get 'toggle-search-edit'}}">
+        <i class="fa fa-close close-popup"></i>
+        <h3>Are you sure you want to delete data?</h3>
+        <div class="group">
+            <div class="left">
+                <button class="Modal-yes">Yes!</button>
+            </div>
+            <div class="right">
+                <button class="Modal-cancel">Cancel</button>
+            </div>
+        </div>
+    </div>
+    <div class="popup-modal {{$.Session.get 'toggle-search-delete'}}">
+        <i class="fa fa-close close-popup"></i>
+        <h3>Are you sure you want to delete data?</h3>
+        <div class="group">
+            <div class="left">
+                <button class="Modal-yes">Yes!</button>
+            </div>
+            <div class="right">
+                <button class="Modal-cancel">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="popup-modal {{$.Session.get 'toggle-search-edit'}}">
+        <i class="fa fa-close close-popup"></i>
+        <!-- <h3>Are you sure you want to delete data?</h3> -->
+        <table class="addtasks">
+        <thead>
+            <tr>
+                <th>Work Time</th>
+                <th>Plan</th>
+                <th>Actual</th>
+                <th>Status</th>
+                <th>Reason</th>
+                <th>Name</th>
+                <th>Comments</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each tasks}}
+            <tr>
+                <td>{{worktime}}</td>
+                <td>{{plan}}</td>
+                <td><input style = "width: 50px" type="text" placeholder="{{actual}}"></td>
+                {{#if isred}}
+                    <td><div name="Ignore Select" id="select" style="background:rgba(224, 97, 0,1);" class="outlineinactive"></div></td>
+                {{else}}
+                    <td><div name="Ignore Select" id="select" style="background:rgba(141,198,63,1);" class="outlineinactive"></div></td>
+                {{/if}}
+                <td><input style = "width: 100px" type="text" placeholder="{{reason}}"></td>
+                <td><input style = "width: 100px" type="text" placeholder="{{operator}}"></td>
+                <td><input style = "width: 100px" type="text" placeholder="{{comment}}"></td>
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
+        <div class="group">
+            <div class="left">
+                <button class="Modal-submit">Submit!</button>
+            </div>
+            <div class="right">
+                <button class="Modal-cancel">Cancel</button>
+            </div>
+        </div>
+    </div>
 </template>

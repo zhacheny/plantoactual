@@ -702,7 +702,7 @@ a {
 
 
 //Search Page added by Chenyu
-.toggle-searchpage{
+.search-shrink{
     //text-align: center;
     margin: 30px auto;
     //max-width: 500px;
@@ -711,21 +711,32 @@ a {
     position: relative;
     background: #FFF;
     padding: 20px;
-    opacity: 1;
     //overflow: hidden;
-    height:450px;
+    height:510px;
     transition: max-height 0.7s ease-in; 
     //transition: all 0.4s cubic-bezier(0.68, -0.65, 0.265, 1.20);
     @include card(2);
 
 }
 
-.toggle-searchpage .search-fadeaway{
+.toggle-searchpage .search-shrink{
     padding: 20px;
-    opacity: 1;
     max-height:250px;
 }
+.dateRange{
+    opacity: 1;
+}
+.toggle-searchpage .dateRange{
+    display:none;
+    opacity: 0;
+}
+.findEntry{
+    opacity: 0;
 
+}
+.toggle-searchpage .findEntry{
+    opacity: 1;
+}
 //input box added by Chenyu
 
 .group:after {
@@ -742,13 +753,14 @@ a {
     padding:5px;
 }
 form {
-  width: 30em;
+  width: 75%;
   margin: 0 auto;
 }
 form div.group > div {
     width: 46%;
     margin: 0 0 .5em;
 }
+
 
 //check box added by Chenyu
 
@@ -777,3 +789,113 @@ input[type=checkbox]:checked + label:before {
   height: 11px;
   width: 20px;
 }
+
+//status tag toggle switcher added by Chenyu
+
+.toggle-search ul {margin: 0;
+  background-color: #2142A6;
+}
+
+.search-nav li {
+    width: 49%;
+    text-align: center;
+    letter-spacing: 1px;
+    display: inline-block;
+    padding: 10px;
+    border-top: solid;
+    border-width: 5px;
+    border-top-color: #ca5549;
+    font-size: 1.2em;
+    &:hover {
+      border-top: solid;
+      border-top-color: #ca5549;
+    }
+    &:active {
+        color: #ca5549;
+        border-width: 5px;
+    }
+    a {
+        text-decoration:none;
+    }
+}
+
+//Search Bar added by Chenyu
+.iwg-input-container {
+  position: relative;
+
+  &:focus-within {
+    .iwg-input-border:before, .iwg-input-border:after {
+      content: '';
+      width: 48%;
+      height: 3px;
+      display: block;
+      background: #ca5549;
+    }
+  }
+
+  .iwg-input-border:before, .iwg-input-border:after {
+    content: '';
+    height: 2px;
+    width: 0;
+    bottom: 2px;
+    position: absolute;
+    background: #33CC8D;
+    transition: 0.2s ease all;
+  }
+
+  .iwg-input-border:before {
+    left: 50%;
+  }
+
+  .iwg-input-border:after {
+    right: 50%;
+  }
+
+.inputID {
+    color: #aaa;
+    font-weight: bold;
+    width: 100%;
+    font-size: 24px;
+    outline: none;
+    border: none;
+    padding: 16px;
+    background: rgba(0, 0, 0, 0.003);
+
+    &::placeholder {
+      color: #dadada;
+    }
+    
+    &:placeholder-shown {
+      + .iwg-input-border:before {
+        content: '';
+        width: 48%;
+        height: 1px;
+        background: gray;
+      }
+
+      + .iwg-input-border:after {
+        content: '';
+        width: 48%;
+        height: 1px;
+        background: gray;
+      }
+    }
+
+    &:not(:placeholder-shown) {
+      + .iwg-input-border:before {
+        content: '';
+        width: 48%;
+        height: 3px;
+        background: #ca5549;
+      }
+
+      + .iwg-input-border:after {
+        content: '';
+        width: 48%;
+        height: 3px;
+        background: #ca5549;
+      }
+    }
+  }
+}
+
