@@ -34,9 +34,10 @@ Template.MainNav.events({
 		Session.set('toggleisred', null);
 		Session.set('partnumber', null);
 		ClientTaskworktime.remove({});
-           Session.set('operatorcount',0)
-	    var operatorinitial = ['null','null','null'];
+		Session.set('operator', null);
+		Session.set('operatorcount',0)
+	    var operatorinitial = [['null','null','null'],['null','null','null']];
 	    Session.set('operatorarray',operatorinitial);
 	    Session.set('tempchangeoverid',"a");
-		},
+	    },
 });

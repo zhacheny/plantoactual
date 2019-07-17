@@ -20,10 +20,10 @@ Meteor.methods({
 	    	// console.log(starttime);
 	    }
 	    var curId = Session.get('tempchangeoverid') + count;
-	    console.log(changeoverDuration);
-	    console.log(curId);
+	    // console.log(changeoverDuration);
+	    // console.log(curId);
 	    var lastwortime = ClientTaskworktime.findOne({id:curId}).worktime.substring(0,2);
-	    console.log(lastwortime);
+	    // console.log(lastwortime);
 	    //check whether the change over duration is out of time span
 	    if(isfinish){
 			ClientTaskworktime.update({id:curId}, {
@@ -35,7 +35,7 @@ Meteor.methods({
 			});
 	    }
 	},
-	checkIsnull(operatorinitial,initial,operatorcount){
+	checkIsnull(operatorinitial,initial,operatorcount,operatorID,operatorIDarray){
 		for (i = 0; i < operatorinitial.length; i++){
 			if(operatorinitial[i] == initial){
 				alert('duplicate operator signed!');
@@ -43,7 +43,8 @@ Meteor.methods({
 			}
 			if(operatorinitial[i] == 'null'){
 				operatorinitial[i] = initial;
-				Session.set('operatorarray',operatorinitial);
+				operatorIDarray[i] = operatorID;
+				Session.set('operatorarray',[operatorinitial,operatorIDarray]);
 				operatorcount++;
 				Session.set('operatorcount',operatorcount);
 				alert('operator added!');

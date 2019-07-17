@@ -1,6 +1,16 @@
 <template name="ManageTasks">
     <!-- {{> clock}} -->
+
     <h1 class="page-title">Manage Tasks</h1>
+    {{#if triggerCharts}}
+    <!-- <button class="back">Back</button> -->
+    <div class="wrapper_back">
+        <a href="#" class="back">Back to Selection</a>
+    </div>
+    <div class="charts">{{> columnDemo}}</div>
+    <div class="charts">{{> areaDemo}}</div>
+    {{else}}
+    <!-- {{>areaDemo}} -->
     <div class="{{searchpage}}">
         <div class="search-shrink">
             <div class="search-nav">
@@ -59,10 +69,17 @@
                         <label for="checkbox3">Download</label>
                     </div>
                     <div class="right">
+                        <input type="checkbox" id="checkbox4">
+                        <label for="checkbox4">Generate Charts</label>
+                    </div>
+                </div>
+                <div class="group">
+                    <div class="left">
                         <button class="search">Search!</button>
                     </div>
                 </div>
             </form>
+            <!-- <button class="search">Search!</button> -->
             <!-- {{else}} -->
             <form class="findEntry">
                 <div class="iwg-input-container">
@@ -76,6 +93,8 @@
             <!-- {{/if}} -->
         </div>
     </div>
+    {{/if}}
+
 
     {{#if displaytable}}
     <table class="addtasks">
@@ -83,7 +102,7 @@
             <tr>
                 <th>Time Span</th>
                 <th>Part Number</th>
-                <th>Work Time</th>
+                <th>Work Time(min)</th>
                 <th>Plan</th>
                 <th>Actual</th>
                 <th>Status</th>
@@ -109,7 +128,7 @@
                     <td><div name="Ignore Select" id="select" style="background:rgba(141,198,63,1);" class="outlineinactive"></div></td>
                 {{/if}}
                 <td>{{reason}}</td>
-                <td>{{operator}}</td>
+                <td>{{displayoperatorName}}</td>
                 <td>{{comment}}</td>
                 <td>{{earnedtime}}</td>
                 <td><button class="search-edit">Edit</button></td>
@@ -120,22 +139,10 @@
     </table>
     {{/if}}
 
-    <div class="popup-modal {{$.Session.get 'toggle-search-edit'}}">
-        <i class="fa fa-close close-popup"></i>
+    <div class="delete-popup-modal {{$.Session.get 'toggle-search-delete'}}">
+        <!-- <i class="fa fa-close close-popup"></i> -->
         <h3>Are you sure you want to delete data?</h3>
-        <div class="group">
-            <div class="left">
-                <button class="Modal-yes">Yes!</button>
-            </div>
-            <div class="right">
-                <button class="Modal-cancel">Cancel</button>
-            </div>
-        </div>
-    </div>
-    <div class="popup-modal {{$.Session.get 'toggle-search-delete'}}">
-        <i class="fa fa-close close-popup"></i>
-        <h3>Are you sure you want to delete data?</h3>
-        <div class="group">
+        <div class="group"> 
             <div class="left">
                 <button class="Modal-yes">Yes!</button>
             </div>
@@ -145,18 +152,19 @@
         </div>
     </div>
 
-    <div class="popup-modal {{$.Session.get 'toggle-search-edit'}}">
-        <i class="fa fa-close close-popup"></i>
+    <div class="edit-popup-modal {{$.Session.get 'toggle-search-edit'}}">
+        <!-- <i class="fa fa-close close-popup"></i> -->
         <!-- <h3>Are you sure you want to delete data?</h3> -->
+
         <table class="addtasks">
         <thead>
             <tr>
-                <th>Work Time</th>
+                <th>Work Time(min)</th>
                 <th>Plan</th>
                 <th>Actual</th>
                 <th>Status</th>
                 <th>Reason</th>
-                <th>Name</th>
+                <th colspan="3">Operator</th>
                 <th>Comments</th>
             </tr>
         </thead>
@@ -165,19 +173,59 @@
             <tr>
                 <td>{{worktime}}</td>
                 <td>{{plan}}</td>
-                <td><input style = "width: 50px" type="text" placeholder="{{actual}}"></td>
+                <td><input class="actualInput" id="actualInput" style = "width: 50px" type="text" placeholder="{{actual}}"></td>
                 {{#if isred}}
-                    <td><div name="Ignore Select" id="select" style="background:rgba(224, 97, 0,1);" class="outlineinactive"></div></td>
+                    <td><div name="Ignore Select" id="select" style="background:rgba(224, 97, 0,1);" class="outline"></div></td>
                 {{else}}
-                    <td><div name="Ignore Select" id="select" style="background:rgba(141,198,63,1);" class="outlineinactive"></div></td>
+                    <td><div name="Ignore Select" id="select" style="background:rgba(141,198,63,1);" class="outline"></div></td>
                 {{/if}}
-                <td><input style = "width: 100px" type="text" placeholder="{{reason}}"></td>
-                <td><input style = "width: 100px" type="text" placeholder="{{operator}}"></td>
-                <td><input style = "width: 100px" type="text" placeholder="{{comment}}"></td>
+                <td><input class="reasonInput" id="reasonInput" style = "width: 150px" type="text" placeholder="{{reason}}"></td>
+                <td>
+                {{#if displayoperatorone}}
+                    <div style="width: 75px;" data-id="1" class="tagsname" id="nametag_one">
+                        <ul>
+                        <li><a><span>{{operatorone}}</span><i class="fa fa-close"></i></a></li>
+                        </ul>
+                    </div>
+                {{/if}}
+                </td>
+                <td>
+                {{#if displayoperatortwo}}                       
+                    <div style="width: 75px;" data-id="2" class="tagsname" id="nametag_two">
+                        <ul>
+                        <li><a><span>{{operatortwo}}</span><i class="fa fa-close"></i></a></li>
+                        </ul>
+                    </div>
+                {{/if}}
+                </td>
+                <td>
+                {{#if displayoperatorthree}}
+                    <div style="width: 75px;" data-id="3" class="tagsname" id="nametag_three">
+                        <ul>
+                        <li><a><span>{{operatorthree}}</span><i class="fa fa-close"></i></a></li>
+                        </ul>
+                    </div>
+                {{/if}}
+                </td>
+<!--                 <td><input class="nameInput" id="nameInput" style = "width: 150px" type="text" placeholder="{{operator}}"></td> -->
+                <td><input class="commentsInput" id="commentsInput" style = "width: 150px" type="text" placeholder="{{comment}}"></td>
             </tr>
             {{/each}}
         </tbody>
     </table>
+    <table class="{{addtasks}}">
+        <thead>
+            <tr>
+                <td>
+                    {{> selectinput}}
+                </td>
+                <td>
+                    <button class="add-operator">Add Operator</button>   
+                </td>
+            </tr>
+        </thead>
+    </table>
+    <h3></h3>
         <div class="group">
             <div class="left">
                 <button class="Modal-submit">Submit!</button>

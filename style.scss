@@ -229,7 +229,6 @@ table {
     &.toggle-changeover {
         transform: translate3d(0, 100px, 0);
     }
-
  /*   thead1{
         position: relative;
          td:nth-child(2),td:nth-child(4){
@@ -712,7 +711,7 @@ a {
     background: #FFF;
     padding: 20px;
     //overflow: hidden;
-    height:510px;
+    height:540px;
     transition: max-height 0.7s ease-in; 
     //transition: all 0.4s cubic-bezier(0.68, -0.65, 0.265, 1.20);
     @include card(2);
@@ -723,6 +722,11 @@ a {
     padding: 20px;
     max-height:250px;
 }
+.toggle-GenerateChart .search-shrink{
+    display:none;
+    opacity: 0;
+}
+
 .dateRange{
     opacity: 1;
 }
@@ -898,4 +902,43 @@ input[type=checkbox]:checked + label:before {
     }
   }
 }
-
+//back label added by chenyu
+.wrapper_back{
+    background:#222;
+    text-align:center;
+    font-size:180%;
+    margin:2em;
+    font-family: Calibri, arial, sans-serif;
+}
+.back{
+    
+    color:white;
+    padding-top:1.8em;
+    display:inline-block;/* or block */
+    position:relative;
+    border-color:white;
+    text-decoration:none;
+    transition:all .3s ease-out;
+}
+.back:before{
+    content:'▲';
+    font-size:.9em;
+    position:absolute;
+    top:0;
+    left:50%;
+    margin-left:-.7em;
+    border:solid .13em white;
+    border-radius:10em;
+    width:1.4em;
+    height:1.4em;
+    line-height:1.3em;
+    border-color:inherit;
+    transition:transform .5s ease-in;
+}
+.back:hover{
+    color:pink;
+    border-color:pink;
+}
+.back:hover:before{
+    transform: rotate(360deg);
+}

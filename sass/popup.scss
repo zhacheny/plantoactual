@@ -1,8 +1,8 @@
 @import '_base.scss';
 
-.popup-modal {
+.delete-popup-modal {
     position: fixed;
-    border: solid 4px $dblue;
+    border: solid 2px $dblue;
     top: 20%;
     left: 50%;
     padding: 20px;
@@ -15,6 +15,38 @@
     &.open {
         opacity: 1;
         transform: translateX(-50%) scale(1);
+    }
+    h3 {
+        margin-top: 0;
+    }
+    .close-popup {
+        position: absolute;
+        top: 0;
+        right: 0;
+        display: block;
+        cursor: pointer;
+        font-size: 2em;
+        padding: 10px 15px;
+        opacity: 0.2;
+    }
+}
+
+.edit-popup-modal {
+    position: fixed;
+    border: solid 2px $dblue;
+    top: 30%;
+    left: 50%;
+    padding: 20px;
+    width: 73%;
+    transform: translate3d(25%, -80%, 0) scale(0.5);
+    background: #FFF;
+    opacity: 0;
+    @include trans();
+    @include card(4);
+    &.open {
+        opacity: 1;
+        transform: translateX(-50%) scale(1);
+        //box-shadow: inset 0px 1px 2px darken(#ca5549,30%);
     }
     h3 {
         margin-top: 0;

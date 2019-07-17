@@ -70,20 +70,20 @@ Template.AddTasks.helpers({
 		return EarnedTimePP.find();
 	},
 	displayoperatorone: function(){
-		return Session.get('operatorarray')[0] != 'null' ? true : false;
+		return Session.get('operatorarray')[0][0] != 'null' ? true : false;
 	},
 	displayoperatortwo: function(){
-		return Session.get('operatorarray')[1] != 'null' ? true : false;
+		return Session.get('operatorarray')[0][1] != 'null' ? true : false;
 	},
 	displayoperatorthree: function(){
-		return Session.get('operatorarray')[2] != 'null' ? true : false;
+		return Session.get('operatorarray')[0][2] != 'null' ? true : false;
 	},
 
 	operatorone: function(){
 		if (Session.get('operatorarray') == null){
 			return 'null';
-		}else if(Session.get('operatorarray')[0] != null){
-			return Session.get('operatorarray')[0];
+		}else if(Session.get('operatorarray')[0][0] != null){
+			return Session.get('operatorarray')[0][0];
 		}else {
 			return 'null';
 		}
@@ -91,8 +91,8 @@ Template.AddTasks.helpers({
 	operatortwo: function(){
 		if (Session.get('operatorarray') == null){
 			return 'null';
-		}else if(Session.get('operatorarray')[1] != null){
-			return Session.get('operatorarray')[1];
+		}else if(Session.get('operatorarray')[0][1] != null){
+			return Session.get('operatorarray')[0][1];
 		}else {
 			return 'null';
 		}
@@ -100,8 +100,8 @@ Template.AddTasks.helpers({
 	operatorthree: function(){
 		if (Session.get('operatorarray') == null){
 			return 'null';
-		}else if(Session.get('operatorarray')[2] != null){
-			return Session.get('operatorarray')[2];
+		}else if(Session.get('operatorarray')[0][2] != null){
+			return Session.get('operatorarray')[0][2];
 		}else {
 			return 'null';
 		}
@@ -393,10 +393,12 @@ Template.AddTasks.events({
 			alert('can not add more operators!!');
 			return;
 		}
-		var operatorinitial = Session.get('operatorarray');
+		var operatorinitial = Session.get('operatorarray')[0];
+		var operatorIDarray = Session.get('operatorarray')[1];
 		var operatorname = Session.get('operator');
 		var initial = Operator.findOne({name:operatorname}).initial;
-		Meteor.call('checkIsnull',operatorinitial,initial,operatorcount);
+		var operatorID = Operator.findOne({name:operatorname}).operatorID;
+		Meteor.call('checkIsnull',operatorinitial,initial,operatorcount,operatorID,operatorIDarray);
 		return;
 	},
 
@@ -409,6 +411,7 @@ Template.AddTasks.events({
 		var min = moment(timeformat).format('mm');
 		var sec = moment(timeformat).format('ss');
 		var timearray = [hour,min,sec];
+		addtaskcountsum = 0;
 		Session.set('test-mode-time',timearray);
 	},
 
@@ -602,6 +605,8 @@ Template.AddTasks.events({
 		var plantoactual = tempobject.plantoactual;
 		var actual = tempobject.actual;
 		var comment = tempobject.comment;
+		var buildingnumber = Session.get('buildingnumber');
+		var cell = Session.get('cell');
 		var earnedtime = Session.get('earnedTimePPiecePOpe') * actual;
     	var info = Session.get('taskIsComplete');
     	if(info != null){
@@ -618,6 +623,7 @@ Template.AddTasks.events({
 			var trigger = false;
 		}
     	Session.set('addtaskcountsum',countsum);
+		var operatorIDarray = Session.get('operatorarray')[1];
     	//check whether the job is end eearly
     	if(trigger){
     		//rename the id
@@ -630,11 +636,12 @@ Template.AddTasks.events({
     		// console.log(newid);
     		var comment = "XXX";
     		Session.set('tempchangeoverid',info[1].id.substring(0,1));
-
-    		Meteor.call('inserttask', id, timespan, partnumber, worktime, plantoactual, actual, reason, status,currentTime.curValue,comment,Session.get('operatorarray'),earnedtime);
+    		//insert the task from server side
+    		Meteor.call('inserttask', id, timespan, partnumber, worktime.substring(0,2), plantoactual, actual, reason,
+    		 status,currentTime.curValue,comment,operatorIDarray,earnedtime,buildingnumber, cell);
     		Session.set('submited', 'yes');
 			alert("submited!");
-
+			//change worktime by the changover time
 			worktime = info[2];
     		ClientTaskworktime.insert(
 				{ id: newid, timespan: timespan, worktime: worktime + ' min', plantoactual:'0', actual:'0',
@@ -643,7 +650,8 @@ Template.AddTasks.events({
     		);
 			return;
     	}else{
-    		Meteor.call('inserttask', id, timespan, partnumber, worktime, plantoactual, actual, reason, status,currentTime.curValue,comment,Session.get('operatorarray'),earnedtime);
+    		Meteor.call('inserttask', id, timespan, partnumber, worktime.substring(0,2), plantoactual, actual,
+    		 reason, status,currentTime.curValue,comment,operatorIDarray,earnedtime,buildingnumber, cell);
     		Session.set('submited', 'yes');
     		alert("submited!");
     		return;
@@ -675,23 +683,26 @@ Template.AddTasks.events({
 		Session.set('wrongtype', 5);
 		return;
 	},
-		//clse new job toggle
+		//remove operator
 	'click .tagsname':function (events) {
 		var operatorcount = Session.get('operatorcount');
 		operatorcount--;
 		var id = $(events.currentTarget).data('id');
 
-		var array = Session.get('operatorarray');
-		console.log(array);
+		var operatorinitial = Session.get('operatorarray')[0];
+		var operatorIDarray = Session.get('operatorarray')[1];
 		if(id == 1){
-			array[0] = 'null';
+			operatorinitial[0] = 'null';
+			operatorIDarray[0] = 'null';
 		}else if (id == 2){
-			array[1] = 'null';
+			operatorinitial[1] = 'null';
+			operatorIDarray[1] = 'null';
 		}else{
-			array[2] = 'null';
+			operatorinitial[2] = 'null';
+			operatorIDarray[2] = 'null';
 		}
 		Session.set('operatorcount',operatorcount);
-		Session.set('operatorarray',array);
+		Session.set('operatorarray',[operatorinitial,operatorIDarray]);
 	},
 });
 

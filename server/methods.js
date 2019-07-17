@@ -33,7 +33,19 @@ Meteor.methods({
 	      $set: { actual: input },
 	    });
 	},
-	inserttask(id, timespan, partnumber, worktime, plantoactual, actual, reason, status,createdAt,comment,operator,earnedtime) {
+	updateAll(id, actualInput, reasonInput,
+			commentInput,operatorarray,status) {
+	    Tasks.update(id, {
+	      $set: { actual: actualInput,
+	      		  reason:reasonInput,
+	      		  comment:commentInput,
+	      		  operator:operatorarray,
+	      		  status:status,
+	      		},
+	    });
+	},
+	inserttask(id, timespan, partnumber, worktime, plantoactual, actual, reason,
+		 status,createdAt,comment,operatorID,earnedtime,buildingnumber, cell) {
 		Tasks.insert({
 			id: id,
 		      timespan: timespan,
@@ -45,8 +57,10 @@ Meteor.methods({
 		      status:status,
 		      comment:comment,
 		      createdAt: createdAt,
-		      operator:operator,
-		      earnedtime:earnedtime + ' min',
+		      operatorID:operatorID,
+		      earnedtime:earnedtime,
+		      buildingnumber:buildingnumber,
+		      cell: cell,
 		      // owner: Meteor.userId(),
 		      // username: Meteor.user().username,
 		    });
