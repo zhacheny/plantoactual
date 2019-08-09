@@ -10,7 +10,7 @@ function builtArea() {
         },
         
         title: {
-            text: 'Efficiency Tendency for Each Cell',
+            text: 'Tendency of Efficiency',
             style: {
               fontSize: 30 + 'px'
             }
@@ -28,7 +28,7 @@ function builtArea() {
             allowDecimals: false,
             labels: {
                 formatter: function () {
-                    return this.value; // clean, unformatted number for year
+                    return 'Day ' + this.value; // clean, unformatted number for year
                 }
             }
         },
@@ -39,7 +39,7 @@ function builtArea() {
             },
             labels: {
                 formatter: function () {
-                    return 'Day ' + this.value;
+                    return this.value;
                 }
             }
         },
@@ -52,6 +52,9 @@ function builtArea() {
         plotOptions: {
             area: {
                 pointStart: 1,
+                dataLabels: {
+                    enabled: true
+                },
                 marker: {
                     enabled: false,
                     symbol: 'circle',

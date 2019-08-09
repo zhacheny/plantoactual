@@ -1,7 +1,116 @@
-import { Tasks, Partnumber, Taskworktime, Plan } from '/lib/collections.js';
+import { Tasks, Cell, Partnumber, Taskworktime, Plan, Operator, EarnedTimePP,Anouncements } from '/lib/collections.js';
 
 //run on your server
 Meteor.methods({
+	editpartnumber( id,part,cell,XMLname,ProductCode,MinutesPP_one,
+		MinutesPP_two, MinutesPP_three, PiecesPH_one, PiecesPH_two, PiecesPH_three,
+		buildingnumber ){
+		Partnumber.update({_id:id}, {
+	      $set: { part:part,
+				      cell:cell,
+				      buildingnumber:buildingnumber,
+				      XMLname:XMLname,
+				      ProductCode:ProductCode,
+				      MinutesPP_one:MinutesPP_one,
+				      MinutesPP_two:MinutesPP_two,
+				      MinutesPP_three:MinutesPP_three,
+				      PiecesPH_one:PiecesPH_one,
+				      PiecesPH_two:PiecesPH_two,
+				      PiecesPH_three:PiecesPH_three, },
+	    });
+	},
+	parseUpload( data ) {
+	    // check( data, Array );
+		// data.length
+	    for ( let i = 0; i < 10; i++ ) {
+	    	// console.warn(data[ i ]);
+			let part   = data[ i ]['Assembly No'];
+			let cell   = data[ i ]['Work'];
+			let buildingnumber   = data[ i ]['buildingnumber'];
+			let ProductCode   = data[ i ]['Prod'];
+			let MinutesPP_one  = data[ i ]['1 Operator Minutes'];
+			let MinutesPP_two   = data[ i ]['2 Operator Minutes'];
+			let MinutesPP_three   = data[ i ]['3 Operator Minutes'];
+			let XMLname   = data[ i ]['Link'];
+			let PiecesPH_one  = MinutesPP_one ==''? '': '' + MinutesPP_one*60;
+			let PiecesPH_two   = MinutesPP_two ==''? '':'' + MinutesPP_two*60;
+			let PiecesPH_three = MinutesPP_three ==''? '':'' + MinutesPP_three*60;
+			let exists = Partnumber.findOne( { part: part } );
+			let exists_cell = Cell.findOne( { cellname: cell } );
+			if( !exists_cell ){
+				Cell.insert({
+						buildingnumber:buildingnumber,
+						cellname:cell,
+				});
+			}
+	      if ( !exists ) {
+			Partnumber.insert({
+				      part:part,
+				      cell:cell,
+				      buildingnumber:buildingnumber,
+				      XMLname:XMLname,
+				      ProductCode:ProductCode,
+				      MinutesPP_one:MinutesPP_one,
+				      MinutesPP_two:MinutesPP_two,
+				      MinutesPP_three:MinutesPP_three,
+				      PiecesPH_one:PiecesPH_one,
+				      PiecesPH_two:PiecesPH_two,
+				      PiecesPH_three:PiecesPH_three,
+				      // owner: Meteor.userId(),
+				      // username: Meteor.user().username,
+				    });
+	      } else {
+	        // Session.set('part-insert-error','Rejected. This item already exists.');
+	        throw new Meteor.Error('bad', 'Rejected. This item already exists.');
+	      }
+	    }
+	  },
+	partnumberdelete(Id){
+		Partnumber.remove({_id: Id});
+	},
+	insertpartnumber(part,cell,XMLname,ProductCode,MinutesPP_one,
+		MinutesPP_two, MinutesPP_three, PiecesPH_one, PiecesPH_two, PiecesPH_three,
+		buildingnumber){
+		// if(typeof (MinutesPP_three == "undefined") || (PiecesPH_three == "undefined")){
+		let exists = Partnumber.findOne( { part: part } );
+		let exists_cell = Cell.findOne( { cellname: cell } );
+		if( !exists_cell ){
+			Cell.insert({
+					buildingnumber:buildingnumber,
+					cellname:cell,
+			});
+		}
+		if ( !exists ) {
+			Partnumber.insert({
+				      part:part,
+				      cell:cell,
+				      buildingnumber:buildingnumber,
+				      XMLname:XMLname,
+				      ProductCode:ProductCode,
+				      MinutesPP_one:MinutesPP_one,
+				      MinutesPP_two:MinutesPP_two,
+				      MinutesPP_three:MinutesPP_three,
+				      PiecesPH_one:PiecesPH_one,
+				      PiecesPH_two:PiecesPH_two,
+				      PiecesPH_three:PiecesPH_three,
+				      // owner: Meteor.userId(),
+				      // username: Meteor.user().username,
+				    });
+	      } else {
+	        // Session.set('part-insert-error','Rejected. This item already exists.');
+	        throw new Meteor.Error('bad', 'Rejected. This item already exists.');
+	      }
+	},
+	delete_boxAnouncementsRecords(Id){
+		// alert('Deleted!');
+		Anouncements.remove({_id: Id});
+	},
+	add_boxAnouncementsRecords(str) {
+		Anouncements.insert({
+			// id: id,
+		      record:str
+	    });
+	},
 	deletetask(Id){
 		Tasks.remove({_id: Id});
 	},
@@ -66,9 +175,6 @@ Meteor.methods({
 		    });
 	},
 	errortype(wrongtype){
-		return;
-	},
-	setnull(){
 		return;
 	},
 	setnull(){

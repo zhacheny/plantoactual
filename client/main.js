@@ -37,6 +37,8 @@ Meteor.startup(function () {
 			// console.log(taskworktime[i]);
 			ClientTaskworktime.insert(taskworktime[i]);
 		}
+	}else{
+			ClientTaskworktime.remove({});
 	}
 
 

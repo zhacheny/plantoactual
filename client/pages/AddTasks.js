@@ -1,4 +1,4 @@
-import { Tasks, Partnumber, Taskworktime, Plan, Operator, EarnedTimePP } from '/lib/collections.js';
+import { Tasks, Partnumber, Taskworktime, Plan, Operator, EarnedTimePP,Anouncements } from '/lib/collections.js';
 import moment from 'moment';
 import { ClientTaskworktime } from '/client/main.js';
 // Tasks = new Mongo.Collection('task');
@@ -18,6 +18,9 @@ var countsum = 0;
 var havefun = false;
 
 Template.AddTasks.onCreated(function(){
+	this.autorun(() => {
+		this.subscribe('anouncements');
+	})
 	this.autorun(() => {
 		this.subscribe('task');
 	})
@@ -39,7 +42,7 @@ Template.AddTasks.onCreated(function(){
 	Meteor.setInterval(function() {
 		time.set(new Date());
 	}, 1000);
-	});
+});
 
 
 Tracker.autorun(function() {
@@ -60,14 +63,14 @@ Tracker.autorun(function() {
 
 
 Template.AddTasks.helpers({
+	anouncements: function(){
+		return Anouncements.find();
+	},
 	changeoverCounter: function(){
 	    var currentTime = time.get();
 	    var starttime = Session.get('changeover-starttime');
 	    // Session.set('changeover-end',time.get());
 		return moment(currentTime-starttime).format('mm:ss');
-	},
-	plannumber: function(){
-		return EarnedTimePP.find();
 	},
 	displayoperatorone: function(){
 		return Session.get('operatorarray')[0][0] != 'null' ? true : false;
@@ -383,6 +386,9 @@ Template.AddTasks.helpers({
 });
 
 Template.AddTasks.events({
+	'click .jobCompletes': function(){
+		console.log(this);
+	},
 	'click .add-operator': function(){
 		var operatorcount = Session.get('operatorcount');
 		if (Session.get('operator') == null){
@@ -456,7 +462,7 @@ Template.AddTasks.events({
 		var operatorcount = Session.get('operatorcount');
 		// console.log(partnumber);
 		// var value = Plan.findOne({worktime:this.worktime,partnumber:partnumber}).value;
-		var value = EarnedTimePP.findOne({cell:Session.get('cell'), partnumber:partnumber}).value;
+		var value = Partnumber.findOne({cell:Session.get('cell'), part:partnumber}).earnedTimePPiece;
 		if (operatorcount >=2){
 			value = value/operatorcount;
 		}
@@ -532,7 +538,7 @@ Template.AddTasks.events({
 		var currentTime = time.get();
 		var worktime = this.worktime.substring(0,2);
 		var partnumber = this.partnumber;
-		var plannumber = EarnedTimePP.findOne({cell:Session.get('cell'), partnumber:partnumber}).value;
+		var plannumber = Partnumber.findOne({cell:Session.get('cell'), part:partnumber}).earnedTimePPiece;
 		var operatorcount = Session.get('operatorcount');
 		if (operatorcount >=2){
 			plannumber = plannumber/operatorcount;
@@ -704,5 +710,9 @@ Template.AddTasks.events({
 		Session.set('operatorcount',operatorcount);
 		Session.set('operatorarray',[operatorinitial,operatorIDarray]);
 	},
+	'click .search-edit':(event)=>{
+		console.log(this);
+		return;
+	}
 });
 

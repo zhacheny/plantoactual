@@ -1,0 +1,85 @@
+@import '_normalize.scss';
+@import '_base.scss';
+
+//status tag toggle switcher of maintenance added by Chenyu
+
+.Maintenance-nav li {
+    width: 32.8%;
+    text-align: center;
+    letter-spacing: 1px;
+    display: inline-block;
+    padding: 10px;
+    border-top: solid;
+    border-width: 5px;
+    border-top-color: #ca5549;
+    font-size: 1.2em;
+    &:hover {
+      border-top: solid;
+      border-top-color: #ca5549;
+    }
+    &:active {
+        color: #ca5549;
+        border-width: 5px;
+    }
+    a {
+        text-decoration:none;
+    }
+}
+
+//Search Page added by Chenyu
+.Maintenance{
+    //text-align: center;
+    margin: 30px auto;
+    //max-width: 500px;
+    padding: 10px;
+    width: 60%;
+    position: relative;
+    background: #FFF;
+    padding: 20px;
+    //overflow: hidden;
+    height:780px;
+    //transition: max-height 0.7s ease-in; 
+    //transition: all 0.4s cubic-bezier(0.68, -0.65, 0.265, 1.20);
+    @include card(2);
+
+}
+
+.toggle-Maintenance-page .Maintenance{
+    padding: 20px;
+    max-height:200px;
+}
+
+.toggle-Maintenance-import-page .Maintenance{
+    padding: 20px;
+    max-height:350px;
+}
+
+.toggle-Maintenance-page .Maintenance-add{
+    display:none;
+    opacity: 0;
+}
+
+.toggle-Maintenance-import-page .Maintenance-add{
+    display:none;
+    opacity: 0;
+}
+
+.toggle-Maintenance-page .Maintenance-edit{
+    //padding: 10px;
+    //display:block;
+    opacity: 1;
+}
+.Maintenance-edit{
+    //display:none;
+    opacity: 0;
+}
+
+.Maintenance-import{
+    display:none;
+    opacity:0;
+}
+
+.toggle-Maintenance-import-page .Maintenance-import{
+    display:flex;
+    opacity:1;
+}

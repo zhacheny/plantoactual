@@ -2,11 +2,14 @@
     <div class="app-nav">
         <ul>
             <li><a href="/Dashboard"><i class="fa fa-dashboard"></i> <span>Dashboard</span></a></li>
-            <li><a href="/admin/users"><i class="fa fa-users"></i> <span>Users Management</span></a></li>
             {{#if isInRole 'admin'}}
+                <li><a href="/admin/users"><i class="fa fa-users"></i> <span>Users Management</span></a></li>
 				<li><a href="/admin/managetasks"><i class="fa fa-sliders"></i> <span>Manage Tasks</span></a></li>
+                <li><a href="/admin/maintenance"><i class="fa fa-cogs"></i> <span>Parts Maintenance</span></a></li>
             {{else}}
-            	<li><a href="/admin/addtasks"><i class="fa fa-tasks"></i> <span>Add Tasks</span></a></li>
+                <li><a href="/admin/addtasks"><i class="fa fa-tasks"></i> <span>Add Tasks</span></a></li>
+                <li><a href="/admin/viewPdf"><i class="fa fa-eye"></i> <span>Drawing Lookup</span></a></li>
+                
             {{/if}}
             <li><a href="/admin/chats"><i class="fa fa-comments"></i> <span>Chats</span></a></li>
         </ul>

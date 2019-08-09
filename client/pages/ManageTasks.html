@@ -1,16 +1,75 @@
 <template name="ManageTasks">
     <!-- {{> clock}} -->
-
     <h1 class="page-title">Manage Tasks</h1>
+<!--     {{#if triggerCharts}} -->
+<div class="{{Mask_managetasks}}">
     {{#if triggerCharts}}
-    <!-- <button class="back">Back</button> -->
-    <div class="wrapper_back">
-        <a href="#" class="back">Back to Selection</a>
+    <div class="displayChart">
+        <div class="print-hide-bar">
+            <div class="wrapper_back">
+                <a href="#" class="back">Back to Selection</a>
+            </div>
+            <button class="print-button"><span class="print-icon"></span></button>  
+        </div>
+        <div class='displayChartContainer'>
+          <div class='datapad'>
+            <div class='tabs'>
+              <table class="report-table">
+                <thead>
+                    <tr>
+                        <th>{{date_range_1}}</th>
+                    </tr>
+                    <tr>
+                        <th>To</th>
+                    </tr>
+                    <tr>
+                        <th>{{date_range_2}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Actual Hour</td>
+                    </tr>
+                    <tr>
+                        <td>{{sum_Actualtime}}</td>
+                    </tr>
+                    <tr>
+                        <td>Earned Hour</td>
+                    </tr>
+                    <tr>
+                        <td>{{sum_Earnedtime}}</td>
+                    </tr>
+                    <tr>
+                        <td>Changeover Hour</td>
+                    </tr>
+                    <tr>
+                        <td>{{sum_changeovertime}}</td>
+                    </tr>
+                    <tr>
+                        <td>Overall Efficiency</td>
+
+                    </tr>
+                    <tr>
+                        <td>{{overall_eff}}</td>
+                    </tr>
+                    <tr>
+                        <td>Shifts</td>
+                    </tr>
+                    <tr>
+                        <td>{{shifts}}</td>
+                    </tr>
+                </tbody>
+            </table>
+            </div>
+          </div>
+          <div class='charts'>
+            <div class="chart1">{{> columnDemo}}</div>
+            <div class="chart2">{{> areaDemo}}</div>
+          </div>
+        </div>
     </div>
-    <div class="charts">{{> columnDemo}}</div>
-    <div class="charts">{{> areaDemo}}</div>
-    {{else}}
-    <!-- {{>areaDemo}} -->
+    {{/if}}
+    <!-- {{else}} -->
     <div class="{{searchpage}}">
         <div class="search-shrink">
             <div class="search-nav">
@@ -20,16 +79,17 @@
             </div>
  <!--            {{#if toggleSearch}} -->
             <form class="dateRange">
+
               <div class="group">
                 <div class="left">
-                    <label>Start Date</label>
-                    <input type="text" id="picker-1" placeholder="Start Date">
+                    
+                    <input type="text-2" id="picker-1" placeholder="Start Date">
                 </div>
                 <div class="right">
-                    <label>End Date</label>
-                  <input type="text" id="picker-2" placeholder="End Date">
+                    
+                  <input type="text-2" id="picker-2" placeholder="End Date">
                 </div>
-              </div>
+              </div>  
               <div class="group">
                 <div class="left">
                     <label>Building</label>
@@ -93,8 +153,8 @@
             <!-- {{/if}} -->
         </div>
     </div>
-    {{/if}}
-
+<!--     {{/if}} -->
+</div>
 
     {{#if displaytable}}
     <table class="addtasks">

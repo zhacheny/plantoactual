@@ -55,8 +55,17 @@ AccountsTemplates.addFields([
 				text:'Supervisor',
 				value:'supervisor'
 			},{
-				text:'Operator',
-				value:'operator'
+				text:'VSL',
+				value:'VSL'
+			},{
+				text:'Human Resource',
+				value:'HR'
+			},{
+				text:'Lora',
+				value:'Lora'
+			},{
+				text:'Safety',
+				value:'Safety'
 			}
 		]
 	}

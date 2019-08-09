@@ -5,14 +5,50 @@ import moment from 'moment';
 var reasonCode = ['Meeting/Training','Machine Down','Quality Isssue','Safety','Waiting on Material','Write in'];
 var timespan1 = ['6-7 am','7-8 am','8-9 am','9-10 am','10-11 am','11-12 am','12:30-13:30 pm','13:30-14:30 pm'];
 var timespan2 = ['14:30-15:30 pm','15:30-16:30 pm'];
+var timespan_worktime = ['55','60','40','60','55','55','60','50','60','60'];
 var timespan_merge = timespan1.concat(timespan2);
 var data = "";
+var firstRendered = false;
 
-Template.ManageTasks.rendered = function() {
+function renderPicker(){
 	$('#picker-1, #picker-2').datetimepicker({
 		 // timepicker:false,
 		 defaultTime:'12:00'
 	});
+}
+
+function sort_lostMin_indexes(lostMin,reasonCode){
+	var lostMin_with_index = [];
+	for (var i in lostMin) {
+	    lostMin_with_index.push([lostMin[i], i]);
+	}
+	lostMin_with_index.sort(function(left, right) {
+	  return left[0] > right[0] ? -1 : 1;
+	});
+	var indexes = [];
+	lostMin = [];
+	for (var j in lostMin_with_index) {
+	    lostMin.push(lostMin_with_index[j][0]);
+	    indexes.push(reasonCode[lostMin_with_index[j][1]]);
+	}
+	return [lostMin,indexes];
+}
+
+function calculate_percentage(lostMin){
+	var lostMin_percentage = [];
+	var sum_lostMin = 0;
+	for (var i = 0; i <lostMin.length; i++) {
+		sum_lostMin += lostMin[i];
+		lostMin_percentage[i] = sum_lostMin; 
+	}
+	// console.log(lostMin_percentage);
+	for (var i = lostMin.length - 1; i >= 0; i--) {
+		lostMin_percentage[i] = (lostMin_percentage[i]/sum_lostMin) * 100;
+	}
+	return lostMin_percentage;
+}
+Template.ManageTasks.rendered = function() {
+	renderPicker();
 };
 
 Template.ManageTasks.onCreated(function(){
@@ -104,6 +140,7 @@ Template.ManageTasks.events({
 		return;
 	},
 	'click .back': ()=> {
+		Session.set('toggle-search-page',true)
 		Session.set('lostMin',null);
 	},
 	'click .Modal-submit': ()=> {
@@ -240,24 +277,40 @@ Template.ManageTasks.events({
 		var shifts1 = Session.get('shifts1') != null ? Session.get('shifts1') : false;
 		var shifts2 = Session.get('shifts2') != null ? Session.get('shifts2') : false;
 		var operator = Session.get('operator') != null ? Session.get('operator') : false;
-		if(!partnumber || !startdate || !enddate || !building || !cell){
+		if(!building || !startdate || !enddate){
 			alert("invalid input");
 			return false;
 		}
-		Session.set('searchCondition',[true,[startdate, enddate, building, cell, partnumber,[shifts1,shifts2],operator]]);
+		// Session.set('searchCondition',[true,[startdate, enddate, building, cell, partnumber,[shifts1,shifts2],operator]]);
 		var start = new Date(startdate);
 		var end = new Date(enddate);
+		var searchBoCoP = "partnumber";
+		var searchBoCoP_answer = partnumber;
+		if (!partnumber || partnumber == "Select"){
+			searchBoCoP = "cell";
+			searchBoCoP_answer = cell;
+		}
+		if (!cell || cell == "Select"){
+			searchBoCoP = "buildingnumber";
+			searchBoCoP_answer = building;
+		}
+		var query_search = {};
+		query_search[searchBoCoP] = searchBoCoP_answer;
+		if (!building || building == "Select"){
+			query_search = {};
+		}
+		// console.log(query_search);
 		if(operator == "All" || !operator){
 			//check whether user select the shift button
 			if(shifts1 && shifts2){
-				data = Tasks.find({timespan:{ $in : timespan_merge}, partnumber:partnumber,
-					createdAt : { $gte : start, $lt: end }}).fetch();
+				data = Tasks.find({timespan:{ $in : timespan_merge},
+					createdAt : { $gte : start, $lt: end }},query_search).fetch();
 			}else if(shifts1 && !shifts2){
-				data = Tasks.find({timespan:{ $in : timespan1}, partnumber:partnumber,
-					createdAt : { $gte : start, $lt: end }}).fetch();
+				data = Tasks.find({timespan:{ $in : timespan1},
+					createdAt : { $gte : start, $lt: end }},query_search).fetch();
 			}else if(!shifts1 && shifts2){
-				data = Tasks.find({timespan:{ $in : timespan2}, partnumber:partnumber,
-					createdAt : { $gte : start, $lt: end }}).fetch();
+				data = Tasks.find({timespan:{ $in : timespan2},
+					createdAt : { $gte : start, $lt: end }},query_search).fetch();
 			}else{
 				alert("please select the shifts!");
 				return false;
@@ -266,15 +319,37 @@ Template.ManageTasks.events({
 			// var data = Tasks.find({partnumber:partnumber,createdAt : { $gte : start, $lt: end }}).fetch();
 		}else{
 			Session.set('hasOperator',[true,operator]);
-			operator = Operator.findOne({name:operator}).operatorID;
-			data = Tasks.find({operatorID:{ $in : [operator]}, partnumber:partnumber,
-				createdAt : { $gte : start, $lt: end }}).fetch();
+			var operatorID = Operator.findOne({name:operator}).operatorID;
+			//check whether user select the shift button
+			if(shifts1 && shifts2){
+				data = Tasks.find({operatorID:{ $in : [operatorID]},timespan:{ $in : timespan_merge},
+					createdAt : { $gte : start, $lt: end }},query_search).fetch();
+			}else if(shifts1 && !shifts2){
+				data = Tasks.find({operatorID:{ $in : [operatorID]},timespan:{ $in : timespan1},
+					createdAt : { $gte : start, $lt: end }},query_search).fetch();
+			}else if(!shifts1 && shifts2){
+				data = Tasks.find({operatorID:{ $in : [operatorID]},timespan:{ $in : timespan2},
+					createdAt : { $gte : start, $lt: end }},query_search).fetch();
+			}else{
+				alert("please select the shifts!");
+				return false;
+			}
 		}
-		
+
 		// produce data
 		if(Session.get('toggle-Download')){
-			var CSVData = Papa.unparse(data);
+			const revised_data = JSON.parse(JSON.stringify(data));
+			// var revised_data = data;
+			for (var i = revised_data.length - 1; i >= 0; i--) {
+				for (var j = 0; j < 3; j++) {
+					if(revised_data[i].operatorID[j] != "null"){
+						revised_data[i].operatorID[j] = Operator.findOne({operatorID:revised_data[i].operatorID[j]}).name;
+					}
+				}
+			}
+			var CSVData = Papa.unparse(revised_data);
 			var reportName = "Report_" + startdate + "_to_" + enddate + ".csv";
+
 			// console.log(CSVData);
 			var blob = new Blob([CSVData], 
 	            {type: "text/csv;charset=utf-8"});
@@ -287,17 +362,19 @@ Template.ManageTasks.events({
 				alert('No data in this interval');
 				return false;
 			}
+
 			//extract tendency attributes
 			//calculate the date difference
 			const diffTime = Math.abs(end.getTime() - start.getTime());
 			const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
-			console.log(diffDays);
 			//collect data from the 2ed day to the penultimate day
 			var All_sum_eff = [];
+			var sum_Alltime = 0;
 			for (var i = 0; i < diffDays; i++) {
 				var eff = 0;
 				var eff_worktime = 0;
 				var eff_earnedtime = 0;
+				var changeover_time = 0;
 				var curDate = start.getDate();
 				var curDate_start = new Date(startdate).setHours(0,0,0,0);
 				var curDate_end = new Date(startdate).setHours(23,59,59,999);
@@ -315,26 +392,46 @@ Template.ManageTasks.events({
 				}
 				for (var j = data.length - 1; j >= 0; j--) {
 					if(moment(data[j].createdAt).isBetween(moment(curDate_start), moment(curDate_end))) {
-						 eff_worktime += parseFloat(data[i].worktime);
-						 eff_earnedtime += parseFloat(data[i].earnedtime);
 
+						 eff_worktime += parseFloat(data[j].worktime);
+						 eff_earnedtime += parseFloat(data[j].earnedtime);
 					}
 				}
+
 				if(eff_worktime == 0){
 					All_sum_eff[i] = 0;
 				}else{
-					All_sum_eff[i] = eff_earnedtime/eff_worktime;		
+					All_sum_eff[i] = eff_earnedtime/eff_worktime;
+					//math round at most 2 decimal places
+					All_sum_eff[i] = Math.round(All_sum_eff[i] * 100) / 100;
 				}
-
+				//calculate summation of planned worktime
+				var per_sum_Alltime = 0;
+				var perday_timespan = new Set();
+				for (var z = timespan_merge.length - 1; z >= 0; z--) {
+					for (var j = data.length - 1; j >= 0; j--) {
+						if(data[j].timespan == timespan_merge[z] && 
+							moment(data[j].createdAt).isBetween(moment(curDate_start), moment(curDate_end))){
+							if(!perday_timespan.has(timespan_merge[z])){
+								per_sum_Alltime += parseFloat(timespan_worktime[z]);
+								// console.log(per_sum_Alltime);
+							}
+							perday_timespan.add(timespan_merge[z]);
+							// console.log(perday_timespan.size);
+							
+						}
+						// sum_Worktime += data[i].worktime;
+						// sum_Earnedtime += data[i].earnedtime;
+					}
+				}
+			sum_Alltime += per_sum_Alltime;
 				// console.log(curDate_start);
 				// console.log(curDate_end);
 				
 			}
-			
+
 			var per_Actualtime = [];
 			var per_Earnedtime = [];
-			var per_eff = [];
-			var per_changeover = [];
 			var lostMin = [];
 			var operator = new Set();
 			var operator_Actualtime = [];
@@ -350,24 +447,60 @@ Template.ManageTasks.events({
 				}
 			}
 			var operatorArray = Array.from(operator);
-			console.log(operatorArray);
+			//get the full name of each opreator
+			var operatorFullName = [];
+			for (var i = operatorArray.length - 1; i >= 0; i--) {
+				if(operatorArray[i] != 'null'){
 
-			//extract lost minutes per cell
-			for (var i = reasonCode.length - 1; i >= 0; i--) {
-				var temp_Actualtime = 0;
-				var temp_Earnedtime = 0;
-				for (var j = data.length - 1; j >= 0; j--) {
-					//collect the summation
-					if(data[j].reason == reasonCode[i]){
-						temp_Actualtime += parseFloat(data[j].worktime);
-						temp_Earnedtime += parseFloat(data[j].earnedtime);
-					}
-
+					operatorFullName[i] = Operator.findOne({operatorID:operatorArray[i]}).name;
 				}
-				per_Actualtime[i]=temp_Actualtime;
-				per_Earnedtime[i]=temp_Earnedtime;
-				lostMin[i] = per_Actualtime[i]-per_Earnedtime[i];
 			}
+			//sort the array
+			if(!Session.get('hasOperator')[0]){
+				//extract lost minutes per cell
+				for (var i = reasonCode.length - 1; i >= 0; i--) {
+					var temp_Actualtime = 0;
+					var temp_Earnedtime = 0;
+					for (var j = data.length - 1; j >= 0; j--) {
+						//collect the summation
+						if(data[j].reason == reasonCode[i]){
+							temp_Actualtime += parseFloat(data[j].worktime);
+							temp_Earnedtime += parseFloat(data[j].earnedtime);
+						}
+
+					}
+					per_Actualtime[i]=temp_Actualtime;
+					per_Earnedtime[i]=temp_Earnedtime;
+					lostMin[i] = Math.round(per_Actualtime[i]-per_Earnedtime[i]);
+				}
+				lostMin_with_index = sort_lostMin_indexes(lostMin,reasonCode);	
+			}else{
+				//extract lost minutes per cell
+				for (var i = reasonCode.length - 1; i >= 0; i--) {
+					var temp_Actualtime = 0;
+					var temp_Earnedtime = 0;
+					for (var j = data.length - 1; j >= 0; j--) {
+						//collect the summation
+						for (var z = 0; z < data[0].operatorID.length; z++) {
+							if(data[j].operatorID[z] == operatorID
+							 && data[j].reason == reasonCode[i]){
+								temp_Actualtime += parseFloat(data[j].worktime);
+								temp_Earnedtime += parseFloat(data[j].earnedtime);
+								
+							}
+						}
+
+					}
+					per_Actualtime[i]=temp_Actualtime;
+					per_Earnedtime[i]=temp_Earnedtime;
+					lostMin[i] = Math.round(per_Actualtime[i]-per_Earnedtime[i]);
+				}
+				lostMin_with_index = sort_lostMin_indexes(lostMin,reasonCode);
+			}
+			//calculate the percentage
+			lostMin_percentage = calculate_percentage(lostMin_with_index[0]);
+			// console.log(lostMin_with_index);
+			reasonCode = lostMin_with_index[1];
 			//extract lost minutes per operator
 			for (var n = operatorArray.length - 1; n >= 0; n--) {
 				var temp_operator_Actualtime = [];
@@ -387,20 +520,15 @@ Template.ManageTasks.events({
 					}
 					temp_operator_Actualtime[m] = per_temp_operator_Actualtime;
 					temp_operator_Earnedtime[m] = per_temp_operator_Earnedtime;
-					temp_lostMin_per_operator[m] = per_temp_operator_Actualtime - per_temp_operator_Earnedtime;
+					temp_lostMin_per_operator[m] = Math.round(per_temp_operator_Actualtime - per_temp_operator_Earnedtime);
 				}
 
 				operator_Actualtime[n] = temp_operator_Actualtime;
 				operator_Earnedtime[n] = temp_operator_Earnedtime;
 				lostMin_per_operator[n] = temp_lostMin_per_operator;
 			}
-			//get the full name of each opreator
-			var operatorFullName = [];
-			for (var i = operatorArray.length - 1; i >= 0; i--) {
-				if(operatorArray[i] != 'null'){
-					operatorFullName[i] = Operator.findOne({operatorID:operatorArray[i]}).name;
-				}
-			}
+
+
 			// console.log(operatorFullName);
 			// console.log(operator_Actualtime);
 			// console.log(operator_Earnedtime);
@@ -408,29 +536,76 @@ Template.ManageTasks.events({
 			// console.log(All_sum_eff);
 
 			//calculate the summation of the worked time and the earned time
-			// for (var i = timeSpan.length - 1; i >= 0; i--) {
-			// 	for (var j = data.length - 1; j >= 0; i--) {
-			// 		if(data[j].timespan == timeSpan[i]){
-			// 			per_Actualtime[i] += data[j].worktime;
-			// 			per_Earnedtime[i] += data[j].earnedtime;
-			// 		}
-			// 		// sum_Worktime += data[i].worktime;
-			// 		// sum_Earnedtime += data[i].earnedtime;
+			var sum_changeover = 0;
+			var sum_Actualtime = 0;
+			var sum_Earnedtime = 0;
+			for (var i = timespan_merge.length - 1; i >= 0; i--) {
+				for (var j = data.length - 1; j >= 0; j--) {
+					if(data[j].timespan == timespan_merge[i]){
+						sum_Actualtime += parseFloat(data[j].worktime);
+						sum_Earnedtime += parseFloat(data[j].earnedtime);
+					}
+					// sum_Worktime += data[i].worktime;
+					// sum_Earnedtime += data[i].earnedtime;
 
-			// 	}
-			// 	per_eff[i] = per_Earnedtime[i]/per_Actualtime[i];
-			// 	per_changeover = changeOver[i]-per_Actualtime[i];
-			// }
+				}
+				overall_eff = sum_Earnedtime/sum_Actualtime;
+				// console.log(sum_changeover);
+			}
+			var sum_changeovertime = sum_Alltime-sum_Actualtime;
+			Session.set('datapad',[sum_Actualtime, sum_Earnedtime,sum_changeovertime,overall_eff]);
 			Session.set('dateRange',[moment(start).format("MMM Do YY"),moment(end).format("MMM Do YY")]);
 			Session.set('eff-trend',All_sum_eff);
-			Session.set('lostMin',lostMin);
+			Session.set('lostMin',lostMin_with_index);
 			Session.set('lostMin-per-operator',[operatorFullName,lostMin_per_operator]);
+			Session.set('lostMin_percentage',lostMin_percentage);
 		}
 		return false;
+	},
+	'click .print-button':function(){
+		$(".print-hide-bar").css('opacity', '0');
+		$(".page-title").css('display', 'none');
+		$(".app-nav").css('display', 'none');
+		document.getElementById('app-layout').style.padding = '0px';
+		document.getElementById('app-layout').style.marginLeft = '0px';
+		window.print();
+		$(".print-hide-bar").css('opacity', '1');
+		$(".page-title").css('display', 'flex');
+		$(".app-nav").css('display', 'flex');
+		document.getElementById('app-layout').style.padding = '40px 60px';
+		document.getElementById('app-layout').style.marginLeft = '80px';
 	},
 
 })
 Template.ManageTasks.helpers({
+	shifts:function(){
+		if (Session.get('shifts1') && Session.get('shifts2')){
+			return 'Both';
+		}else if(Session.get('shifts1') && !Session.get('shifts2')){
+			return 'Shift 1 Only';
+		}else{
+			return 'Shift 2 Only';
+		}
+
+	},
+	date_range_1:function(){
+		return Session.get('dateRange')[0];
+	},
+	date_range_2:function(){
+		return Session.get('dateRange')[1];
+	},
+	sum_Actualtime:function(){
+		return Math.round(Session.get('datapad')[0]/60* 100)/100;
+	},
+	sum_Earnedtime:function(){
+		return Math.round(Session.get('datapad')[1]/60* 100)/100;
+	},
+	sum_changeovertime:function(){
+		return Math.round(Session.get('datapad')[2]/60* 100)/100;
+	},
+	overall_eff:function(){
+		return (Math.round(Session.get('datapad')[3] * 100)) + '%';
+	},
 	displayoperatorName: function(){
 		return Session.get('operatorFullName');
 	},
@@ -479,8 +654,11 @@ Template.ManageTasks.helpers({
 		}
 	},
 	triggerCharts: function(){
-		// return Session.get('lostMin') == null? false: "trigger-Charts";
 		return Session.get('lostMin') == null? false: true;
+	},
+	Mask_managetasks: function(){
+		// return Session.get('lostMin') == null? false: "trigger-Charts";
+		return Session.get('lostMin') == null? "Mask_managetasks": "Mask_managetasks_charts";
 	},
 	searchpage: function(){
 		// if(Session.get('lostMin') != null){
@@ -491,14 +669,8 @@ Template.ManageTasks.helpers({
 		}else{
 			if(Session.get('toggle-search') == 1){
 				return "toggle-searchpage";
-			}
-			// else{
-			// 	if(Session.get('lostMin') != null){
-			// 		return "toggle-GenerateChart";
-			// 	}
-			// }			
+			}		
 		}
-		// return Session.get('toggle-search') == 1 ?"toggle-searchpage": false;
 		
 	},
 	toggleSearch: function(){
@@ -521,7 +693,7 @@ Template.ManageTasks.helpers({
 			return false;
 		}else{
 			var id = Session.get('inputID');
-			data = Tasks.find({_id: id}).fetch();;
+			data = Tasks.find({_id: id}).fetch();
 			return data;
 		}
 	},

@@ -4,7 +4,6 @@ import moment from 'moment';
 var index = ['a1','a2','a3','a4','a5','a6'];
 
 Meteor.methods({
-
 	updatechangeover(isfinish,currentTime,count) {
 
 		// var lastobject = ClientTaskworktime.findOne({id:curId});

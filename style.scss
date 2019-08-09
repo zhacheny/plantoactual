@@ -36,11 +36,18 @@ p {
 a {
     color: $accent;
 }
-
 input[type="text"],
 input[type="email"],
 input[type="password"] {
     padding: 10px 10px 7px;
+}
+input[type="text-2"] {
+    padding: 10px 10px 7px;
+    width:100%;
+}
+input[type="code"] {
+    padding: 10px 10px 7px;
+    width:222.5%;
 }
 
 input[type="comment"]{
@@ -135,7 +142,7 @@ input[type="comment"]{
 .app-layout {
     margin-left: 80px;
     min-height: 100vh;
-    padding: 40px 60px;
+    padding: 40px 40px;
 }
 
 .app-nav {
@@ -388,15 +395,6 @@ table {
         right: 0;
         margin: auto;
     }
-
-    .lt-ie10 .styled-select {
-        background: #fff;
-        border: none;
-    }
-    
-    .lt-ie10 .styled-select .select-button {
-        display: none;
-    }
 //clock header style added by Chenyu
 
 
@@ -566,6 +564,26 @@ table {
     float:right;
     background-color: #F5F5F5;
     margin: 30px 30px;
+    //padding: 20px;
+    width: 300px;
+    text-align:center;
+}
+#block3
+{
+    font-family: 'Open Sans', sans-serif;
+    float:right;
+    background-color: #F5F5F5;
+    margin: 30px 30px;
+    padding: 20px;
+    width: 320px;
+    text-align:center;
+}
+#block4
+{
+    font-family: 'Open Sans', sans-serif;
+    float:right;
+    background-color: #F5F5F5;
+    margin: 30px 30px;
     padding: 20px;
     width: 180px;
     text-align:center;
@@ -717,6 +735,17 @@ a {
     @include card(2);
 
 }
+.Mask_managetasks .displayChart{
+    display:none;
+    opacity: 0;
+}
+.Mask_managetasks_charts .displayChart{
+    opacity: 1;
+}
+.Mask_managetasks_charts .search-shrink{
+    display:none;
+    opacity: 0;
+}
 
 .toggle-searchpage .search-shrink{
     padding: 20px;
@@ -741,6 +770,7 @@ a {
 .toggle-searchpage .findEntry{
     opacity: 1;
 }
+
 //input box added by Chenyu
 
 .group:after {
@@ -756,6 +786,7 @@ a {
     float: right;
     padding:5px;
 }
+
 form {
   width: 75%;
   margin: 0 auto;
@@ -822,7 +853,6 @@ input[type=checkbox]:checked + label:before {
         text-decoration:none;
     }
 }
-
 //Search Bar added by Chenyu
 .iwg-input-container {
   position: relative;
@@ -855,7 +885,7 @@ input[type=checkbox]:checked + label:before {
     right: 50%;
   }
 
-.inputID {
+.inputID, .inputPart {
     color: #aaa;
     font-weight: bold;
     width: 100%;
@@ -902,17 +932,171 @@ input[type=checkbox]:checked + label:before {
     }
   }
 }
+
+//report added by Chenyu
+.displayChartContainer {
+  padding-top:5px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+}
+.datapad {
+  //background-color: #ecf0f1;
+  min-width: 8.5%;
+}
+.charts {
+  display: flex;
+  min-width: 100%;
+  height: 120%;
+  //flex-flow: row wrap;
+  //justify-content: left;
+}
+  
+.chart1 {
+  //background-color: #ecf0f1;
+  width: 45%;
+  height: 110%;
+  //margin: .5em 1.5em;
+}
+.chart2 {
+  //background-color: #ecf0f1;
+  width: 45%;
+  height: 110%;
+  //margin: .5em 1.5em;
+}
+
+.tabs {
+  list-style: none;
+  //color: #3498db;
+  font-family: Arial;
+  
+  a {
+    padding: 1em;
+    text-decoration: none;
+    color: #3498db;
+  }
+  
+  li {
+    list-style-type: none;
+    list-style-position:inside;
+    //padding: .25em;
+    font-size: 1em;
+    transition: all .2s ease;
+
+  }
+  li:hover {
+    color: #3498db;
+    //padding-right: 1em;
+    font-size: 2em;
+  }
+}
+//print-hide-bar added by Chenyu
+.print-hide-bar{
+    opacity: 0.5;
+    &:hover{
+        opacity: 1;
+    }
+    transition:all .3s ease-out;
+}
+//Print out button added by Chenyu
+button.print-button {
+float:right;
+  width: 100px;
+  height: 100px;
+}
+
+span.print-icon, span.print-icon::before, span.print-icon::after, button.print-button:hover .print-icon::after {
+  border: solid 4px #333;
+}
+span.print-icon::after {
+  border-width: 2px;
+}
+
+button.print-button {
+  position: relative;
+  padding: 0;
+  border: 0;
+  
+  border: none;
+  background: transparent;
+}
+
+span.print-icon, span.print-icon::before, span.print-icon::after, button.print-button:hover .print-icon::after {
+  box-sizing: border-box;
+  background-color: #fff;
+}
+
+span.print-icon {
+  position: relative;
+  display: inline-block;  
+  padding: 0;
+  margin-top: 20%;
+
+  width: 60%;
+  height: 35%;
+  background: #fff;
+  border-radius: 20% 20% 0 0;
+}
+
+span.print-icon::before {
+  content: " ";
+  position: absolute;
+  bottom: 100%;
+  left: 12%;
+  right: 12%;
+  height: 110%;
+
+  transition: height .2s .15s;
+}
+
+span.print-icon::after {
+  content: " ";
+  position: absolute;
+  top: 55%;
+  left: 12%;
+  right: 12%;
+  height: 0%;
+  background: #fff;
+  background-repeat: no-repeat;
+  background-size: 70% 90%;
+  background-position: center;
+  background-image: linear-gradient(
+    to top,
+    #fff 0, #fff 14%,
+    #333 14%, #333 28%,
+    #fff 28%, #fff 42%,
+    #333 42%, #333 56%,
+    #fff 56%, #fff 70%,
+    #333 70%, #333 84%,
+    #fff 84%, #fff 100%
+  );
+  transition: height .2s, border-width 0s .2s, width 0s .2s;
+}
+
+button.print-button:hover {
+  cursor: pointer;
+}
+
+button.print-button:hover .print-icon::before {
+  height:0px;
+  transition: height .2s;
+}
+button.print-button:hover .print-icon::after {
+  height:120%;
+  transition: height .2s .15s, border-width 0s .16s;
+}
+
 //back label added by chenyu
 .wrapper_back{
-    background:#222;
-    text-align:center;
+float:left;
+    //text-align:center;
     font-size:180%;
-    margin:2em;
+    //margin:2em;
     font-family: Calibri, arial, sans-serif;
 }
 .back{
     
-    color:white;
+    color:black;
     padding-top:1.8em;
     display:inline-block;/* or block */
     position:relative;
@@ -935,10 +1119,228 @@ input[type=checkbox]:checked + label:before {
     border-color:inherit;
     transition:transform .5s ease-in;
 }
-.back:hover{
-    color:pink;
-    border-color:pink;
-}
+
 .back:hover:before{
     transform: rotate(360deg);
+}
+
+//Dashboard Container
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+  //box-shadow: none;
+}
+
+
+
+.unstyle,h2{
+  margin: 0;
+  padding: 0;
+  border: 0;
+  list-style: none;
+}
+
+.dashboard_container {
+  width: 100%;
+  height: 100%;
+  height: -webkit-calc(100% - 100px);
+  height: -moz-calc(100% - 100px);
+  height: calc(100% - 100px);
+}
+
+.content {
+  float: left;
+  width: 100%;
+  width: -webkit-calc(100% - 100px);
+  width: -moz-calc(100% - 100px);
+  width: calc(100% - 100px);
+}
+
+.row {
+  overflow: hidden;
+  margin-bottom: 5px;
+}
+
+.cl1, .cl2, .cl3, .cl4, .cl5, .cl6, .cl7, .cl8, .cl9, .cl10, .cl11, .cl12 {
+  position: relative;
+  margin: 0 1% 1%;
+  float: left;
+}
+
+.cl1 {
+  width: 6.333%;
+}
+
+.cl2 {
+  width: 14.667%;
+}
+
+.cl3 {
+  width: 23%;
+}
+
+.cl4 {
+  width: 31.333%;
+}
+
+.cl5 {
+  width: 39.667%;
+}
+
+.cl6 {
+  width: 48%;
+}
+
+.cl7 {
+  width: 56.333%;
+}
+
+.cl8 {
+  width: 64.667%;
+}
+
+.cl9 {
+  width: 73%;
+}
+
+.cl0 {
+  width: 81.333%;
+}
+
+.cl1 {
+  width: 89.667%;
+}
+
+.cl2 {
+  width: 98%;
+}
+
+.box {
+  border: 1px solid #e0dede;
+  -webkit-border-radius: 4px 4px 0 0;
+  -moz-border-radius: 4px 4px 0 0;
+  -ms-border-radius: 4px 4px 0 0;
+  -o-border-radius: 4px 4px 0 0;
+  border-radius: 4px 4px 0 0;
+}
+
+.header-box {
+  overflow: hidden;
+  padding: 1px 12px 1px 4px;
+  border-bottom: 1px solid #e0dede;
+  -webkit-border-radius: 4px 4px 0 0;
+  -moz-border-radius: 4px 4px 0 0;
+  -ms-border-radius: 4px 4px 0 0;
+  -o-border-radius: 4px 4px 0 0;
+  border-radius: 4px 4px 0 0;
+  color:white;
+  background:#777777;
+    .edit-box-Menu, .edit-box-Department, .edit-box-Safety, .edit-box-Anouncements {
+        position: absolute;
+        right: 0;
+        padding: 12px;
+        font-size: 1.5em;
+        cursor: pointer;
+    }
+
+    .add-box-Anouncements, .add-box-Menu, .minus-box-Anouncements, .minus-box-Menu {
+        opacity: 0;
+        right: 0;
+        position: absolute;
+        padding: 11.5px;
+        font-size: 1.5em;
+        transition: all 0.4s ease-out;
+    }
+    &:hover{
+        .add-box-Anouncements, .add-box-Menu {
+            opacity: 1;
+            position: absolute;
+            right: 35px;
+            padding: 11.5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .minus-box-Anouncements, .minus-box-Menu {
+            opacity: 1;
+            position: absolute;
+            right: 65px;
+            padding: 11.5px;
+            cursor: pointer;
+            transition: all 0.4s ease;
+        }
+
+    }
+
+}
+.minus-box-Anouncements-records{
+    opacity: 0;
+    position: absolute;
+    padding: 5px 10px;
+    transition: all 0.4s ease-out;
+}
+.box-Anouncements-show .minus-box-Anouncements-records{
+    opacity: 1;
+    position: absolute;
+    cursor: pointer;
+    padding: 5px 10px;
+    transition: all 0.4s ease;
+}
+.box_add_Anouncements_input{
+    opacity: 0;
+    transition: all 0.4s ease-out;
+}
+
+.box-Anouncements-add-show .box_add_Anouncements_input{
+    opacity: 1;
+    transition: all 0.4s ease;
+}
+.add-box-Anouncements-confirm {
+    font-size: 1.35em;
+    cursor: pointer;
+    padding: 5px 10px;
+}
+
+.header-box h2 {
+font-weight: 50;
+font-size: 2em;
+  float: left;
+}
+
+.box-content {
+  height:180px;
+  padding: 5px;
+  background: #f9f9f9;
+}
+
+.table {
+  width: 100%;
+  border: 1px solid #e0dede;
+}
+.table thead {
+  font-weight: bold;
+  background: #eaeaea;
+  border-bottom: 1px solid #e0dede;
+}
+.table td {
+  padding-left: 8px;
+  padding: 3px 8px;
+}
+.table tbody tr:hover {
+  background: #d1d1d1;
+}
+//happy birthday by Chenyu
+
+@import url(https://fonts.googleapis.com/css?family=Pacifico);
+
+$background-color: #F2809A;
+$abs:absolute;
+$font:30px "Pacifico", serif;
+$text-color:white;
+
+.happyBirthday{
+  background-color:$background-color;  
+  font:$font;
+  color:white;
+  text-align:center;
+  //text-shadow:1px 1px #D15162;
 }

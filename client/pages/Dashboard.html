@@ -4,5 +4,134 @@
 	{{else}}
 		<h1>Not Authorized</h1>
 	{{/if}} -->
-	<h1 class="page-title">Dashboard</h1>
+	<!-- <h1 class="page-title">Dashboard</h1> -->
+	{{> clock_Dashboard}}
+	<div class="dashboard_container">
+		
+		<div class="content">
+			
+			
+			<div class="row">
+				<div class="cl2">
+					<div class="box">
+						<div class="header-box">
+							<h2>Anouncements</h2>
+							{{#if isInRoleRankOne}}  
+							<i class="fa fa-minus-circle minus-box-Anouncements"></i>
+							<i class="fa fa-plus-circle add-box-Anouncements"></i>
+							<i class="fa fa-edit edit-box-Anouncements"></i>
+							{{/if}}
+						</div> <!-- /.header-box -->
+						<div class="box-content">
+	<!-- 						{{#each anouncements}}
+							{{records}}
+	                        <td>
+	                            <button class="toggle-jobComplete">Job Complete</button>
+	                        </td>
+
+	                		{{/each}} -->
+
+							<ul>
+								{{#each anouncements}}
+									<li class="{{box_minus_Anouncements_show}}"><a><span>{{record}}</span></a>
+									<i class="fa fa-minus minus-box-Anouncements-records"></i>
+									</li>
+								{{/each}}
+								<div class="{{box_add_Anouncements_show}}">
+									<li class="box_add_Anouncements_input"><a><span><input style="width: 90%;" type="text" id="popupinput" class="box_add_Anouncements_input_filed"></span>
+										<i class="fa fa-check add-box-Anouncements-confirm"></i>
+									</a>
+									</li>	
+
+								</div>
+
+							</ul>
+							
+						</div><!-- /.box-content -->
+					</div> <!-- /.box -->			
+				</div>
+			</div><!-- /.row -->
+			
+			
+			<div class="row">
+				<div class="cl6">
+					<div class="box">
+						<div class="header-box">
+							<h2>Safety Message of the Day</h2>
+							{{#if isInRoleRankTwo}}
+							<i class="fa fa-edit edit-box-Safety"></i>
+							{{/if}}
+						</div> <!-- /.header-box -->
+						<div class="box-content"><p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Tempore quas porro qui enim quaerat laborum sequi vitae doloremque modi iusto minima dignissimos adipisci iste. Voluptatem nesciunt officiis similique eos repellendus.</p></div><!-- /.box-content -->
+					</div> <!-- /.box -->			
+				</div>
+				<div class="cl6">
+					<div class="box">
+						<div class="header-box">
+							<h2>Department</h2>
+							{{#if isInRoleRankThree}}
+							<i class="fa fa-edit edit-box-Department"></i>
+							{{/if}}
+						</div> <!-- /.header-box -->
+						<div class="box-content"><p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nihil saepe ab tempore quibusdam et harum magni tempora expedita nulla corporis eum sequi eaque minus sapiente illo esse commodi dolore vero!</p></div><!-- /.box-content -->
+					</div> <!-- /.box -->			
+				</div>
+			</div><!-- /.row -->
+
+			<div class="row">
+				<div class="cl4">		
+				</div>
+				<div class="cl9">
+					<div class="box">
+						<div class="header-box">
+							<h2>Cafeteria Menu</h2>
+							{{#if isInRoleRankFour}}
+							<i class="fa fa-minus-circle minus-box-Menu"></i>
+							<i class="fa fa-plus-circle add-box-Menu"></i>
+							<i class="fa fa-edit edit-box-Menu"></i>
+							{{/if}}
+						</div> <!-- /.header-box -->
+						<div class="box-content">
+							<table class="table">
+								<thead>
+									<tr>
+										<td>From</td>
+										<td>Contact</td>
+										<td>E-mail</td>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>Amazon</td>
+										<td>Johnas</td>
+										<td>j.brice@amazoninc.com</td>
+									</tr>
+									<tr>
+										<td>Apple</td>
+										<td>Steve</td>
+										<td>s.jobs@appleinc.com</td>
+									</tr>
+									<tr>
+										<td>Micrisoft</td>
+										<td>Bill</td>
+										<td>gates.bill@ms.com</td>
+									</tr>
+									<tr>
+										<td>Google Chrome</td>
+										<td>Paul Irish</td>
+										<td>irish@paulirish.com</td>
+									</tr>
+								</tbody>
+							</table>
+						</div><!-- /.box-content -->
+					</div> <!-- /.box -->			
+				</div>
+			</div> <!-- /.row -->
+
+
+
+		</div> <!-- /.content -->
+	</div> <!-- /.main -->
+
+
 </template>
