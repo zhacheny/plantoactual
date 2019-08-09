@@ -22,7 +22,7 @@ Meteor.methods({
 	parseUpload( data ) {
 	    // check( data, Array );
 		// data.length
-	    for ( let i = 0; i < 10; i++ ) {
+	    for ( let i = 0; i < data.length; i++ ) {
 	    	// console.warn(data[ i ]);
 			let part   = data[ i ]['Assembly No'];
 			let cell   = data[ i ]['Work'];

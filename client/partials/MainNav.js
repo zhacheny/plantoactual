@@ -39,8 +39,6 @@ Template.MainNav.events({
 				ClientTaskworktime.insert(taskworktime[i]);
 			}
 
-		}else{
-			ClientTaskworktime.remove({});
 		}
 
 	},
@@ -88,8 +86,6 @@ Template.MainNav.events({
 				ClientTaskworktime.insert(taskworktime[i]);
 			}
 
-		}else{
-				ClientTaskworktime.remove({});
 		}
 
 	    },
