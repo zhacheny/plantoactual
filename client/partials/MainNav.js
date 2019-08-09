@@ -50,7 +50,7 @@ Template.MainNav.events({
 		Session.set('cell', null);
 		Session.set('toggleisred', null);
 		Session.set('partnumber', null);
-		// ClientTaskworktime.remove({});
+		ClientTaskworktime.remove({});
 		Session.set('operator', null);
 		Session.set('operatorcount',0)
 	    var operatorinitial = [['null','null','null'],['null','null','null']];

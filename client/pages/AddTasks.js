@@ -462,7 +462,9 @@ Template.AddTasks.events({
 		var operatorcount = Session.get('operatorcount');
 		// console.log(partnumber);
 		// var value = Plan.findOne({worktime:this.worktime,partnumber:partnumber}).value;
-		var value = Partnumber.findOne({cell:Session.get('cell'), part:partnumber}).earnedTimePPiece;
+		 
+		let MinutesPP_one = Partnumber.findOne({cell:Session.get('cell'), part:partnumber}).MinutesPP_one;
+		var value = 1/MinutesPP_one;
 		if (operatorcount >=2){
 			value = value/operatorcount;
 		}
@@ -538,7 +540,9 @@ Template.AddTasks.events({
 		var currentTime = time.get();
 		var worktime = this.worktime.substring(0,2);
 		var partnumber = this.partnumber;
-		var plannumber = Partnumber.findOne({cell:Session.get('cell'), part:partnumber}).earnedTimePPiece;
+		 //get the earnedtime per piece
+		let MinutesPP_one = Partnumber.findOne({cell:Session.get('cell'), part:partnumber}).MinutesPP_one;
+		var plannumber = 1/MinutesPP_one;
 		var operatorcount = Session.get('operatorcount');
 		if (operatorcount >=2){
 			plannumber = plannumber/operatorcount;
