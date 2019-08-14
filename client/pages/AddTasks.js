@@ -63,6 +63,11 @@ Tracker.autorun(function() {
 
 
 Template.AddTasks.helpers({
+	// viewpdf: function() {
+	// 	var partnumber = Session.get('partnumber');
+
+	// 	console.log(url);
+	// },
 	anouncements: function(){
 		return Anouncements.find();
 	},
@@ -386,8 +391,13 @@ Template.AddTasks.helpers({
 });
 
 Template.AddTasks.events({
-	'click .jobCompletes': function(){
-		console.log(this);
+	'click .viewPdf': function(){
+		var part = this.partnumber;
+		// var pre_url = "";
+		var url = pre_url + Partnumber.findOne({part:part}).XMLname;
+		var win = window.open(url, '_blank');
+		win.focus();
+		// console.log(url);
 	},
 	'click .add-operator': function(){
 		var operatorcount = Session.get('operatorcount');

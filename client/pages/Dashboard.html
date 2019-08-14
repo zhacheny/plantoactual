@@ -17,9 +17,9 @@
 						<div class="header-box">
 							<h2>Anouncements</h2>
 							{{#if isInRoleRankOne}}  
-							<i class="fa fa-minus-circle minus-box-Anouncements"></i>
-							<i class="fa fa-plus-circle add-box-Anouncements"></i>
-							<i class="fa fa-edit edit-box-Anouncements"></i>
+								<i class="fa fa-minus-circle minus-box-Anouncements"></i>
+								<i class="fa fa-plus-circle add-box-Anouncements"></i>
+								<i class="fa fa-edit edit-box-Anouncements"></i>
 							{{/if}}
 						</div> <!-- /.header-box -->
 						<div class="box-content">
@@ -33,9 +33,15 @@
 
 							<ul>
 								{{#each anouncements}}
-									<li class="{{box_minus_Anouncements_show}}"><a><span>{{record}}</span></a>
-									<i class="fa fa-minus minus-box-Anouncements-records"></i>
-									</li>
+									{{#if iseditAnouncements}}
+										<li><input type="text-3" id="popupinput" class="box_edit_Anouncements_input_filed" data-id="{{_id}}" value="{{record}}">
+										<i data-id="{{_id}}" class="fa fa-check edit-box-Anouncements-confirm"></i>
+										</li>
+									{{else}}
+										<li class="{{box_minus_Anouncements_show}}"><a><span>{{record}}</span></a>
+										<i class="fa fa-minus minus-box-Anouncements-records"></i>
+										</li>
+									{{/if}}
 								{{/each}}
 								<div class="{{box_add_Anouncements_show}}">
 									<li class="box_add_Anouncements_input"><a><span><input style="width: 90%;" type="text" id="popupinput" class="box_add_Anouncements_input_filed"></span>
@@ -59,10 +65,19 @@
 						<div class="header-box">
 							<h2>Safety Message of the Day</h2>
 							{{#if isInRoleRankTwo}}
-							<i class="fa fa-edit edit-box-Safety"></i>
+								<i class="fa fa-check-circle confirm-box-Safety"></i>
+								<i class="fa fa-edit edit-box-Safety"></i>
 							{{/if}}
 						</div> <!-- /.header-box -->
-						<div class="box-content"><p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Tempore quas porro qui enim quaerat laborum sequi vitae doloremque modi iusto minima dignissimos adipisci iste. Voluptatem nesciunt officiis similique eos repellendus.</p></div><!-- /.box-content -->
+						<div class="box-content">
+							{{#if iseditSafety}}
+								<textarea class="edit-box-Safety-input" name="Text1" cols="40" rows="5"></textarea>
+							{{else}}
+								{{#each safetymessage}}
+									<p>{{content}}</p>
+								{{/each}}
+							{{/if}}
+						</div><!-- /.box-content -->
 					</div> <!-- /.box -->			
 				</div>
 				<div class="cl6">
@@ -70,10 +85,19 @@
 						<div class="header-box">
 							<h2>Department</h2>
 							{{#if isInRoleRankThree}}
+							<i class="fa fa-check-circle confirm-box-Department"></i>
 							<i class="fa fa-edit edit-box-Department"></i>
 							{{/if}}
 						</div> <!-- /.header-box -->
-						<div class="box-content"><p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nihil saepe ab tempore quibusdam et harum magni tempora expedita nulla corporis eum sequi eaque minus sapiente illo esse commodi dolore vero!</p></div><!-- /.box-content -->
+						<div class="box-content">
+						{{#if iseditDepartment}}
+								<textarea class="edit-box-Department-input" name="Text1" cols="40" rows="5"></textarea>
+							{{else}}
+								{{#each department}}
+									<p>{{content}}</p>
+								{{/each}}
+							{{/if}}
+						</div><!-- /.box-content -->
 					</div> <!-- /.box -->			
 				</div>
 			</div><!-- /.row -->
@@ -95,31 +119,31 @@
 							<table class="table">
 								<thead>
 									<tr>
-										<td>From</td>
-										<td>Contact</td>
-										<td>E-mail</td>
+										<td>Name</td>
+										<td>Discription</td>
+										<td>Price</td>
+										<td></td>
 									</tr>
 								</thead>
 								<tbody>
-									<tr>
-										<td>Amazon</td>
-										<td>Johnas</td>
-										<td>j.brice@amazoninc.com</td>
-									</tr>
-									<tr>
-										<td>Apple</td>
-										<td>Steve</td>
-										<td>s.jobs@appleinc.com</td>
-									</tr>
-									<tr>
-										<td>Micrisoft</td>
-										<td>Bill</td>
-										<td>gates.bill@ms.com</td>
-									</tr>
-									<tr>
-										<td>Google Chrome</td>
-										<td>Paul Irish</td>
-										<td>irish@paulirish.com</td>
+									{{#each menu}}
+										<tr>
+											<td>{{name}}</td>
+											<td>{{discription}}</td>
+											<td>{{price}}</td>
+											<td class="{{box_minus_Menu_show}}">
+												<i class="fa fa-minus minus-box-Menu-records"></i></td>
+										</tr>
+									{{/each}}
+									<tr class="{{box_add_Menu_show}}">
+<!-- 										<li class="box_add_Anouncements_input"><a><span><input style="width: 90%;" type="text" id="popupinput" class="box_add_Anouncements_input_filed"></span>
+											<i class="fa fa-check add-box-Anouncements-confirm"></i>
+										</a>
+										</li>	 -->
+										<td class="box_add_Menu_input"><input style="width: 80%;" type="text-2" class="box_add_Menu_input_filed_name"></td>
+										<td class="box_add_Menu_input"><input style="width: 80%;" type="text-2" class="box_add_Menu_input_filed_disc"></td>
+										<td class="box_add_Menu_input"><input style="width: 80%;" type="text-2" class="box_add_Menu_input_filed_price"></td>
+										<td class="box_add_Menu_input"><i class="fa fa-check add-box-Menu-confirm"></i></td>
 									</tr>
 								</tbody>
 							</table>

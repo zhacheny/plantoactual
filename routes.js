@@ -42,10 +42,10 @@ adminRoutes.route('/managetasks',{
     }
 });
 
-adminRoutes.route('/maintenance',{
-    name: 'maintenance',
+adminRoutes.route('/partmaintenance',{
+    name: 'partmaintenance',
     action() {
-        BlazeLayout.render("AppLayout", {main: "Maintenance"});
+        BlazeLayout.render("AppLayout", {main: "PartMaintenance"});
     }
 });
 

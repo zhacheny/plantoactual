@@ -1,6 +1,7 @@
 import { Tasks, Partnumber, Taskworktime, Plan, Operator, EarnedTimePP } from '/lib/collections.js';
+var pre_url = "http://datuswes008/SOLIDWORKSPDM/Contains/EWS%20DB/Material/WM/Finished%20Goods?file=";
 
-Template.Maintenance.onCreated(function(){
+Template.PartMaintenance.onCreated(function(){
 	this.autorun(() => {
 		this.subscribe('task');
 	})
@@ -25,7 +26,7 @@ Template.Maintenance.onCreated(function(){
 });
 
 
-Template.Maintenance.events({
+Template.PartMaintenance.events({
 	'click .Modal-delete-yes': function(){
 		console.log(this._id);
 		Meteor.call('partnumberdelete',this._id);
@@ -157,9 +158,9 @@ Template.Maintenance.events({
 		Session.set('cellnumber',value);
 		return;
 	},
-	'keyup .XMLname': function(event){
+	'keyup .Drawingname': function(event){
 		let value = $(event.target).val();
-		Session.set('XMLname',value);
+		Session.set('drawingname',value);
 		return;
 	},
 	'keyup .XMLname-edit': function(event){
@@ -220,7 +221,7 @@ Template.Maintenance.events({
 	'click .maintenance-submit': function(event){
 		var partnumber = Session.get('partnumber');
 		var cellnumber = Session.get('cellnumber');
-		var XMLname = Session.get('XMLname');
+		var Drawingname = Session.get('drawingname');
 		var ProductCode = Session.get('ProductCode');
 		var MinutesPP_one = Session.get('MinutesPP_one');
 		var MinutesPP_two = Session.get('MinutesPP_two');
@@ -229,6 +230,7 @@ Template.Maintenance.events({
 		var PiecesPH_two = Session.get('PiecesPH_two');
 		var PiecesPH_three = Session.get('PiecesPH_three');
 		var buildingnumber = Session.get('buildingnumber');
+		let XMLname = pre_url + Drawingname;
 		//var QualityFlag = Session.get('QualityFlag');
 		// console.log(MinutesPP_three);
 
@@ -251,7 +253,10 @@ Template.Maintenance.events({
 })
 
 
-Template.Maintenance.helpers({
+Template.PartMaintenance.helpers({
+	previewLink:()=>{
+		return Session.get('drawingname') == null ? null:pre_url + Session.get('drawingname');
+	},
 	partnumber:()=>{
 		return Partnumber.find();
 	},

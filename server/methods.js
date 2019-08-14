@@ -1,7 +1,46 @@
-import { Tasks, Cell, Partnumber, Taskworktime, Plan, Operator, EarnedTimePP,Anouncements } from '/lib/collections.js';
+import { Tasks, Cell, Partnumber, Taskworktime, Plan, Operator, EarnedTimePP,Anouncements,
+		Safetymessage, Department, Menu } from '/lib/collections.js';
 
 //run on your server
 Meteor.methods({
+	add_box_Menu(name,discription,price,createdAt){
+		Menu.insert({
+			name:name,
+			discription:discription,
+			price:price,
+			createdAt:createdAt,
+	    });
+	},
+	delete_box_Menu(Id){
+		Menu.remove({_id: Id});
+	},
+	updateDeparment(content){
+		let id = '1';
+		Department.update({id:id}, {
+	      $set: { content:content},
+	    });
+	},
+	updateSafetyMessage(content){
+		let id = '1';
+		Safetymessage.update({id:id}, {
+	      $set: { content:content},
+	    });
+	},
+	edit_boxAnouncementsRecords(str,Id){
+		Anouncements.update({_id:Id}, {
+	      $set: { record:str},
+	    });
+	},
+	delete_boxAnouncementsRecords(Id){
+		// alert('Deleted!');
+		Anouncements.remove({_id: Id});
+	},
+	add_boxAnouncementsRecords(str,createdAt) {
+		Anouncements.insert({
+			createdAt:createdAt,
+			record:str,
+	    });
+	},
 	editpartnumber( id,part,cell,XMLname,ProductCode,MinutesPP_one,
 		MinutesPP_two, MinutesPP_three, PiecesPH_one, PiecesPH_two, PiecesPH_three,
 		buildingnumber ){
@@ -100,16 +139,6 @@ Meteor.methods({
 	        // Session.set('part-insert-error','Rejected. This item already exists.');
 	        throw new Meteor.Error('bad', 'Rejected. This item already exists.');
 	      }
-	},
-	delete_boxAnouncementsRecords(Id){
-		// alert('Deleted!');
-		Anouncements.remove({_id: Id});
-	},
-	add_boxAnouncementsRecords(str) {
-		Anouncements.insert({
-			// id: id,
-		      record:str
-	    });
 	},
 	deletetask(Id){
 		Tasks.remove({_id: Id});

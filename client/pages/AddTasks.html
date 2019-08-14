@@ -134,7 +134,12 @@
                {{displayRow}} -->
                {{#if timepassed @index displayRow}}
                 <tr>
-                    <td>{{timespan}}</td>
+                    <td>
+                        <!-- {{#if beableView}} -->
+                            <a class="viewPdf" href=""><i class="fa fa-search"></i></a>
+                        <!-- {{/if}} -->
+                        {{timespan}}
+                    </td>
                     <td>{{worktime}}</td>
                     <td class ="partnumberchange" data-id="{{@index}}">{{> selectbox}}</td>
                     <td type="text">{{plantoactual}}</td>

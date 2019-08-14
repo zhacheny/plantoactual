@@ -1,4 +1,4 @@
-<template name="Maintenance">
+<template name="PartMaintenance">
 	<h1 class="page-title">Parts Maintenance</h1>
 	{{#if isInRole 'admin'}}
     	<div class="{{searchpage}}">
@@ -29,9 +29,13 @@
 
 	              <div class="group">
 	                <div class="left">
-	                    <label>.XML Name:</label>
-	                    <input class="XMLname" type="code">
+	                    <label>Drawing Name:</label>
+	                    <input class="Drawingname" type="text-2">
 	                </div>
+	              </div>
+	              <div class="group">
+	              	<div class="left"><label>Preview:</label></div>
+	                	<textarea id="lined">{{previewLink}}</textarea>
 	              </div>
   	              <div class="group">
 	                <div class="left">

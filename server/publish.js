@@ -1,4 +1,5 @@
-import { Tasks, Partnumber, Taskworktime, Cell, Plan, Operator, EarnedTimePP,Anouncements } from '/lib/collections.js';
+import { Tasks, Partnumber, Taskworktime, Cell, Plan, Operator, EarnedTimePP,Anouncements,
+		Safetymessage, Department, Menu } from '/lib/collections.js';
 //publish all user
 Meteor.publish('allUsers', function(){
 	//security
@@ -7,7 +8,21 @@ Meteor.publish('allUsers', function(){
 	}
 	// return Meteor.users.find({});
 });
+//publish menu
+Meteor.publish('menu', function(){
 
+	return Menu.find({});
+});
+//publish department
+Meteor.publish('department', function(){
+
+	return Department.find({});
+});
+//publish safetymessage
+Meteor.publish('safetymessage', function(){
+
+	return Safetymessage.find({});
+});
 //publish task
 Meteor.publish('task', function(){
 
