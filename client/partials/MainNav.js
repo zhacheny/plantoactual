@@ -56,7 +56,9 @@ Template.MainNav.events({
 	    var operatorinitial = [['null','null','null'],['null','null','null']];
 	    Session.set('operatorarray',operatorinitial);
 	    Session.set('tempchangeoverid',"a");
-
+	    //close the reports part
+		Session.set('lostMin',null);
+		
 		if (ClientTaskworktime.find().count() === 0) {
 			var taskworktime = [
 			  { id: 'a', timespan: '6-7 am', worktime: '55 min', plantoactual:0, actual:"0", reason: "XXX",status:null, partnumber: "XXX",

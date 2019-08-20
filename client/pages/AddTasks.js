@@ -63,11 +63,6 @@ Tracker.autorun(function() {
 
 
 Template.AddTasks.helpers({
-	// viewpdf: function() {
-	// 	var partnumber = Session.get('partnumber');
-
-	// 	console.log(url);
-	// },
 	anouncements: function(){
 		return Anouncements.find();
 	},
@@ -392,12 +387,32 @@ Template.AddTasks.helpers({
 
 Template.AddTasks.events({
 	'click .viewPdf': function(){
-		var part = this.partnumber;
+		let part = this.partnumber;
 		// var pre_url = "";
-		var url = pre_url + Partnumber.findOne({part:part}).XMLname;
-		var win = window.open(url, '_blank');
+		let url = Partnumber.findOne({part:part}).XMLname;
+		let win = window.open(url, '_blank');
 		win.focus();
-		// console.log(url);
+		// if("XMLHttpRequest" in window)xmlhttp=new XMLHttpRequest();
+		// if("ActiveXObject" in window)xmlhttp=new ActiveXObject("Msxml2.XMLHTTP");
+		// xmlhttp.open('GET',url,true);
+		// xmlhttp.onreadystatechange=function()
+		// {
+		//     if(xmlhttp.readyState==4)alert(xmlhttp.responseText);
+		// };
+		// xmlhttp.send(null);
+		// var iframe=document.createElement("iframe");
+		// iframe.onload=function()
+		// {
+		//     alert(iframe.contentWindow.document.body.innerHTML);
+		// }
+		// iframe.src=url;
+		// iframe.style.display="none";
+		// document.body.appendChild(iframe);
+		// $.get(url,function(data)//Remember, same domain
+		// {
+		//     alert(data);
+		// });
+		// console.log(con);
 	},
 	'click .add-operator': function(){
 		var operatorcount = Session.get('operatorcount');
@@ -412,8 +427,8 @@ Template.AddTasks.events({
 		var operatorinitial = Session.get('operatorarray')[0];
 		var operatorIDarray = Session.get('operatorarray')[1];
 		var operatorname = Session.get('operator');
-		var initial = Operator.findOne({name:operatorname}).initial;
-		var operatorID = Operator.findOne({name:operatorname}).operatorID;
+		var initial = Operator.findOne({operatorName:operatorname}).initial;
+		var operatorID = Operator.findOne({operatorName:operatorname}).EENumber;
 		Meteor.call('checkIsnull',operatorinitial,initial,operatorcount,operatorID,operatorIDarray);
 		return;
 	},
@@ -472,17 +487,25 @@ Template.AddTasks.events({
 		var operatorcount = Session.get('operatorcount');
 		// console.log(partnumber);
 		// var value = Plan.findOne({worktime:this.worktime,partnumber:partnumber}).value;
-		 
-		let MinutesPP_one = Partnumber.findOne({cell:Session.get('cell'), part:partnumber}).MinutesPP_one;
-		var value = 1/MinutesPP_one;
-		if (operatorcount >=2){
+		var value = 0;
+		if (partnumber == 'Part Not Available'){
+			Session.set('earnedTimePPiecePOpe',value);
+		}else{
+			var MinutesPP_one = Partnumber.findOne({cell:Session.get('cell'), part:partnumber}).MinutesPP_one;
+			value = MinutesPP_one;
+			// var value = 1/MinutesPP_one;
+			if (operatorcount >=2){
 			value = value/operatorcount;
+			}
+			Session.set('earnedTimePPiecePOpe',value);
+			value = this.worktime.substring(0,2)/value;
+			//returns the largest integer less than the value
+			value = Math.floor(value);
 		}
-		Session.set('earnedTimePPiecePOpe',value);
-		value = this.worktime.substring(0,2)/value;
-		//returns the largest integer less than the value
-		value = Math.floor(value);
+		
+		
 		var index = $(evt.currentTarget).data('id');
+		console.log(value);
 		//for client
 	    ClientTaskworktime.update(this, {
 	      $set: { plantoactual: value, partnumber: partnumber },
@@ -543,20 +566,14 @@ Template.AddTasks.events({
 		//set complete job toggle
 		// Session.set('taskIsComplete',true);
 		var timeformat = moment(currentTime,format);
+		var currentTime = time.get();
+		var worktime = this.worktime.substring(0,2);
+		var partnumber = this.partnumber;
 		if (Session.get('togglecomp') != null){
 			alert('Please fill up the form first!');
 			return;
 		}
-		var currentTime = time.get();
-		var worktime = this.worktime.substring(0,2);
-		var partnumber = this.partnumber;
-		 //get the earnedtime per piece
-		let MinutesPP_one = Partnumber.findOne({cell:Session.get('cell'), part:partnumber}).MinutesPP_one;
-		var plannumber = 1/MinutesPP_one;
-		var operatorcount = Session.get('operatorcount');
-		if (operatorcount >=2){
-			plannumber = plannumber/operatorcount;
-		}
+		
 		var timeformat = moment(currentTime,format);
 		//here is the test code by using the second!
 		if (Session.get('test-mode-time') != null){
@@ -580,8 +597,22 @@ Template.AddTasks.events({
 		Session.set('changeovertimecount',timeused);
 		realtimeused = Math.floor((realtimeused/60)*worktime);
 		var timechanged = worktime-realtimeused;
-		plannumber = realtimeused/plannumber;
-		plannumber = Math.floor(plannumber);
+		 //get the earnedtime per piece
+		if (partnumber != 'Part Not Available'){
+			let MinutesPP_one = Partnumber.findOne({cell:Session.get('cell'), part:partnumber}).MinutesPP_one;
+			var plannumber = MinutesPP_one;
+				// let MinutesPP_one = (partnumber == 'Part Not Available') ? 
+			// '0': Partnumber.findOne({cell:Session.get('cell'), part:partnumber}).MinutesPP_one;
+			var operatorcount = Session.get('operatorcount');
+			if (operatorcount >=2){
+				plannumber = plannumber/operatorcount;
+			}
+			plannumber = realtimeused/plannumber;
+			plannumber = Math.floor(plannumber);
+		}else{
+			plannumber = 0;
+		}
+
 	    ClientTaskworktime.update({id:this.id}, {
 	      $set: { worktime: realtimeused + ' min', comment: 'change over!', plantoactual:plannumber },
 	    });
@@ -644,6 +675,7 @@ Template.AddTasks.events({
 		}
     	Session.set('addtaskcountsum',countsum);
 		var operatorIDarray = Session.get('operatorarray')[1];
+		console.log(operatorIDarray);
     	//check whether the job is end eearly
     	if(trigger){
     		//rename the id

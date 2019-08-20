@@ -2,7 +2,7 @@ import { Tasks, Partnumber } from '/lib/collections.js';
 
 // Tasks = new Mongo.Collection('task');
 
-Template.selectbox.onCreated(function(){
+Template.selectpart.onCreated(function(){
 	this.autorun(() => {
 		this.subscribe('task');
 	})
@@ -11,7 +11,7 @@ Template.selectbox.onCreated(function(){
 	})
 })
 
-Template.selectbox.helpers({
+Template.selectpart.helpers({
 	admin: function(){
 		return Roles.userIsInRole(Meteor.userId(), 'admin');
 	},
@@ -28,7 +28,7 @@ Template.selectbox.helpers({
 	
 });
 
-Template.selectbox.events({
+Template.selectpart.events({
 
 });
 

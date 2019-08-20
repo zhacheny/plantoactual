@@ -14,8 +14,5 @@ Template.clock_Dashboard.helpers({
     return moment(currentTime).format('LLLL');
     // return moment(currentTime).startOf('minute');
   },
-  happyBirthday: function() {
-    return 'Nero';
-    // return moment(currentTime).startOf('minute');
-  },
+
 });

@@ -1,36 +1,42 @@
 import { Tasks, Partnumber, Taskworktime, Plan, Operator } from '/lib/collections.js';
 
-Template.selectinput.onCreated(function(){
+Template.selectSupervisor.onCreated(function(){
 	this.autorun(() => {
 		this.subscribe('operator');
 	})
+    this.autorun(() => {
+        this.subscribe('Supervisor');
+    })
 	// Meteor.setInterval(function() {
 	// 	time.set(new Date());
 	// }, 1000);
 });
 
-Template.selectinput.helpers({
-    display_option_all: function(template){
-        if(this.isProduction == true){
-            return false;
-        }else{
-            return true;
-        }
+Template.selectSupervisor.helpers({
+    supervisor:function(){
+        return Roles.userIsInRole(Meteor.userId(), 'supervisor')?  
+        Meteor.users.find():Meteor.users.find({_id: {$ne: Meteor.userId()}});
     },
-	operators: function(){
-        return Operator.find({}, { sort: { EENumber: 1 }} );
-	},
+	// operators: function(){
+ //        return Operator.find({}, { sort: { operatorID: 1 }} );
+	// },
 });
 
-Template.selectinput.events({
+Template.selectSupervisor.events({
 	'change .select-tag-dropdown':function (evt) {
 		var name = $(evt.target).val();
-		Session.set('operator', name);
+        var type = $(evt.currentTarget).data('type');
+        if(type == 'default'){
+            Session.set('supervisorName', name);
+        }else{
+            Session.set('supervisorName-edit', name);
+        }
+		
 		// console.log(Session.get('buildingnumber') == "1");	
 	},
 });
 
-Template.selectinput.onRendered(async function select2onRendered(){
+Template.selectSupervisor.onRendered(async function select2onRendered(){
 
     function rafAsync() {
         return new Promise(resolve => {

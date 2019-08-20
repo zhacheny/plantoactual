@@ -13,7 +13,7 @@
 		 <div class="file">
 		 	{{#unless uploading}}
 			  <span>Drag and drop you file here.</span>
-			  <input type="file" name="uploadCSV">
+			  <input type="file" name="{{type}}">
 			  {{else}}
 		    <p><i class="fa fa-spin fa-refresh"></i> Uploading files...</p>
 		  {{/unless}}

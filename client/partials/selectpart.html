@@ -1,7 +1,8 @@
-<template name="selectbox">
+<template name="selectpart">
     <div class="styled-select">
         <select>
             <option selected>Select</option>
+            <option>Part Not Available</option>
             {{#each partnumber}}
                 <option>{{part}}</option>
             {{/each}}

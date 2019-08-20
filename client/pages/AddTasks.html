@@ -73,7 +73,7 @@
                 </td>
                 <!-- <td><input type="text" id="nameinput" class="operatorname"></td> -->
                 <td>
-                    {{> selectinput}}
+                    {{> selectinput isProduction=true}}
                 </td>
                 <td>
                     <button class="add-operator">Add Operator</button>   
@@ -116,6 +116,7 @@
     <table class="{{addtasks}}">
         <thead>
             <tr>
+                <th></th>
                 <th>Time Span</th>
                 <th>Work Time</th>
                 <th>Part Number</th>
@@ -134,14 +135,10 @@
                {{displayRow}} -->
                {{#if timepassed @index displayRow}}
                 <tr>
-                    <td>
-                        <!-- {{#if beableView}} -->
-                            <a class="viewPdf" href=""><i class="fa fa-search"></i></a>
-                        <!-- {{/if}} -->
-                        {{timespan}}
-                    </td>
+                    <td><a style="font-size: 30px;" class="viewPdf" href=""><i class="fa fa-search"></i></a></td>
+                    <td>{{timespan}}</td>
                     <td>{{worktime}}</td>
-                    <td class ="partnumberchange" data-id="{{@index}}">{{> selectbox}}</td>
+                    <td class ="partnumberchange" data-id="{{@index}}">{{> selectpart}}</td>
                     <td type="text">{{plantoactual}}</td>
                     <td type="text">{{actual}}</td>
 

@@ -567,9 +567,9 @@ table {
     font-family: 'Open Sans', sans-serif;
     float:right;
     background-color: #F5F5F5;
-    margin: 30px 30px;
+    margin: 30px 15px;
     //padding: 20px;
-    width: 300px;
+    width: 100%;
     text-align:center;
 }
 #block3
@@ -577,9 +577,9 @@ table {
     font-family: 'Open Sans', sans-serif;
     float:right;
     background-color: #F5F5F5;
-    margin: 30px 30px;
+    margin: 30px 15px;
     padding: 20px;
-    width: 320px;
+    width: 25%;
     text-align:center;
 }
 #block4
@@ -889,7 +889,7 @@ input[type=checkbox]:checked + label:before {
     right: 50%;
   }
 
-.inputID, .inputPart {
+.inputID, .inputPart, .inputEEnumber {
     color: #aaa;
     font-weight: bold;
     width: 100%;

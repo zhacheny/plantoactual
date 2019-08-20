@@ -8,13 +8,13 @@ Template.upload.helpers({
   }
 });
 Template.upload.events({
-	'change [name="uploadCSV"]' ( event, template ) {
+	'change [name="operator"]' ( event, template ) {
 	    template.uploading.set( true );
 
 	    Papa.parse( event.target.files[0], {
 	      header: true,
 	      complete( results, file ) {
-	        Meteor.call( 'parseUpload', results.data, ( error, response ) => {
+	        Meteor.call( 'parseUpload_operator', results.data, ( error, response ) => {
 	          if ( error ) {
 	            // console.log( error.reason );
 	            // throw new Meteor.Error('bad', 'stuff happened');
@@ -27,7 +27,28 @@ Template.upload.events({
 	        });
 	      }
 	    });
-	  }
+	  },
+  	'change [name="part"]' ( event, template ) {
+	    template.uploading.set( true );
+
+	    Papa.parse( event.target.files[0], {
+	      header: true,
+	      complete( results, file ) {
+	        Meteor.call( 'parseUpload_part', results.data, ( error, response ) => {
+	          if ( error ) {
+	            // console.log( error.reason );
+	            // throw new Meteor.Error('bad', 'stuff happened');
+	            Bert.alert( error.reason, 'danger', 'growl-top-right' );
+	            template.uploading.set( false );
+	          } else {
+	            template.uploading.set( false );
+	            Bert.alert( 'Upload complete!', 'success', 'growl-top-right' );
+	          }
+	        });
+	      }
+	    });
+	  },
+
 	// 'change [name="uploadCSV"]' ( event, template ) {
 	//     template.uploading.set( true );
 	//     var data = event.target.files[0];

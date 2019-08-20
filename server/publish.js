@@ -8,6 +8,16 @@ Meteor.publish('allUsers', function(){
 	}
 	// return Meteor.users.find({});
 });
+
+//publish supervisor
+Meteor.publish('Supervisor', function(){
+	//security
+	if(Roles.userIsInRole(this.userId, ['admin','supervisor','VSL','Lora','HR'])){
+		return Meteor.users.find({roles:'supervisor'});
+	}
+});
+
+
 //publish menu
 Meteor.publish('menu', function(){
 

@@ -148,12 +148,14 @@ table {
 
 }
 .minus-box-Anouncements-records, .minus-box-Menu-records{
+    display:none;
     opacity: 0;
     position: absolute;
     padding: 5px 10px;
     transition: all 0.4s ease-out;
 }
 .box-Menu-delete-show .minus-box-Menu-records{
+    display:inline;
     opacity: 1;
     position: absolute;
     cursor: pointer;
@@ -161,6 +163,7 @@ table {
     transition: all 0.4s ease;
 }
 .box-Anouncements-show .minus-box-Anouncements-records{
+    display:inline;
     opacity: 1;
     position: absolute;
     cursor: pointer;
@@ -169,18 +172,22 @@ table {
 }
 
 .box_add_Anouncements_input{
+    pointer-events: none;
     opacity: 0;
     transition: all 0.4s ease-out;
 }
 .box_add_Menu_input{
+    pointer-events: none;
     opacity: 0;
     transition: all 0.4s ease-out;
 }
 .box-Menu-add-show .box_add_Menu_input{
+    pointer-events: auto;
     opacity: 1;
     transition: all 0.4s ease;
 }
 .box-Anouncements-add-show .box_add_Anouncements_input{
+    pointer-events: auto;
     opacity: 1;
     transition: all 0.4s ease;
 }
@@ -218,19 +225,24 @@ font-size: 2em;
 .table tbody tr:hover {
   background: #d1d1d1;
 }
-//happy birthday by Chenyu
+//happy birthday added by Chenyu
 
 @import url(https://fonts.googleapis.com/css?family=Pacifico);
 
-$background-color: #F2809A;
+$background-color: #777777;
 $abs:absolute;
 $font:30px "Pacifico", serif;
 $text-color:white;
+.happyBirthday-wrapper{
+    margin: 30px 15px;
+    //padding: 20px;
+    width: 100%;
 
+}
 .happyBirthday{
-  background-color:$background-color;  
+  //background-color:$background-color;  
   font:$font;
-  color:white;
+  color:black;
   text-align:center;
   //text-shadow:1px 1px #D15162;
 }

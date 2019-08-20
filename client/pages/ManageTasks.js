@@ -134,8 +134,8 @@ Template.ManageTasks.events({
 		var operatorinitial = Session.get('operatorarray')[0];
 		var operatorIDarray = Session.get('operatorarray')[1];
 		var operatorname = Session.get('operator');
-		var initial = Operator.findOne({name:operatorname}).initial;
-		var operatorID = Operator.findOne({name:operatorname}).operatorID;
+		var initial = Operator.findOne({operatorName:operatorname}).initial;
+		var operatorID = Operator.findOne({operatorName:operatorname}).EENumber;
 		Meteor.call('checkIsnull',operatorinitial,initial,operatorcount,operatorID,operatorIDarray);
 		return;
 	},
@@ -212,8 +212,8 @@ Template.ManageTasks.events({
 			var operatorFullName = ['null','null','null'];
 			for (var i = operatorID.length - 1; i >= 0; i--) {
 				if(operatorID[i] != 'null'){
-					operatorFullName[i] = Operator.findOne({operatorID:operatorID[i]}).name;
-					operatorinitial[i] = Operator.findOne({operatorID:operatorID[i]}).initial;
+					operatorFullName[i] = Operator.findOne({EENumber:operatorID[i]}).operatorName;
+					operatorinitial[i] = Operator.findOne({EENumber:operatorID[i]}).initial;
 				}
 			}
 			// console.log(operator);
@@ -319,7 +319,7 @@ Template.ManageTasks.events({
 			// var data = Tasks.find({partnumber:partnumber,createdAt : { $gte : start, $lt: end }}).fetch();
 		}else{
 			Session.set('hasOperator',[true,operator]);
-			var operatorID = Operator.findOne({name:operator}).operatorID;
+			var operatorID = Operator.findOne({operatorName:operator}).operatorID;
 			//check whether user select the shift button
 			if(shifts1 && shifts2){
 				data = Tasks.find({operatorID:{ $in : [operatorID]},timespan:{ $in : timespan_merge},
@@ -343,7 +343,7 @@ Template.ManageTasks.events({
 			for (var i = revised_data.length - 1; i >= 0; i--) {
 				for (var j = 0; j < 3; j++) {
 					if(revised_data[i].operatorID[j] != "null"){
-						revised_data[i].operatorID[j] = Operator.findOne({operatorID:revised_data[i].operatorID[j]}).name;
+						revised_data[i].operatorID[j] = Operator.findOne({EENumber:revised_data[i].operatorID[j]}).operatorName;
 					}
 				}
 			}
@@ -362,7 +362,6 @@ Template.ManageTasks.events({
 				alert('No data in this interval');
 				return false;
 			}
-
 			//extract tendency attributes
 			//calculate the date difference
 			const diffTime = Math.abs(end.getTime() - start.getTime());
@@ -382,19 +381,24 @@ Template.ManageTasks.events({
 				curDate_end = new Date(curDate_end).setDate(curDate + i);
 				curDate_start = new Date(curDate_start);
 				curDate_end = new Date(curDate_end);
-				//collect data from the 1st day
+				//set the 1st day
 				if(i == 0){
 					curDate_start = start;
 				}
-				//collect data from the last day
+				//set the last day
 				if(i == diffDays-1){
 					curDate_end = end;
 				}
 				for (var j = data.length - 1; j >= 0; j--) {
 					if(moment(data[j].createdAt).isBetween(moment(curDate_start), moment(curDate_end))) {
+						//scale the earnedtime value when the part is not available
+						if(data[j].plan == 0){
+							data[j].earnedtime = data[j].worktime;
+						}
 
-						 eff_worktime += parseFloat(data[j].worktime);
-						 eff_earnedtime += parseFloat(data[j].earnedtime);
+						eff_worktime += parseFloat(data[j].worktime);
+						eff_earnedtime += parseFloat(data[j].earnedtime);	
+
 					}
 				}
 
@@ -452,7 +456,7 @@ Template.ManageTasks.events({
 			for (var i = operatorArray.length - 1; i >= 0; i--) {
 				if(operatorArray[i] != 'null'){
 
-					operatorFullName[i] = Operator.findOne({operatorID:operatorArray[i]}).name;
+					operatorFullName[i] = Operator.findOne({EENumber:operatorArray[i]}).operatorName;
 				}
 			}
 			//sort the array

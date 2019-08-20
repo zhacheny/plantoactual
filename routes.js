@@ -49,6 +49,12 @@ adminRoutes.route('/partmaintenance',{
     }
 });
 
+adminRoutes.route('/operatormanagement',{
+    name: 'operatormanagement',
+    action() {
+        BlazeLayout.render("AppLayout", {main: "OperatorManagement"});
+    }
+});
 // var operatorRoutes = FlowRouter.group({
 //     prefix: '/operator',
 //     name: 'operator'

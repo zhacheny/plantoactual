@@ -24,6 +24,10 @@ Template.Dashboard.onCreated(function(){
 });
 
 Template.Dashboard.helpers({
+	happyBirthday: function() {
+	    return 'Nero';
+	    // return moment(currentTime).startOf('minute');
+	},
 	menu:function(){
 		return Menu.find();
 	},
@@ -131,20 +135,45 @@ Template.Dashboard.events({
 	'change .edit-box-Safety-input': function(event){
 		let content = $(event.target).val();
 		Session.set('edit-box-Safety-input',content);
-		
+	},
+	'keypress .edit-box-Safety-input': function(event){
+		let content = $(event.target).val();
+		if(event.key == 'Enter' && content != null){
+	    	
+			Meteor.call('updateSafetyMessage',content);
+	      // add to database
+	    }
 	},
 	'change .edit-box-Department-input': function(event){
 		let content = $(event.target).val();
 		Session.set('edit-box-Department-input',content);
 		
 	},
+	'keypress .edit-box-Department-input': function(event){
+		let content = $(event.target).val();
+		if(event.key == 'Enter' && content != null){
+	    	
+			Meteor.call('updateDeparment',content);
+	      // add to database
+	    }
+	},
 	'keyup .box_add_Anouncements_input_filed': (event)=>{
 		var str = $(event.target).val();
-		Session.set('anouncements_input',str)
+		Session.set('anouncements_input',str);
 	},
 	'keyup .box_edit_Anouncements_input_filed': (event)=>{
 		var str = $(event.target).val();
-		Session.set('anouncements_edit_input',str)
+		Session.set('anouncements_edit_input',str);
+	},
+	'keypress .box_edit_Anouncements_input_filed': (event)=>{
+		var str = $(event.target).val();
+		let id = $(event.currentTarget).data('id');
+		if(event.key == 'Enter'){
+	    	
+			console.log(id);
+			Meteor.call('edit_boxAnouncementsRecords',str,id);
+	      // add to database
+	    }
 	},
 	'click .edit-box-Menu':()=>{
 		console.log(this);

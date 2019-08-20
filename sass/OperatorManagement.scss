@@ -1,9 +1,9 @@
 @import '_normalize.scss';
 @import '_base.scss';
 
-//status tag toggle switcher of maintenance added by Chenyu
+//status tag toggle switcher of OperatorManagement added by Chenyu
 
-.Maintenance-nav li {
+.OperatorManagement-nav li {
     width: 32.8%;
     text-align: center;
     letter-spacing: 1px;
@@ -26,74 +26,60 @@
     }
 }
 
-//Maintenance Page added by Chenyu
-.Maintenance{
+//OperatorManagement Page added by Chenyu
+.OperatorManagement{
     //text-align: center;
     margin: 30px auto;
     //max-width: 500px;
     padding: 10px;
-    width: 53%;
+    width: 50%;
     position: relative;
     background: #FFF;
     padding: 20px;
     //overflow: hidden;
-    height:880px;
+    height:500px;
     //transition: max-height 0.7s ease-in; 
     //transition: all 0.4s cubic-bezier(0.68, -0.65, 0.265, 1.20);
     @include card(2);
 
 }
 
-.toggle-Maintenance-page .Maintenance{
+.toggle-OperatorManagement-page .OperatorManagement{
     padding: 20px;
     max-height:200px;
 }
 
-.toggle-Maintenance-import-page .Maintenance{
+.toggle-OperatorManagement-import-page .OperatorManagement{
     padding: 20px;
     max-height:350px;
 }
 
-.toggle-Maintenance-page .Maintenance-add{
+.toggle-OperatorManagement-page .OperatorManagement-add{
     display:none;
     opacity: 0;
 }
 
-.toggle-Maintenance-import-page .Maintenance-add{
+.toggle-OperatorManagement-import-page .OperatorManagement-add{
     display:none;
     opacity: 0;
 }
 
-.toggle-Maintenance-page .Maintenance-edit{
+.toggle-OperatorManagement-page .OperatorManagement-edit{
     //padding: 10px;
     //display:block;
     opacity: 1;
 }
-.Maintenance-edit{
+.OperatorManagement-edit{
     //display:none;
     opacity: 0;
 }
 
-.Maintenance-import{
+.OperatorManagement-import{
     display:none;
     opacity:0;
 }
 
-.toggle-Maintenance-import-page .Maintenance-import{
+.toggle-OperatorManagement-import-page .OperatorManagement-import{
     display:flex;
     opacity:1;
-}
-
-//text area added by Chenyu
-.Linkpreview{
-  display: block;
-  margin: auto;
-  width: 100%;
-  font-size: 15px;
-  //padding: 10px 0;
-  line-height: 20px;
-  background-image: linear-gradient(#eee 1px,transparent 1px);
-  background-size: 100% 40px;
-  border: 0;
-  outline: 0;
 }

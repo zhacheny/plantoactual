@@ -1,8 +1,11 @@
 <template name="selectinput">
     <select class="select-tag-dropdown" id="select-tag" name="name" style="width: 250px;">
       <option disabled selected>Name</option>
+      {{#if display_option_all}}
+      	<option>All</option>
+      {{/if}}
       {{#each operators}}
-      <option>{{name}}</option>
+      	<option>{{operatorName}}</option>
       {{/each}}
     </select>
 </template>

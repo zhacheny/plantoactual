@@ -1,0 +1,8 @@
+<template name="selectSupervisor">
+    <select class="select-tag-dropdown" data-type="{{type}}" id="select-tag" name="name" style="width: 250px;">
+      <option disabled selected>Name</option>
+      {{#each supervisor}}
+      	<option>{{profile.firstName}}</option>
+      {{/each}}
+    </select>
+</template>
