@@ -5,19 +5,25 @@ import { ClientTaskworktime } from '/client/main.js';
 var time = new ReactiveVar(new Date());
 var format = 'hh:mm:ss';
 //start from 12pm not 12:30pm
-var reststart1 = moment('12:00:00',format);
+var reststart1 = moment('12:30:00',format);
 var reststart2 = moment('13:30:00',format);
-var reststart3 = moment('14:30:00',format);
-var reststart4 = moment('15:30:00',format);
+var reststart3 = moment('21:30:00',format);
+var reststart4 = moment('22:30:00',format);
 var restend1 = moment('13:30:00',format);
 var restend2 = moment('14:30:00',format);
-var restend3 = moment('15:30:00',format);
-var restend4 = moment('16:30:00',format);
+var restend3 = moment('22:30:00',format);
+var restend4 = moment('23:30:00',format);
+var shift_1_start = moment('05:50:00',format);
+var shift_1_end = moment('14:50:00',format);
+var shift_2_start = moment('15:00:00',format);
+var shift_2_end = moment('23:50:00',format);
 var count = 0;
 var countsum = 0;
 var havefun = false;
 
 Template.AddTasks.onCreated(function(){
+	var currentTime = time.get();
+	var test_mode_flag = false;
 	this.autorun(() => {
 		this.subscribe('anouncements');
 	})
@@ -42,6 +48,8 @@ Template.AddTasks.onCreated(function(){
 	Meteor.setInterval(function() {
 		time.set(new Date());
 	}, 1000);
+
+	Meteor.call('initializeClientTaskworktime',currentTime,test_mode_flag);
 });
 
 
@@ -170,6 +178,21 @@ Template.AddTasks.helpers({
 	timepassed: function(a,b){
 		return a <= b;
 	},
+	//check whether it is no production
+	isNoprod:function(a,b){
+		if(a<b && this.actual == 0){
+			return true;
+		}else{
+			return false;
+		}
+	},
+	isgrey:function(a,b){
+		if(a<b && this.actual == 0){
+			return 'background: #EEE';
+		}else{
+			return '';
+		}
+	},
 	// jobComplete: function(index){
 	// 	if (Session.get('toggle-jobComplete')){
 
@@ -259,32 +282,21 @@ Template.AddTasks.helpers({
 					Session.set('changeover-showup',false);
 					Session.set('changeovertimecount',null);
 				}
-			}else if (timeformat.isBetween(reststart3, restend3)){
-				if(hour == 15 && min == 29 && sec == 59){
-					if(Session.get('changeover-showup') == true){
-						Session.set('taskIsCompletenotFinish',true);
-						Meteor.call('updatechangeover',false,currentTime);
-					}else{
-						Session.set('togglecomp',this);
-					}
-					Session.set('changeover-showup',false);
-					Session.set('changeovertimecount',null);
-				}
-			}else{
-				// if (hour == 11 && min == 55 && sec == 19){
-				// 	if(haverun){
-				// 		return;
-				// 	}
-				// 	if(Session.get('changeover-showup') == true){
-				// 		Session.set('taskIsCompletenotFinish',true);
-				// 		Meteor.call('updatechangeover',false,currentTime,count); 
-				// 	}else{
-				// 		Session.set('togglecomp',this);
-				// 	}
-				// 	Session.set('changeover-showup',false);
-				// 	Session.set('changeovertimecount',null);
-				// 	haverun = true;
-				// }
+			}
+			// else if (timeformat.isBetween(reststart3, restend3)){
+			// 	if(hour == 15 && min == 29 && sec == 59){
+			// 		if(Session.get('changeover-showup') == true){
+			// 			Session.set('taskIsCompletenotFinish',true);
+			// 			Meteor.call('updatechangeover',false,currentTime);
+			// 		}else{
+			// 			Session.set('togglecomp',this);
+			// 		}
+			// 		Session.set('changeover-showup',false);
+			// 		Session.set('changeovertimecount',null);
+			// 	}
+			// }
+			else{
+				//need to be changed 8/21/19
 				if (hour >= 6 && hour < 15 && min == 59 && sec == 59){
 					if(haverun){
 						return;
@@ -356,21 +368,30 @@ Template.AddTasks.helpers({
 				displayindex = 6;
 			} else if (timeformat.isBetween(reststart2, restend2)){
 				displayindex = 7;
-			}else if (timeformat.isBetween(reststart3, restend3)){
-				displayindex = 8;
-			}else if (timeformat.isBetween(reststart4, restend4)){
-				displayindex = 9;
-			}else{
-				// console.log('is not between');
-				// displayindex = timeformat.format('HH') -6;
-				// console.log(hour);
-				displayindex = hour - 6;
+			}else if(timeformat.isBetween(reststart3, restend3)){
+				displayindex = 6;
+			}else if(timeformat.isBetween(reststart4, restend4)){
+				displayindex = 7;
 			}
+			else{
+				if (timeformat.isBetween(shift_2_start, shift_2_end)){
+					displayindex = hour - 16;
+				}else{
+					displayindex = hour - 6;
+				}
+			}
+
+			// else if (timeformat.isBetween(reststart3, restend3)){
+			// 	displayindex = 8;
+			// }else if (timeformat.isBetween(reststart4, restend4)){
+			// 	displayindex = 9;
+			// }
 		}
 		if (Session.get('addtaskcountsum') != null){
 			var count = Session.get('addtaskcountsum');
 			displayindex = displayindex + count;
 		}
+		// console.log(displayindex)
 		return displayindex;
 		// return 4;
   	},
@@ -436,6 +457,7 @@ Template.AddTasks.events({
 	'click .toggle-Test-mode': function(){
 		alert('switch to test mode!');
 		var currentTime = time.get();
+		var test_mode_flag = true;
 		var timeformat = moment(currentTime,format);
 		//set test time
 		var hour = moment(timeformat).format('HH');
@@ -444,6 +466,8 @@ Template.AddTasks.events({
 		var timearray = [hour,min,sec];
 		addtaskcountsum = 0;
 		Session.set('test-mode-time',timearray);
+		Meteor.call('initializeClientTaskworktime',currentTime,test_mode_flag);
+		// Session.set('test-mode','open');
 	},
 
 	'click .outline': function(events){
@@ -500,7 +524,8 @@ Template.AddTasks.events({
 			Session.set('earnedTimePPiecePOpe',value);
 			value = this.worktime.substring(0,2)/value;
 			//returns the largest integer less than the value
-			value = Math.floor(value);
+			// value = Math.floor(value);
+			value = Math.round( value * 10 ) / 10;
 		}
 		
 		
@@ -608,13 +633,14 @@ Template.AddTasks.events({
 				plannumber = plannumber/operatorcount;
 			}
 			plannumber = realtimeused/plannumber;
-			plannumber = Math.floor(plannumber);
+			// plannumber = Math.floor(plannumber);
+			plannumber = Math.round( plannumber * 10 ) / 10;
 		}else{
 			plannumber = 0;
 		}
 
 	    ClientTaskworktime.update({id:this.id}, {
-	      $set: { worktime: realtimeused + ' min', comment: 'change over!', plantoactual:plannumber },
+	      $set: { worktime: realtimeused + ' min', comment: '', plantoactual:plannumber },
 	    });
 		// this.plan = this.plan * (sec/60);
 		var info = [true,ClientTaskworktime.findOne({id:this.id}),timechanged];

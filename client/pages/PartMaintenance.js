@@ -256,8 +256,14 @@ Template.PartMaintenance.events({
 Template.PartMaintenance.helpers({
 	viewXMLname:function(){
 		let url = this.XMLname;
-		let XMLname = url.split("=")[1];
-		return XMLname;
+		if(url != null){
+			let XMLname = url.split("=")[1];
+			return XMLname;
+		}else{
+			return null;
+		}
+		
+		
 	},
 	previewLink:()=>{
 		return Session.get('drawingname') == null ? null:pre_url + Session.get('drawingname');

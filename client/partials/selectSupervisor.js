@@ -15,7 +15,7 @@ Template.selectSupervisor.onCreated(function(){
 Template.selectSupervisor.helpers({
     supervisor:function(){
         return Roles.userIsInRole(Meteor.userId(), 'supervisor')?  
-        Meteor.users.find():Meteor.users.find({_id: {$ne: Meteor.userId()}});
+        Meteor.users.find() : Meteor.users.find({_id: {$ne: Meteor.userId()}});
     },
 	// operators: function(){
  //        return Operator.find({}, { sort: { operatorID: 1 }} );

@@ -3,9 +3,9 @@ import moment from 'moment';
 //setting up the shift point
 //var timeSpan = ['6-7 am','7-8 am','8-9 am','9-10 am','10-11 am','11-12 am','12:30-13:30 pm','13:30-14:30 pm','14:30-15:30 pm'];
 var reasonCode = ['Meeting/Training','Machine Down','Quality Isssue','Safety','Waiting on Material','Write in'];
-var timespan1 = ['6-7 am','7-8 am','8-9 am','9-10 am','10-11 am','11-12 am','12:30-13:30 pm','13:30-14:30 pm'];
-var timespan2 = ['14:30-15:30 pm','15:30-16:30 pm'];
-var timespan_worktime = ['55','60','40','60','55','55','60','50','60','60'];
+var timespan1 = ['6:00-7:00 am','7:00-8:00 am','8:00-9:00 am','9:00-10:00 am','10:00-11:00 am','11:00-12:00 am','12:30-13:30 pm','13:30-14:30 pm'];
+var timespan2 = ['15:00-16:00 pm','16:00-17:00 pm', '17:00-18:00 pm', '19:00-20:00 pm', '20:00-21:00 pm', '21:30-22:30 pm','22:30-23:30 pm'];
+var timespan_worktime = ['55','60','40','60','55','55','60','50','55','60','40','60','55','55','60','30'];
 var timespan_merge = timespan1.concat(timespan2);
 var data = "";
 var firstRendered = false;
@@ -409,7 +409,7 @@ Template.ManageTasks.events({
 					//math round at most 2 decimal places
 					All_sum_eff[i] = Math.round(All_sum_eff[i] * 100) / 100;
 				}
-				//calculate summation of planned worktime
+				//calculate summation of planned worktime (per day)
 				var per_sum_Alltime = 0;
 				var perday_timespan = new Set();
 				for (var z = timespan_merge.length - 1; z >= 0; z--) {
@@ -543,6 +543,7 @@ Template.ManageTasks.events({
 			var sum_changeover = 0;
 			var sum_Actualtime = 0;
 			var sum_Earnedtime = 0;
+
 			for (var i = timespan_merge.length - 1; i >= 0; i--) {
 				for (var j = data.length - 1; j >= 0; j--) {
 					if(data[j].timespan == timespan_merge[i]){

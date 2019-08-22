@@ -134,7 +134,7 @@
 <!--                    {{@index}}
                {{displayRow}} -->
                {{#if timepassed @index displayRow}}
-                <tr>
+                <tr style="{{isgrey @index displayRow}}">
                     <td><a style="font-size: 30px;" class="viewPdf" href=""><i class="fa fa-search"></i></a></td>
                     <td>{{timespan}}</td>
                     <td>{{worktime}}</td>
@@ -152,7 +152,11 @@
                         {{/if}}
                     {{/if}}
                     <td>{{reason}}</td>
-                    <td>{{comment}}</td>
+                    {{#if isNoprod @index displayRow}}
+                        <td>No Production</td>
+                    {{else}}
+                        <td>{{comment}}</td>
+                    {{/if}}
                     <!-- {{#if @index '==' }} -->
                     {{#if $eq @index displayRow}}
                     <!-- {{#if displaybutton @index displayRow}} -->

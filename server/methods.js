@@ -16,7 +16,7 @@ Meteor.methods({
 	    	});
 		}else {
 	        // Session.set('part-insert-error','Rejected. This item already exists.');
-	        throw new Meteor.Error('bad', 'Rejected. This Operator already exists.');
+	        throw new Meteor.Error('bad', 'Rejected. This Operator already exists.'+EENumber);
       	}
 
 	},
@@ -91,11 +91,11 @@ Meteor.methods({
 	parseUpload_operator( data ) {
 	    // check( data, Array );
 		// data.length
-	    for ( let i = 0; i < 10; i++ ) {
+	    for ( let i = 0; i < data.length; i++ ) {
 	    	// console.warn(data[ i ]);
 			let operatorName   = data[ i ]['NAME'];
 			let EENumber   = data[ i ]['EE NUMBER'];
-			EENumber = EENumber.slice(-4);
+			EENumber = EENumber.slice(-5);
 			let Department   = data[ i ]['DEPARTMENT'];
 			let supervisorName  = data[ i ]['MANAGER'];
 			let employIndicator  = data[ i ]['EMPLOYMENT INDICATOR'];
@@ -127,7 +127,7 @@ Meteor.methods({
 	parseUpload_part( data ) {
 	    // check( data, Array );
 		// data.length
-	    for ( let i = 0; i < 10; i++ ) {
+	    for ( let i = 0; i < data.length; i++ ) {
 	    	// console.warn(data[ i ]);
 			let part   = data[ i ]['Assembly No'];
 			let cell   = data[ i ]['Work'];
@@ -247,6 +247,9 @@ Meteor.methods({
 		return;
 	},
 	checkIsnull() {
+		return;
+	},
+	initializeClientTaskworktime() {
 		return;
 	},
 	toggleAdmin(id) {

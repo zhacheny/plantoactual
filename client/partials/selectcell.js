@@ -12,7 +12,7 @@ Template.selectcell.helpers({
 	cell: function(){
 		// console.log(Tasks.find().fetch());
 		var select = Session.get('buildingnumber');
-		return Cell.find({buildingnumber: select});
+		return Cell.find({buildingnumber: select}, { sort: { cellname: 1 }});
 	},
 });
 
