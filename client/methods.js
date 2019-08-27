@@ -18,7 +18,7 @@ Meteor.methods({
 		// Session.set('test-mode-time-log',currentTime)
 		console.log(currentTime);
 		if(timeformat.isBetween(shift_1_start, shift_1_end)){
-
+			console.log(1);
 			ClientTaskworktime.remove({});
 			var taskworktime = [
 			  { id: 'a', timespan: '6:00-7:00 am', worktime: '55 min', plantoactual:0, actual:"0", reason: "XXX",status:null, partnumber: "XXX",
@@ -46,6 +46,7 @@ Meteor.methods({
 
 			
 		}else{
+			console.log(2);
 			ClientTaskworktime.remove({});
 			var taskworktime = [
 			  { id: 'a', timespan: '15:00-16:00 pm', worktime: '55 min', plantoactual:0, actual:"0", reason: "XXX",status:null , partnumber: "XXX",

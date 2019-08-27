@@ -15,7 +15,7 @@ table {
 }
 
 .dashboard_container {
-  width: 100%;
+  width: 110%;
   height: 100%;
   height: -webkit-calc(100% - 100px);
   height: -moz-calc(100% - 100px);
@@ -113,7 +113,7 @@ table {
         position: absolute;
         right: 0;
         padding: 12px;
-        font-size: 1.5em;
+        font-size: 1.5vw;
         cursor: pointer;
     }
 
@@ -123,7 +123,7 @@ table {
         right: 0;
         position: absolute;
         padding: 11.5px;
-        font-size: 1.5em;
+        font-size: 1.5vw;
         transition: all 0.4s ease-out;
     }
     &:hover{
@@ -192,14 +192,14 @@ table {
     transition: all 0.4s ease;
 }
 .add-box-Anouncements-confirm {
-    font-size: 1.35em;
+    font-size: 1.35vw;
     cursor: pointer;
     padding: 5px 10px;
 }
 
 .header-box h2 {
 font-weight: 50;
-font-size: 2em;
+font-size: 2vw;
   float: left;
 }
 
@@ -207,6 +207,7 @@ font-size: 2em;
   height:180px;
   padding: 5px;
   background: #f9f9f9;
+  font-size:1.3vw;
 }
 
 .table {
@@ -231,11 +232,11 @@ font-size: 2em;
 
 $background-color: #777777;
 $abs:absolute;
-$font:30px "Pacifico", serif;
+$font:2.4vw "Pacifico", serif;
 $text-color:white;
 .happyBirthday-wrapper{
-    margin: 30px 15px;
-    //padding: 20px;
+    //margin: 30px 15px;
+    padding: 20px;
     width: 100%;
 
 }
@@ -252,7 +253,7 @@ $text-color:white;
   display: block;
   margin: auto;
   width: 100%;
-  font-size: 15px;
+  font-size: 1.3vw;
   padding: 10px 0;
   line-height: 30px;
   background-image: linear-gradient(#eee 1px,transparent 1px);

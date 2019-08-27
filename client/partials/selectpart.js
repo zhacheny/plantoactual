@@ -12,6 +12,11 @@ Template.selectpart.onCreated(function(){
 })
 
 Template.selectpart.helpers({
+	selectpart:function(selected){
+		// console.log(selected);
+		return selected != 'XXX' ? true:false;
+		// return false;
+	},
 	admin: function(){
 		return Roles.userIsInRole(Meteor.userId(), 'admin');
 	},

@@ -2,6 +2,10 @@
     <div class="styled-select">
         <select>
             <option selected>Select</option>
+            {{#if selectpart selected}}
+                <option selected>{{selected}}</option>
+                <option disabled="true">---New Selection---</option>
+            {{/if}}
             <option>Part Not Available</option>
             {{#each partnumber}}
                 <option>{{part}}</option>

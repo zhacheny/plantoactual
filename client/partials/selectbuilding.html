@@ -2,6 +2,10 @@
     <div class="styled-select">
         <select class ="change-building">
             <option selected>Select</option>
+            {{#if selectbuilding selected}}
+                <option selected>{{selected}}</option>
+                <option disabled="true">---New Selection---</option>
+            {{/if}}
             <option>1</option>
             <option>2</option>
             <option>3</option>

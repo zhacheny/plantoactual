@@ -9,6 +9,11 @@ Template.selectbuilding.onCreated(function(){
 })
 
 Template.selectbuilding.helpers({
+	selectbuilding:function(selected){
+		// console.log(selected);
+		return selected != '' ? true:false;
+		// return false;
+	},
 	cell: function(){
 		// console.log(Tasks.find().fetch());
 		return Cell.find();
@@ -22,6 +27,7 @@ Template.selectbuilding.helpers({
 
 Template.selectbuilding.events({
 	'change .change-building':function (evt) {
+		evt.preventDefault();
 		var build = $(evt.target).val();
 
 		Session.set('buildingnumber', build);

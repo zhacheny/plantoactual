@@ -39,7 +39,7 @@
                         <td>{{recordedplantoactual}}</td>
                         <td><input style="width: 50px;" type="text" id="popupinput" class="calculatestatus"></td>
                         <td>{{recordedcomment}}</td>
-                        <td><input id="commentsinput" style="width: 300px;" type="comment" class="inputreports"></td>
+                        <td><input id="commentsinput" style="width: 250px;" type="comment" class="inputreports"></td>
                         <td><div name="Ignore Select" id="popupselect" style="background:rgba(099,099,099,.2);" class="outline"></div> </td>
                         <td><button class="toggle-submit">Submit</button></td>
                     </tr>
@@ -63,13 +63,13 @@
                     <h4>Building:</h4>
                 </td>
                 <td style="width: 270px;">
-                    {{> selectbuilding}}
+                    {{> selectbuilding selected=selectedbuilding}}
                 </td>
                 <td>
                     <h4>Cell:</h4>
                 </td>
                 <td style="width: 270px;">
-                    {{> selectcell}}
+                    {{> selectcell selected=selectedcell}}
                 </td>
                 <!-- <td><input type="text" id="nameinput" class="operatorname"></td> -->
                 <td>
@@ -81,7 +81,7 @@
                 
                 <td>
                 {{#if displayoperatorone}}
-                    <div style="width: 75px;" data-id="1" class="tagsname" id="nametag_one">
+                    <div style="width: 5vw;" data-id="1" class="tagsname" id="nametag_one">
                         <ul>
                         <li><a><span>{{operatorone}}</span><i class="fa fa-close"></i></a></li>
                         </ul>
@@ -90,7 +90,7 @@
                 </td>
                 <td>
                 {{#if displayoperatortwo}}                       
-                    <div style="width: 75px;" data-id="2" class="tagsname" id="nametag_two">
+                    <div style="width: 5vw;" data-id="2" class="tagsname" id="nametag_two">
                         <ul>
                         <li><a><span>{{operatortwo}}</span><i class="fa fa-close"></i></a></li>
                         </ul>
@@ -99,7 +99,7 @@
                 </td>
                 <td>
                 {{#if displayoperatorthree}}
-                    <div style="width: 75px;" data-id="3" class="tagsname" id="nametag_three">
+                    <div style="width: 5vw;" data-id="3" class="tagsname" id="nametag_three">
                         <ul>
                         <li><a><span>{{operatorthree}}</span><i class="fa fa-close"></i></a></li>
                         </ul>
@@ -107,7 +107,7 @@
                 {{/if}}
                 </td>
                 <td>
-                    <button class="toggle-Test-mode">TestMode</button>   
+                    <button class="toggle-Test-mode">TestMode</button>  
                 </td>
             </tr>
         </thead>
@@ -135,10 +135,12 @@
                {{displayRow}} -->
                {{#if timepassed @index displayRow}}
                 <tr style="{{isgrey @index displayRow}}">
-                    <td><a style="font-size: 30px;" class="viewPdf" href=""><i class="fa fa-search"></i></a></td>
+                    <td>
+                        <a style="font-size: 30px;" class="viewPdf" href=""><i class="fa fa-search"></i></a>
+                    </td>
                     <td>{{timespan}}</td>
                     <td>{{worktime}}</td>
-                    <td class ="partnumberchange" data-id="{{@index}}">{{> selectpart}}</td>
+                    <td class ="partnumberchange" data-id="{{@index}}">{{> selectpart selected=selectedpart}}</td>
                     <td type="text">{{plantoactual}}</td>
                     <td type="text">{{actual}}</td>
 

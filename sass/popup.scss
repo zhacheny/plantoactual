@@ -1,7 +1,7 @@
 @import '_base.scss';
 
 .delete-popup-modal {
-    position: fixed;
+    position:absolute;
     border: solid 2px $dblue;
     top: 20%;
     left: 50%;

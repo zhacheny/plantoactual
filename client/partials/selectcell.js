@@ -9,6 +9,11 @@ Template.selectcell.onCreated(function(){
 })
 
 Template.selectcell.helpers({
+	selectcell:function(selected){
+		// console.log(selected);
+		return selected != '' ? true:false;
+		// return false;
+	},
 	cell: function(){
 		// console.log(Tasks.find().fetch());
 		var select = Session.get('buildingnumber');

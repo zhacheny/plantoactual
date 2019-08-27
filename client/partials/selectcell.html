@@ -2,6 +2,10 @@
     <div class="styled-select">
         <select class="change-cell">
             <option selected>Select</option>
+            {{#if selectcell selected}}
+                <option selected>{{selected}}</option>
+                <option disabled="true">---New Selection---</option>
+            {{/if}}
             {{#each cell}}
                 <option>{{cellname}}</option>
             {{/each}}

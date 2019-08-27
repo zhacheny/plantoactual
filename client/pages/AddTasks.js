@@ -1,8 +1,9 @@
-import { Tasks, Partnumber, Taskworktime, Plan, Operator, EarnedTimePP,Anouncements } from '/lib/collections.js';
+import { Tasks, Cell, Partnumber, Taskworktime, Plan, Operator, EarnedTimePP,Anouncements,
+		Safetymessage, Department, Menu } from '/lib/collections.js';
 import moment from 'moment';
 import { ClientTaskworktime } from '/client/main.js';
 // Tasks = new Mongo.Collection('task');
-var time = new ReactiveVar(new Date());
+// var time = new ReactiveVar(new Date());
 var format = 'hh:mm:ss';
 //start from 12pm not 12:30pm
 var reststart1 = moment('12:30:00',format);
@@ -19,11 +20,15 @@ var shift_2_start = moment('15:00:00',format);
 var shift_2_end = moment('23:50:00',format);
 var count = 0;
 var countsum = 0;
-var havefun = false;
+var haverun = false;
+var popup_flag = false;
 
 Template.AddTasks.onCreated(function(){
-	var currentTime = time.get();
-	var test_mode_flag = false;
+	window.name = "parent";
+	// Session.set('popup_flag',null);
+	// var currentTime = time.get();
+	// var currentTime = Session.get('time');
+	// var test_mode_flag = false;
 	this.autorun(() => {
 		this.subscribe('anouncements');
 	})
@@ -45,11 +50,11 @@ Template.AddTasks.onCreated(function(){
 	this.autorun(() => {
 		this.subscribe('earnedTimePPiece');
 	})
-	Meteor.setInterval(function() {
-		time.set(new Date());
-	}, 1000);
+	// Meteor.setInterval(function() {
+	// 	time.set(new Date());
+	// }, 1000);
 
-	Meteor.call('initializeClientTaskworktime',currentTime,test_mode_flag);
+	// Meteor.call('initializeClientTaskworktime',currentTime,test_mode_flag);
 });
 
 
@@ -66,16 +71,38 @@ Tracker.autorun(function() {
 	//change the status of the when time goes
 	var time = Session.get('time');
 	haverun = false;
-
+	var popup_flag = Session.get('popup_flag');
+	if(popup_flag){
+		var button = document.getElementsByClassName('test_01')[0];
+		if(typeof(button) !== 'undefined'){
+			
+			button.click();
+			console.log(button);
+		}
+	}
 });
 
-
 Template.AddTasks.helpers({
+	//send global value to selection template
+	selectedbuilding:function(){
+		return Session.get('buildingnumber') != null ? Session.get('buildingnumber'):'';
+	},
+	selectedcell:function(){
+		return Session.get('cell') != null ? Session.get('cell'):'';
+	},
+	selectedpart:function(){
+		// console.log(this.partnumber);
+		return this.partnumber;
+	},
 	anouncements: function(){
 		return Anouncements.find();
 	},
+	isChangeover:function(){
+		return Session.get('changeover-starttime') != null ? true:false;
+	},
 	changeoverCounter: function(){
-	    var currentTime = time.get();
+	    // var currentTime = time.get();
+	    var currentTime = Session.get('time');
 	    var starttime = Session.get('changeover-starttime');
 	    // Session.set('changeover-end',time.get());
 		return moment(currentTime-starttime).format('mm:ss');
@@ -203,7 +230,8 @@ Template.AddTasks.helpers({
 	// 	return Session.get('displaydata')>=index;
 	// },
 	gettaskdata: function(){
-		var currentTime = time.get();
+		// var currentTime = time.get();
+		var currentTime = Session.get('time');
 		// var hour = moment(currentTime).format('HH');
 		// var min = moment(currentTime).format('mm');
 		// var sec = moment(timeformat).format('ss');
@@ -219,6 +247,10 @@ Template.AddTasks.helpers({
 
 			var timearray = Session.get('test-mode-time');``
 			if (min == parseInt(timearray[1]) && sec == 59){
+				 document.title = '[New Message]';
+				 // alert("1111");
+	  			Session.set('popup_flag', true);
+				
 				if(haverun){
 					return;
 				}
@@ -282,6 +314,28 @@ Template.AddTasks.helpers({
 					Session.set('changeover-showup',false);
 					Session.set('changeovertimecount',null);
 				}
+			}else if (timeformat.isBetween(reststart3, restend3)){
+				if(hour == 22 && min == 29 && sec == 59){
+					if(Session.get('changeover-showup') == true){
+						Session.set('taskIsCompletenotFinish',true);
+						Meteor.call('updatechangeover',false,currentTime);
+					}else{
+						Session.set('togglecomp',this);
+					}
+					Session.set('changeover-showup',false);
+					Session.set('changeovertimecount',null);
+				}
+			}else if (timeformat.isBetween(reststart4, restend4)){
+				if(hour == 23 && min == 29 && sec == 59){
+					if(Session.get('changeover-showup') == true){
+						Session.set('taskIsCompletenotFinish',true);
+						Meteor.call('updatechangeover',false,currentTime);
+					}else{
+						Session.set('togglecomp',this);
+					}
+					Session.set('changeover-showup',false);
+					Session.set('changeovertimecount',null);
+				}
 			}
 			// else if (timeformat.isBetween(reststart3, restend3)){
 			// 	if(hour == 15 && min == 29 && sec == 59){
@@ -297,7 +351,20 @@ Template.AddTasks.helpers({
 			// }
 			else{
 				//need to be changed 8/21/19
-				if (hour >= 6 && hour < 15 && min == 59 && sec == 59){
+				if (hour >= 6 && hour < 12 && min == 59 && sec == 59){
+					if(haverun){
+						return;
+					}
+					if(Session.get('changeover-showup') == true){
+						Session.set('taskIsCompletenotFinish',true);
+						Meteor.call('updatechangeover',false,currentTime,count); 
+					}else{
+						Session.set('togglecomp',this);
+					}
+					Session.set('changeover-showup',false);
+					Session.set('changeovertimecount',null);
+					haverun = true;
+				}else if(hour >= 15 && hour < 21 && min == 59 && sec == 59){
 					if(haverun){
 						return;
 					}
@@ -328,8 +395,9 @@ Template.AddTasks.helpers({
 	// 	return 
 	// },
 	displayRow: function() {
-		var currentTime = time.get();
-		Session.set('time',currentTime);
+		// var currentTime = time.get();
+		var currentTime = Session.get('time');
+		// Session.set('time',currentTime);
 		// var hour = moment(currentTime).format('HH');
 		// var min = moment(currentTime).format('mm');
 		// var sec = moment(timeformat).format('ss');
@@ -375,7 +443,7 @@ Template.AddTasks.helpers({
 			}
 			else{
 				if (timeformat.isBetween(shift_2_start, shift_2_end)){
-					displayindex = hour - 16;
+					displayindex = hour - 15;
 				}else{
 					displayindex = hour - 6;
 				}
@@ -411,8 +479,17 @@ Template.AddTasks.events({
 		let part = this.partnumber;
 		// var pre_url = "";
 		let url = Partnumber.findOne({part:part}).XMLname;
-		let win = window.open(url, '_blank');
-		win.focus();
+		if (url == ''){
+			alert('drawing not exists!');
+			return;
+		}else{
+			// let win = window.open(url, '_blank');
+			// win.focus();
+			FlowRouter.go('/admin/viewPdf');
+			Session.set('url',url);
+			return;
+		}
+		
 		// if("XMLHttpRequest" in window)xmlhttp=new XMLHttpRequest();
 		// if("ActiveXObject" in window)xmlhttp=new ActiveXObject("Msxml2.XMLHTTP");
 		// xmlhttp.open('GET',url,true);
@@ -453,10 +530,10 @@ Template.AddTasks.events({
 		Meteor.call('checkIsnull',operatorinitial,initial,operatorcount,operatorID,operatorIDarray);
 		return;
 	},
-
 	'click .toggle-Test-mode': function(){
 		alert('switch to test mode!');
-		var currentTime = time.get();
+		// var currentTime = time.get();
+		var currentTime = Session.get('time');
 		var test_mode_flag = true;
 		var timeformat = moment(currentTime,format);
 		//set test time
@@ -524,8 +601,8 @@ Template.AddTasks.events({
 			Session.set('earnedTimePPiecePOpe',value);
 			value = this.worktime.substring(0,2)/value;
 			//returns the largest integer less than the value
-			// value = Math.floor(value);
-			value = Math.round( value * 10 ) / 10;
+			value = Math.floor(value);
+			// value = Math.round( value * 10 ) / 10;
 		}
 		
 		
@@ -569,7 +646,8 @@ Template.AddTasks.events({
 		}else{
 			if(Session.get('taskIsComplete')!=null){
 				Session.set('changeover-showup',true);
-				Session.set('changeover-starttime',time.get());
+				// Session.set('changeover-starttime',time.get());
+				Session.set('changeover-starttime',Session.get('time'));
 			}
 			Meteor.call('setColorDefault');
 			Meteor.call('setnull');
@@ -584,14 +662,16 @@ Template.AddTasks.events({
 	//close change over box
 	'click .changeover-close':function () {
 		Session.set('changeover-showup',false);
-		Meteor.call('updatechangeover',true,time.get(),count);
+		// Meteor.call('updatechangeover',true,time.get(),count);
+		Meteor.call('updatechangeover',true,Session.get('time'),count);
 		return false;
 	},
 	'click .toggle-jobComplete': function(){
 		//set complete job toggle
 		// Session.set('taskIsComplete',true);
-		var timeformat = moment(currentTime,format);
-		var currentTime = time.get();
+		// var timeformat = moment(currentTime,format);
+		// var currentTime = time.get();
+		var currentTime = Session.get('time');
 		var worktime = this.worktime.substring(0,2);
 		var partnumber = this.partnumber;
 		if (Session.get('togglecomp') != null){
@@ -620,6 +700,8 @@ Template.AddTasks.events({
 		var pretimeused = Session.get('changeovertimecount') == null ? 0 : Session.get('changeovertimecount');
 		var realtimeused = timeused - pretimeused;
 		Session.set('changeovertimecount',timeused);
+		// console.log(realtimeused);
+		// console.log(pretimeused);
 		realtimeused = Math.floor((realtimeused/60)*worktime);
 		var timechanged = worktime-realtimeused;
 		 //get the earnedtime per piece
@@ -633,8 +715,8 @@ Template.AddTasks.events({
 				plannumber = plannumber/operatorcount;
 			}
 			plannumber = realtimeused/plannumber;
-			// plannumber = Math.floor(plannumber);
-			plannumber = Math.round( plannumber * 10 ) / 10;
+			plannumber = Math.floor(plannumber);
+			// plannumber = Math.round( plannumber * 10 ) / 10;
 		}else{
 			plannumber = 0;
 		}
@@ -645,7 +727,7 @@ Template.AddTasks.events({
 		// this.plan = this.plan * (sec/60);
 		var info = [true,ClientTaskworktime.findOne({id:this.id}),timechanged];
 		Session.set('taskIsComplete',info);
-		var resetinputfiled = document.getElementById('commentsinput').value ="Change Over!";
+		// var resetinputfiled = document.getElementById('commentsinput').value ="Change Over!";
 		Session.set('togglecomp', ClientTaskworktime.findOne({id:this.id}));
 	    // ClientTaskworktime.update({id:this.id}, {
 	    //   $set: { worktime: ( timechanged + ' min' },
@@ -667,7 +749,7 @@ Template.AddTasks.events({
 			return;
 		}
 		var reason =Session.get('reason');
-		var currentTime = time;
+		var currentTime = Session.get('time');
 		if (Session.get('toggleisred')){
 			var status = 'red';
 		}else{
@@ -716,7 +798,7 @@ Template.AddTasks.events({
     		Session.set('tempchangeoverid',info[1].id.substring(0,1));
     		//insert the task from server side
     		Meteor.call('inserttask', id, timespan, partnumber, worktime.substring(0,2), plantoactual, actual, reason,
-    		 status,currentTime.curValue,comment,operatorIDarray,earnedtime,buildingnumber, cell);
+    		 status,currentTime,comment,operatorIDarray,earnedtime,buildingnumber, cell);
     		Session.set('submited', 'yes');
 			alert("submited!");
 			//change worktime by the changover time
@@ -729,7 +811,7 @@ Template.AddTasks.events({
 			return;
     	}else{
     		Meteor.call('inserttask', id, timespan, partnumber, worktime.substring(0,2), plantoactual, actual,
-    		 reason, status,currentTime.curValue,comment,operatorIDarray,earnedtime,buildingnumber, cell);
+    		 reason, status,currentTime,comment,operatorIDarray,earnedtime,buildingnumber, cell);
     		Session.set('submited', 'yes');
     		alert("submited!");
     		return;

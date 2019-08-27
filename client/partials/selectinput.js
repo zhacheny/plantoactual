@@ -47,7 +47,7 @@ Template.selectinput.onRendered(async function select2onRendered(){
 
     checkElement('select-tag')
         .then(() => {
-            $('.select-tag-dropdown').select2();
+            $('.select-tag-dropdown').select2({ width: '15vw' });
         });
 
 });

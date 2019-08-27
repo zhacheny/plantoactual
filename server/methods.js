@@ -3,6 +3,13 @@ import { Tasks, Cell, Partnumber, Taskworktime, Plan, Operator, EarnedTimePP,Ano
 
 //run on your server
 Meteor.methods({
+	getServerTime: function () {
+            // var _time = (new Date).toTimeString();
+            var _time = (new Date);
+            // console.log(_time);
+            return _time;
+    },
+    
 	insertOperator(operatorName,EENumber,Department,employIndicator,supervisorName,initial){
 		let exists = Operator.findOne( { EENumber: EENumber } );
 		if ( !exists ) {

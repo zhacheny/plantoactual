@@ -55,6 +55,14 @@ adminRoutes.route('/operatormanagement',{
         BlazeLayout.render("AppLayout", {main: "OperatorManagement"});
     }
 });
+
+adminRoutes.route('/viewPdf',{
+    name: 'viewPdf',
+    action() {
+        BlazeLayout.render("AppLayout", {main: "ViewPdf"});
+    }
+});
+
 // var operatorRoutes = FlowRouter.group({
 //     prefix: '/operator',
 //     name: 'operator'

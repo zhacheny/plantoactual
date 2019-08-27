@@ -8,7 +8,16 @@ html {
 *, *:before, *:after {
     box-sizing: inherit;
 }
+/*
+li {
 
+    font-size:1.3vw;
+}@media screen and (min-width: 1200px) {
+  li {
+     font-size: 16px;
+  }
+}
+*/
 body {
     color: $text;
     font-family: 'Open Sans', sans-serif;
@@ -21,7 +30,7 @@ h1 {
 
 h2 {
     font-weight: 100;
-    font-size: 3.157em;
+    font-size: 3.157vw;
 }
 
 h3 {
@@ -63,7 +72,56 @@ input[type="comment"]{
     text-transform: uppercase;
     text-decoration: none;
     display: inline-block;
-    font-weight: 800;
+    font-weight: 600;
+    font-size:1.05em;
+    width:100%;
+    max-width:110px;
+    padding: 10px 15px 7px;
+    color: #FFF;
+    letter-spacing: 1px;
+    //border: solid 2px $action;
+      border: 0;
+    border-radius: 5px;
+    @include trans();
+    &:hover {
+        background: $action - 30;
+        border-color: $action - 30;
+    }
+}@media screen and (min-width: 1200px) {
+  btn, button {
+     font-size: 1em;
+  }
+}
+
+.btn-text {
+    background: $action;
+    text-transform: uppercase;
+    text-decoration: none;
+    display: inline-block;
+    font-weight: 600;
+    font-size:1em;
+    max-width:150px;
+    padding: 10px 15px 7px;
+    color: #FFF;
+    letter-spacing: 1px;
+    //border: solid 2px $action;
+      border: 0;
+    border-radius: 5px;
+    @include trans();
+    &:hover {
+        background: $action - 30;
+        border-color: $action - 30;
+    }
+    background: transparent;
+}
+.btn-home {
+    background: $action;
+    text-transform: uppercase;
+    text-decoration: none;
+    display: inline-block;
+    font-weight: 600;
+    font-size:1em;
+    width:150px;
     padding: 10px 15px 7px;
     color: #FFF;
     letter-spacing: 1px;
@@ -77,11 +135,6 @@ input[type="comment"]{
     }
 }
 
-.btn-text {
-    @extend .btn;
-    background: transparent;
-}
-
 .btn-primary {
     @extend .btn;
     background: $accent;
@@ -90,6 +143,10 @@ input[type="comment"]{
         background: $accent - 30;
         border-color: $accent - 30;
     }
+}@media screen and (min-width: 1200px) {
+  btn-primary {
+     font-size: 0.8em;
+  }
 }
 
 
@@ -341,7 +398,9 @@ table {
       border:solid 1px #888888; 
       overflow:hidden; 
       display:block; 
-      //width:12em; 
+      width:100%;
+      min-width:5em;
+      //max-width:12em;
       margin:auto; 
       font-size: 1em; /*use this to scale the select*/
     }
@@ -552,6 +611,7 @@ table {
 //time display user-defined added by chenyu
 .wrapper {
     //width:600px;
+    width:100%;
     margin: 0 auto;
 }
 
@@ -561,8 +621,13 @@ table {
     float:left;
     h1 {
         margin: 10px 10px;
-        font-size: 5em;
-    }
+        font-size: 5vw;
+    }@media screen and (min-width: 1200px) {
+        h1 {
+        font-size: 60px;
+  }
+}
+
 }
 
 #block2
@@ -580,20 +645,30 @@ table {
     font-family: 'Open Sans', sans-serif;
     float:right;
     background-color: #F5F5F5;
-    margin: 30px 15px;
+    margin: 15px 15px;
     padding: 20px;
     width: 25%;
     text-align:center;
+    font-size: 1.3vw;
+}@media screen and (min-width: 1200px) {
+  #block3 {
+     font-size: 17px;
+  }
 }
 #block4
 {
     font-family: 'Open Sans', sans-serif;
     float:right;
     background-color: #F5F5F5;
-    margin: 30px 30px;
+    margin: 15px 15px;
     padding: 20px;
-    width: 180px;
+    width: 15%;
     text-align:center;
+    font-size:1.3vw;
+}@media screen and (min-width: 1200px) {
+  #block4 {
+     font-size: 17px;
+  }
 }
 
 //icon row added by Chenyu
