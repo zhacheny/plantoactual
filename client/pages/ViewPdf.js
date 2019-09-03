@@ -18,32 +18,11 @@ var shift_1_end = moment('14:50:00',format);
 var shift_2_start = moment('15:00:00',format);
 var shift_2_end = moment('23:50:00',format);
 
-Template.ViewPdf.onCreated(function(){
-	this.autorun(() => {
-		this.subscribe('anouncements');
-	})
-	this.autorun(() => {
-		this.subscribe('task');
-	})
-	this.autorun(() => {
-		this.subscribe('partnumber');
-	})
-	this.autorun(() => {
-		this.subscribe('taskworktime');
-	})
-	this.autorun(() => {
-		this.subscribe('plan');
-	})
-	this.autorun(() => {
-		this.subscribe('operator');
-	})
-	this.autorun(() => {
-		this.subscribe('earnedTimePPiece');
-	})
-	// Meteor.setInterval(function() {
-	// 	time.set(new Date());
-	// }, 1000);
-});
+// Template.ViewPdf.onCreated(function(){
+// 	// Meteor.setInterval(function() {
+// 	// 	time.set(new Date());
+// 	// }, 1000);
+// });
 
 Template.ViewPdf.helpers({
 	url:function(){

@@ -34,15 +34,20 @@ Meteor.publish('safetymessage', function(){
 	return Safetymessage.find({});
 });
 //publish task
-Meteor.publish('task', function(){
-
-	return Tasks.find({});
+Meteor.publish('task', function(start,end,buildingnumber){
+	if(buildingnumber != null){
+		return Tasks.find({createdAt : { $gte : start, $lt: end }, 
+			buildingnumber:buildingnumber});
+	}
+	// return Tasks.find({});
 });
 
 //publish partnumber
-Meteor.publish('partnumber', function(){
-
-	return Partnumber.find({});
+Meteor.publish('partnumber', function(buildingnumber,cell){
+	if(buildingnumber != null && cell != null){
+		return Partnumber.find({buildingnumber:buildingnumber, cell:cell});
+	}
+	// return Partnumber.find({});
 });
 
 //publish partnumber
@@ -51,13 +56,15 @@ Meteor.publish('taskworktime', function(){
 	return Taskworktime.find({});
 });
 
-Meteor.publish('cell', function(){
-	return Cell.find({});
+Meteor.publish('cell', function(buildingnumber){
+	if(buildingnumber != null){
+		return Cell.find({buildingnumber:buildingnumber});
+	}
 });
 
-Meteor.publish('plan', function(){
-	return Plan.find({});
-});
+// Meteor.publish('plan', function(){
+// 	return Plan.find({});
+// });
 
 Meteor.publish('operator', function(){
 	return Operator.find({});

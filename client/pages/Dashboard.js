@@ -1,4 +1,4 @@
-import { Tasks, Cell, Partnumber, Taskworktime, Plan, Operator, EarnedTimePP,Anouncements,
+import { Tasks, Cell, Partnumber, Plan, Operator, EarnedTimePP,Anouncements,
 		Safetymessage, Department, Menu } from '/lib/collections.js';
 import moment from 'moment';
 import { ClientTaskworktime } from '/client/main.js';
@@ -20,21 +20,15 @@ var shift_2_end = moment('23:50:00',format);
 
 Template.Dashboard.onCreated(function(){
 	// var currentTime = time.get();
-	this.autorun(() => {
-		this.subscribe('anouncements');
-	})
-	this.autorun(() => {
-		this.subscribe('task');
-	})
-	this.autorun(() => {
-		this.subscribe('safetymessage');
-	})
-	this.autorun(() => {
-		this.subscribe('department');
-	})
-	this.autorun(() => {
-		this.subscribe('menu');
-	})
+	// this.autorun(() => {
+	// 	this.subscribe('safetymessage');
+	// })
+	// this.autorun(() => {
+	// 	this.subscribe('department');
+	// })
+	// this.autorun(() => {
+	// 	this.subscribe('menu');
+	// })
 	// Meteor.setInterval(function() {
 	// 	time.set(new Date());
 	// }, 1000);
@@ -318,7 +312,8 @@ Template.Dashboard.events({
 		let name = Session.get('menu-input-name');
 		let discription = Session.get('menu-input-discription');
 		let price = Session.get('menu-input-price');
-		var currentTime = time.get();
+		// var currentTime = time.get();
+		var currentTime = Session.get('time');
 		let createdAt = currentTime;
 		Meteor.call('add_box_Menu',name,discription,price,createdAt);
 		Session.set('box-Menu-add-show',false)
@@ -327,7 +322,8 @@ Template.Dashboard.events({
 
 	'click .add-box-Anouncements-confirm':function(){
 		let str = Session.get('anouncements_input');
-		var currentTime = time.get();
+		// var currentTime = time.get();
+		var currentTime = Session.get('time');
 		let createdAt = currentTime;
 		console.log(createdAt);
 		Meteor.call('add_boxAnouncementsRecords',str,createdAt);

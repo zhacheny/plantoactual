@@ -1,29 +1,11 @@
-import { Tasks, Partnumber, Taskworktime, Plan, Operator, EarnedTimePP } from '/lib/collections.js';
+import { Tasks, Partnumber, Plan, Operator, EarnedTimePP } from '/lib/collections.js';
 var pre_url = "http://datuswes008/SOLIDWORKSPDM/Contains/EWS%20DB/Material/WM/Finished%20Goods?file=";
 
-Template.PartMaintenance.onCreated(function(){
-	this.autorun(() => {
-		this.subscribe('task');
-	})
-	this.autorun(() => {
-		this.subscribe('partnumber');
-	})
-	this.autorun(() => {
-		this.subscribe('taskworktime');
-	})
-	this.autorun(() => {
-		this.subscribe('plan');
-	})
-	this.autorun(() => {
-		this.subscribe('operator');
-	})
-	this.autorun(() => {
-		this.subscribe('earnedTimePPiece');
-	})
-	// Meteor.setInterval(function() {
-	// 	time.set(new Date());
-	// }, 1000);
-});
+// Template.PartMaintenance.onCreated(function(){
+// 	// Meteor.setInterval(function() {
+// 	// 	time.set(new Date());
+// 	// }, 1000);
+// });
 
 
 Template.PartMaintenance.events({

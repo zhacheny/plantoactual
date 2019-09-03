@@ -1,15 +1,14 @@
-import { Tasks, Cell, Partnumber, Taskworktime, Plan, Operator, EarnedTimePP,Anouncements,
+import { Tasks, Cell, Partnumber, Changeover, Plan, Operator, EarnedTimePP,Anouncements,
 		Safetymessage, Department, Menu } from '/lib/collections.js';
 
 //run on your server
 Meteor.methods({
-	getServerTime: function () {
-            // var _time = (new Date).toTimeString();
-            var _time = (new Date);
-            // console.log(_time);
-            return _time;
-    },
-    
+	// getServerTime: function () {
+ //            // var _time = (new Date).toTimeString();
+ //            var _time = (new Date);
+ //            // console.log(_time);
+ //            return _time;
+ //    },
 	insertOperator(operatorName,EENumber,Department,employIndicator,supervisorName,initial){
 		let exists = Operator.findOne( { EENumber: EENumber } );
 		if ( !exists ) {
@@ -292,6 +291,41 @@ Meteor.methods({
 	      		},
 	    });
 	},
+	// inserttask_2(response) {
+	// 	let id = response[0];
+	// 	let timespan = response[1];
+	// 	let partnumber = response[2];
+	// 	let worktime = response[3];
+	// 	let plantoactual = response[4];
+	// 	let actual = response[5];
+	// 	let reason = response[6];
+	// 	let status = response[7];
+	// 	let createdAt = response[8];
+	// 	let comment= response[9];
+	// 	let operatorID = response[10];
+	// 	let earnedtime = response[11];
+	// 	let buildingnumber = response[12];
+	// 	let cell =response[13];
+	// 	console.log(111);
+	// 	Tasks.insert({
+	// 		id: id,
+	// 	      timespan: timespan,
+	// 	      partnumber:partnumber,
+	// 	      worktime:worktime,
+	// 	      plan:plantoactual,
+	// 	      actual:actual,
+	// 	      reason:reason,
+	// 	      status:status,
+	// 	      comment:comment,
+	// 	      createdAt: createdAt,
+	// 	      operatorID:operatorID,
+	// 	      earnedtime:earnedtime,
+	// 	      buildingnumber:buildingnumber,
+	// 	      cell: cell,
+	// 	      // owner: Meteor.userId(),
+	// 	      // username: Meteor.user().username,
+	// 	    });
+	// },
 	inserttask(id, timespan, partnumber, worktime, plantoactual, actual, reason,
 		 status,createdAt,comment,operatorID,earnedtime,buildingnumber, cell) {
 		Tasks.insert({
@@ -325,6 +359,7 @@ Meteor.methods({
 	submitLogic(){
 		return;
 	},
+
 	// 'tasks.insert'(text) {
  //    check(text, String);
  

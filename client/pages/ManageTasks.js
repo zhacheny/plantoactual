@@ -3,8 +3,8 @@ import moment from 'moment';
 //setting up the shift point
 //var timeSpan = ['6-7 am','7-8 am','8-9 am','9-10 am','10-11 am','11-12 am','12:30-13:30 pm','13:30-14:30 pm','14:30-15:30 pm'];
 var reasonCode = ['Meeting/Training','Machine Down','Quality Isssue','Safety','Waiting on Material','Write in'];
-var timespan1 = ['6:00-7:00 am','7:00-8:00 am','8:00-9:00 am','9:00-10:00 am','10:00-11:00 am','11:00-12:00 am','12:30-13:30 pm','13:30-14:30 pm'];
-var timespan2 = ['15:00-16:00 pm','16:00-17:00 pm', '17:00-18:00 pm', '19:00-20:00 pm', '20:00-21:00 pm', '21:30-22:30 pm','22:30-23:30 pm'];
+var timespan1 = ['6:00-7:00 am','7:00-8:00 am','8:00-9:00 am','9:00-10:00 am','10:00-11:00 am','11:00-12:00 am','12:30-1:30 pm','1:30-2:30 pm'];
+var timespan2 = ['3:00-4:00 pm','4:00-5:00 pm', '5:00-6:00 pm', '7:00-10:00 pm', '10:00-9:00 pm', '9:30-10:30 pm','10:30-11:30 pm'];
 var timespan_worktime = ['55','60','40','60','55','55','60','50','55','60','40','60','55','55','60','30'];
 var timespan_merge = timespan1.concat(timespan2);
 var data = "";
@@ -54,24 +54,6 @@ Template.ManageTasks.rendered = function() {
 Template.ManageTasks.onCreated(function(){
 	Session.set('toggle-Download',false);
 	Session.set('toggle-Generate',false);
-	this.autorun(() => {
-		this.subscribe('task');
-	})
-	this.autorun(() => {
-		this.subscribe('partnumber');
-	})
-	this.autorun(() => {
-		this.subscribe('taskworktime');
-	})
-	this.autorun(() => {
-		this.subscribe('plan');
-	})
-	this.autorun(() => {
-		this.subscribe('operator');
-	})
-	this.autorun(() => {
-		this.subscribe('earnedTimePPiece');
-	})
 	// Meteor.setInterval(function() {
 	// 	time.set(new Date());
 	// }, 1000);
@@ -259,6 +241,12 @@ Template.ManageTasks.events({
 	},
 	'change #checkbox4': function(event){
 	  var is_checked = $(event.target).is(":checked");
+	  var startdate = Session.get('startdate') != null ? Session.get('startdate') : false;
+	  var enddate = Session.get('enddate') != null ? Session.get('enddate') : false;
+	  var start = new Date(startdate);
+	  var end = new Date(enddate);
+	  var building = Session.get('buildingnumber') != null ? Session.get('buildingnumber') : false;
+	  Meteor.subscribe('task',start,end,building);
 	  Session.set('toggle-Generate',is_checked);
 	},
 	'change .partnumberchange':function(evt){
@@ -409,26 +397,28 @@ Template.ManageTasks.events({
 					//math round at most 2 decimal places
 					All_sum_eff[i] = Math.round(All_sum_eff[i] * 100) / 100;
 				}
-				//calculate summation of planned worktime (per day)
-				var per_sum_Alltime = 0;
-				var perday_timespan = new Set();
-				for (var z = timespan_merge.length - 1; z >= 0; z--) {
-					for (var j = data.length - 1; j >= 0; j--) {
-						if(data[j].timespan == timespan_merge[z] && 
-							moment(data[j].createdAt).isBetween(moment(curDate_start), moment(curDate_end))){
-							if(!perday_timespan.has(timespan_merge[z])){
-								per_sum_Alltime += parseFloat(timespan_worktime[z]);
-								// console.log(per_sum_Alltime);
-							}
-							perday_timespan.add(timespan_merge[z]);
-							// console.log(perday_timespan.size);
+
+			// 	//calculate summation of planned worktime (per day)
+			// 	var per_sum_Alltime = 0;
+			// 	var perday_timespan = new Set();
+			// 	for (var z = timespan_merge.length - 1; z >= 0; z--) {
+			// 		for (var j = data.length - 1; j >= 0; j--) {
+			// 			if(data[j].timespan == timespan_merge[z] && 
+			// 				moment(data[j].createdAt).isBetween(moment(curDate_start), moment(curDate_end))){
+			// 				if(!perday_timespan.has(timespan_merge[z])){
+			// 					per_sum_Alltime += parseFloat(timespan_worktime[z]);
+			// 					// console.log(per_sum_Alltime);
+			// 				}
+			// 				perday_timespan.add(timespan_merge[z]);
+			// 				// console.log(perday_timespan.size);
 							
-						}
-						// sum_Worktime += data[i].worktime;
-						// sum_Earnedtime += data[i].earnedtime;
-					}
-				}
-			sum_Alltime += per_sum_Alltime;
+			// 			}
+			// 			// sum_Worktime += data[i].worktime;
+			// 			// sum_Earnedtime += data[i].earnedtime;
+			// 		}
+			// 	}
+			// sum_Alltime += per_sum_Alltime;
+
 				// console.log(curDate_start);
 				// console.log(curDate_end);
 				
@@ -544,21 +534,19 @@ Template.ManageTasks.events({
 			var sum_Actualtime = 0;
 			var sum_Earnedtime = 0;
 
-			for (var i = timespan_merge.length - 1; i >= 0; i--) {
-				for (var j = data.length - 1; j >= 0; j--) {
-					if(data[j].timespan == timespan_merge[i]){
-						sum_Actualtime += parseFloat(data[j].worktime);
-						sum_Earnedtime += parseFloat(data[j].earnedtime);
-					}
-					// sum_Worktime += data[i].worktime;
-					// sum_Earnedtime += data[i].earnedtime;
-
+			for (var i = data.length - 1; i >= 0; i--) {
+				if(data[i].status != 'changeover'){
+					sum_Actualtime += parseFloat(data[i].worktime);
+					sum_Earnedtime += parseFloat(data[i].earnedtime);
+				}else{
+					sum_changeover += parseFloat(data[i].worktime);
 				}
-				overall_eff = sum_Earnedtime/sum_Actualtime;
-				// console.log(sum_changeover);
+
 			}
-			var sum_changeovertime = sum_Alltime-sum_Actualtime;
-			Session.set('datapad',[sum_Actualtime, sum_Earnedtime,sum_changeovertime,overall_eff]);
+			overall_eff = sum_Earnedtime/sum_Actualtime;
+				// console.log(sum_changeover);
+			// var sum_changeovertime = sum_Alltime-sum_Actualtime;
+			Session.set('datapad',[sum_Actualtime, sum_Earnedtime,sum_changeover,overall_eff]);
 			Session.set('dateRange',[moment(start).format("MMM Do YY"),moment(end).format("MMM Do YY")]);
 			Session.set('eff-trend',All_sum_eff);
 			Session.set('lostMin',lostMin_with_index);
@@ -583,6 +571,16 @@ Template.ManageTasks.events({
 
 })
 Template.ManageTasks.helpers({
+	selectedbuilding:function(){
+		return Session.get('buildingnumber') != null ? Session.get('buildingnumber'):'';
+	},
+	selectedcell:function(){
+		return Session.get('cell') != null ? Session.get('cell'):'';
+	},
+	selectedpart:function(){
+		// console.log(this.partnumber);
+		return Session.get('partnumber') != null ? Session.get('partnumber'):'XXX';
+	},
 	shifts:function(){
 		if (Session.get('shifts1') && Session.get('shifts2')){
 			return 'Both';

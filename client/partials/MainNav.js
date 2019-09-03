@@ -10,7 +10,7 @@ Template.MainNav.helpers({
 Template.MainNav.events({
 	'click .login-toggle': ()=> {
 		Session.keys = {};
-		Session.set('nav-toggle','open');
+		Session.set('nav-toggle','open'); 
 
 		// if (ClientTaskworktime.find().count() === 0) {
 		// 	var taskworktime = [

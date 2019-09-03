@@ -1,4 +1,6 @@
 import { ClientTaskworktime } from '/client/main.js';
+import { Tasks, Cell, Partnumber, Changeover, Plan, Operator, EarnedTimePP,Anouncements,
+		Safetymessage, Department, Menu } from '/lib/collections.js';
 import moment from 'moment';
 //methods on client side
 var index = ['a1','a2','a3','a4','a5','a6'];
@@ -16,9 +18,9 @@ Meteor.methods({
 		
 		var timeformat = moment(currentTime,format);
 		// Session.set('test-mode-time-log',currentTime)
-		console.log(currentTime);
+		// console.log(currentTime);
 		if(timeformat.isBetween(shift_1_start, shift_1_end)){
-			console.log(1);
+			// console.log(1);
 			ClientTaskworktime.remove({});
 			var taskworktime = [
 			  { id: 'a', timespan: '6:00-7:00 am', worktime: '55 min', plantoactual:0, actual:"0", reason: "XXX",status:null, partnumber: "XXX",
@@ -32,10 +34,10 @@ Meteor.methods({
 			  { id: 'e', timespan: '10:00-11:00 am', worktime: '55 min', plantoactual:0, actual:"0", reason: "XXX" ,status:null, partnumber: "XXX",
 			  comment:"XXX",operator:"",earnedtime:"0"},
 			  { id: 'f', timespan: '11:00-12:00 am', worktime: '55 min', plantoactual:0, actual:"0", reason: "XXX" ,status:null, partnumber: "XXX",
+			  comment:"XXX",operator:"",earnedtime:"0"},	
+			  { id: 'g', timespan: '12:30-1:30 pm', worktime: '60 min', plantoactual:0, actual:"0", reason: "XXX",status:null , partnumber: "XXX",
 			  comment:"XXX",operator:"",earnedtime:"0"},
-			  { id: 'g', timespan: '12:30-13:30 pm', worktime: '60 min', plantoactual:0, actual:"0", reason: "XXX",status:null , partnumber: "XXX",
-			  comment:"XXX",operator:"",earnedtime:"0"},
-			  { id: 'h', timespan: '13:30-14:30 pm', worktime: '50 min', plantoactual:0, actual:"0", reason: "XXX",status:null , partnumber: "XXX",
+			  { id: 'h', timespan: '1:30-2:30 pm', worktime: '50 min', plantoactual:0, actual:"0", reason: "XXX",status:null , partnumber: "XXX",
 			  comment:"XXX",operator:"",earnedtime:"0"},
 			];
 
@@ -46,24 +48,24 @@ Meteor.methods({
 
 			
 		}else{
-			console.log(2);
+			// console.log(2);
 			ClientTaskworktime.remove({});
 			var taskworktime = [
-			  { id: 'a', timespan: '15:00-16:00 pm', worktime: '55 min', plantoactual:0, actual:"0", reason: "XXX",status:null , partnumber: "XXX",
+			  { id: 'a', timespan: '3:00-4:00 pm', worktime: '55 min', plantoactual:0, actual:"0", reason: "XXX",status:null , partnumber: "XXX",
 			  comment:"XXX",operator:"",actualmin:"",earnedtime:"0"},
-			  { id: 'b', timespan: '16:00-17:00 pm', worktime: '60 min', plantoactual:0, actual:"0", reason: "XXX",status:null , partnumber: "XXX",
+			  { id: 'b', timespan: '4:00-5:00 pm', worktime: '60 min', plantoactual:0, actual:"0", reason: "XXX",status:null , partnumber: "XXX",
 			  comment:"XXX",operator:"",actualmin:"",earnedtime:"0"},
-			  { id: 'c', timespan: '17:00-18:00 pm', worktime: '40 min', plantoactual:0, actual:"0", reason: "XXX",status:null , partnumber: "XXX",
+			  { id: 'c', timespan: '5:00-6:00 pm', worktime: '40 min', plantoactual:0, actual:"0", reason: "XXX",status:null , partnumber: "XXX",
 			  comment:"XXX",operator:"",actualmin:"",earnedtime:"0"},
-			  { id: 'd', timespan: '18:00-19:30 pm', worktime: '30 min', plantoactual:0, actual:"0", reason: "XXX",status:null , partnumber: "XXX",
+			  { id: 'd', timespan: '6:00-7:30 pm', worktime: '60 min', plantoactual:0, actual:"0", reason: "XXX",status:null , partnumber: "XXX",
 			  comment:"XXX",operator:"",actualmin:"",earnedtime:"0"},
-			  { id: 'e', timespan: '19:00-20:00 pm', worktime: '60 min', plantoactual:0, actual:"0", reason: "XXX",status:null , partnumber: "XXX",
+			  { id: 'e', timespan: '7:00-8:00 pm', worktime: '55 min', plantoactual:0, actual:"0", reason: "XXX",status:null , partnumber: "XXX",
 			  comment:"XXX",operator:"",actualmin:"",earnedtime:"0"},
-			  { id: 'f', timespan: '20:00-21:00 pm', worktime: '55 min', plantoactual:0, actual:"0", reason: "XXX",status:null , partnumber: "XXX",
+			  { id: 'f', timespan: '8:00-9:00 pm', worktime: '55 min', plantoactual:0, actual:"0", reason: "XXX",status:null , partnumber: "XXX",
 			  comment:"XXX",operator:"",actualmin:"",earnedtime:"0"},
-			  { id: 'g', timespan: '21:30-22:30 pm', worktime: '55 min', plantoactual:0, actual:"0", reason: "XXX",status:null , partnumber: "XXX",
+			  { id: 'g', timespan: '9:30-10:30 pm', worktime: '60 min', plantoactual:0, actual:"0", reason: "XXX",status:null , partnumber: "XXX",
 			  comment:"XXX",operator:"",actualmin:"",earnedtime:"0"},
-			  { id: 'h', timespan: '22:30-23:30 pm', worktime: '60 min', plantoactual:0, actual:"0", reason: "XXX",status:null , partnumber: "XXX",
+			  { id: 'h', timespan: '10:30-11:30 pm', worktime: '55 min', plantoactual:0, actual:"0", reason: "XXX",status:null , partnumber: "XXX",
 			  comment:"XXX",operator:"",actualmin:"",earnedtime:"0"},
 
 			];
@@ -94,17 +96,35 @@ Meteor.methods({
 	    // console.log(changeoverDuration);
 	    // console.log(curId);
 	    var lastwortime = ClientTaskworktime.findOne({id:curId}).worktime.substring(0,2);
-	    // console.log(lastwortime);
+	    var partnumber = ClientTaskworktime.findOne({id:curId}).partnumber;
+	    var operatorcount = Session.get('operatorcount');
 	    //check whether the change over duration is out of time span
+
 	    if(isfinish){
-			ClientTaskworktime.update({id:curId}, {
-				$set: { worktime: lastwortime - changeoverDuration + ' min'},
-			});
+	    	var worktime = lastwortime - changeoverDuration;
 	    }else{
-			ClientTaskworktime.update({id:curId}, {
-				$set: { worktime: lastwortime - changeoverDuration + ' min', comment: 'Not finish'},
-			});
+	    	var worktime = lastwortime;
+			
 	    }
+	    //automatically changed the plan number
+		var plantoactual_auto_generate = 0;
+		if (partnumber == 'Part Not Available'){
+			Session.set('earnedTimePPiecePOpe',value);
+		}else{
+			var MinutesPP_one = Partnumber.findOne({cell:Session.get('cell'), part:partnumber}).MinutesPP_one;
+			plantoactual_auto_generate = MinutesPP_one;
+			// var value = 1/MinutesPP_one;
+			if (operatorcount >=2){
+			plantoactual_auto_generate = plantoactual_auto_generate/operatorcount;
+			}
+			plantoactual_auto_generate = worktime/plantoactual_auto_generate;
+			//returns the largest integer less than the value
+			plantoactual_auto_generate = Math.floor(plantoactual_auto_generate);
+			// value = Math.round( value * 10 ) / 10;
+		}
+		ClientTaskworktime.update({id:curId}, {
+			$set: { worktime: worktime + ' min', comment: 'Not finish',plantoactual: plantoactual_auto_generate},
+		});
 	},
 	checkIsnull(operatorinitial,initial,operatorcount,operatorID,operatorIDarray){
 		for (i = 0; i < operatorinitial.length; i++){
@@ -130,7 +150,7 @@ Meteor.methods({
 
 	},
 	setnull(){
-		Session.set('togglecomp', null);
+		// Session.set('togglecomp', null);
 		Session.set('toggleisred', null);
 		Session.set('reason', null);
 		Session.set('wrongtype',null);

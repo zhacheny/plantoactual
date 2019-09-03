@@ -2,11 +2,11 @@ import { Tasks, Partnumber, Cell } from '/lib/collections.js';
 
 // Tasks = new Mongo.Collection('task');
 
-Template.selectcell.onCreated(function(){
-	this.autorun(() => {
-		this.subscribe('cell');
-	})
-})
+// Template.selectcell.onCreated(function(){
+// 	this.autorun(() => {
+// 		this.subscribe('cell');
+// 	})
+// })
 
 Template.selectcell.helpers({
 	selectcell:function(selected){
@@ -17,6 +17,7 @@ Template.selectcell.helpers({
 	cell: function(){
 		// console.log(Tasks.find().fetch());
 		var select = Session.get('buildingnumber');
+		Meteor.subscribe('cell',select);
 		return Cell.find({buildingnumber: select}, { sort: { cellname: 1 }});
 	},
 });

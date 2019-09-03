@@ -2,14 +2,14 @@ import { Tasks, Partnumber } from '/lib/collections.js';
 
 // Tasks = new Mongo.Collection('task');
 
-Template.selectpart.onCreated(function(){
-	this.autorun(() => {
-		this.subscribe('task');
-	})
-	this.autorun(() => {
-		this.subscribe('partnumber');
-	})
-})
+// Template.selectpart.onCreated(function(){
+// 	this.autorun(() => {
+// 		this.subscribe('task');
+// 	})
+// 	this.autorun(() => {
+// 		this.subscribe('partnumber');
+// 	})
+// })
 
 Template.selectpart.helpers({
 	selectpart:function(selected){
@@ -28,6 +28,7 @@ Template.selectpart.helpers({
 		// console.log(Tasks.find().fetch());
 		var selectbuilding =  Session.get('buildingnumber');
 		var selectcell = Session.get('cell');
+		Meteor.subscribe('partnumber',selectbuilding,selectcell);
 		return Partnumber.find({buildingnumber: selectbuilding,cell:selectcell});
 	},
 	

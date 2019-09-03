@@ -1,24 +1,7 @@
 import { Tasks, Partnumber, Taskworktime, Plan, Operator, EarnedTimePP } from '/lib/collections.js';
 
 Template.OperatorManagement.onCreated(function(){
-	this.autorun(() => {
-		this.subscribe('task');
-	})
-	this.autorun(() => {
-		this.subscribe('partnumber');
-	})
-	this.autorun(() => {
-		this.subscribe('taskworktime');
-	})
-	this.autorun(() => {
-		this.subscribe('plan');
-	})
-	this.autorun(() => {
-		this.subscribe('operator');
-	})
-	this.autorun(() => {
-		this.subscribe('earnedTimePPiece');
-	})
+
 	// Meteor.setInterval(function() {
 	// 	time.set(new Date());
 	// }, 1000);
