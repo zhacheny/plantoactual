@@ -46,7 +46,7 @@ function builtArea() {
         
         tooltip: {
             // pointFormat: '{series.name} produced <b>{point.y:,.0f}</b><br/>warheads in {point.x}'
-            pointFormat: '{series.name} earned <b>{point.y}</b><br/>efficiency in {point.x}'
+            pointFormat: '{series.name} earned <b>{point.y}</b><br/>efficiency in Day {point.x}'
         },
         
         plotOptions: {

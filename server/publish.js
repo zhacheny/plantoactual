@@ -1,5 +1,5 @@
 import { Tasks, Partnumber, Taskworktime, Cell, Plan, Operator, EarnedTimePP,Anouncements,
-		Safetymessage, Department, Menu } from '/lib/collections.js';
+		Safetymessage, Department, Menu, Messages } from '/lib/collections.js';
 //publish all user
 Meteor.publish('allUsers', function(){
 	//security
@@ -46,6 +46,8 @@ Meteor.publish('task', function(start,end,buildingnumber){
 Meteor.publish('partnumber', function(buildingnumber,cell){
 	if(buildingnumber != null && cell != null){
 		return Partnumber.find({buildingnumber:buildingnumber, cell:cell});
+	}else if (buildingnumber == false){
+		return Partnumber.find({});
 	}
 	// return Partnumber.find({});
 });
@@ -76,4 +78,8 @@ Meteor.publish('earnedTimePPiece', function(){
 
 Meteor.publish('anouncements', function(){
 	return Anouncements.find({});
+});
+
+Meteor.publish("messages", function() {
+  return Messages.find({}, { fields: { name: 1, message: 1, createdAt: 1, announcement: 1 }, limit: 100, sort: { createdAt: -1 } }); //we want the 100 most recent messages
 });

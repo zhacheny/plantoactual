@@ -67,7 +67,7 @@ input[type="comment"]{
     padding: 10px 10px 7px;
 }
 
-.btn, button {
+.btn{
     background: $action;
     text-transform: uppercase;
     text-decoration: none;
@@ -92,8 +92,34 @@ input[type="comment"]{
      font-size: 1em;
   }
 }
+button {
+    background: $action;
+    text-transform: uppercase;
+    text-decoration: none;
+    display: inline-block;
+    font-weight: 600;
+    font-size:1.05vw;
+    width:100%;
+    max-width:110px;
+    max-height:55px;
+    padding: 10px 15px 7px;
+    color: #FFF;
+    letter-spacing: 1px;
+    //border: solid 2px $action;
+      border: 0;
+    border-radius: 5px;
+    @include trans();
+    &:hover {
+        background: $action - 30;
+        border-color: $action - 30;
+    }
+}@media screen and (min-width: 1200px) {
+  btn, button {
+     font-size: 1em;
+  }
+}
 
-.btn-text {
+.btn-text, .toggle-Test-mode {
     background: $action;
     text-transform: uppercase;
     text-decoration: none;
@@ -114,6 +140,28 @@ input[type="comment"]{
     }
     background: transparent;
 }
+.button1 {
+    background: $action;
+    text-transform: uppercase;
+    text-decoration: none;
+    display: inline-block;
+    font-weight: 600;
+    font-size:1em;
+    max-width:150px;
+    padding: 10px 15px 7px;
+    color: #FFF;
+    letter-spacing: 1px;
+    //border: solid 2px $action;
+      border: 0;
+    border-radius: 5px;
+    @include trans();
+    &:hover {
+        background: $action - 30;
+        border-color: $action - 30;
+    }
+    background: transparent;
+}
+
 .btn-home {
     background: $action;
     text-transform: uppercase;
@@ -870,8 +918,13 @@ a {
 }
 
 form {
+  font-size: 1.3vw;
   width: 75%;
   margin: 0 auto;
+}@media screen and (min-width: 1200px) {
+  form {
+     font-size: 1em;
+  }
 }
 form div.group > div {
     width: 46%;
@@ -1024,7 +1077,11 @@ input[type=checkbox]:checked + label:before {
 }
 .datapad {
   //background-color: #ecf0f1;
-  min-width: 8.5%;
+  min-width: 7.5%;
+
+}
+.report-table{
+    box-shadow: 0 1px 1px #333;
 }
 .charts {
   display: flex;
@@ -1081,20 +1138,20 @@ input[type=checkbox]:checked + label:before {
     transition:all .3s ease-out;
 }
 //Print out button added by Chenyu
-button.print-button {
+button1.print-button {
 float:right;
   width: 100px;
   height: 100px;
 }
 
-span.print-icon, span.print-icon::before, span.print-icon::after, button.print-button:hover .print-icon::after {
+span.print-icon, span.print-icon::before, span.print-icon::after, button1.print-button:hover .print-icon::after {
   border: solid 4px #333;
 }
 span.print-icon::after {
   border-width: 2px;
 }
 
-button.print-button {
+button1.print-button {
   position: relative;
   padding: 0;
   border: 0;
@@ -1103,7 +1160,8 @@ button.print-button {
   background: transparent;
 }
 
-span.print-icon, span.print-icon::before, span.print-icon::after, button.print-button:hover .print-icon::after {
+span.print-icon, span.print-icon::before, span.print-icon::after, button1.print-button:hover .print-icon::after {
+  height: 135%;
   box-sizing: border-box;
   background-color: #fff;
 }
@@ -1155,15 +1213,15 @@ span.print-icon::after {
   transition: height .2s, border-width 0s .2s, width 0s .2s;
 }
 
-button.print-button:hover {
+button1.print-button:hover {
   cursor: pointer;
 }
 
-button.print-button:hover .print-icon::before {
+button1.print-button:hover .print-icon::before {
   height:0px;
   transition: height .2s;
 }
-button.print-button:hover .print-icon::after {
+button1.print-button:hover .print-icon::after {
   height:120%;
   transition: height .2s .15s, border-width 0s .16s;
 }

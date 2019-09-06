@@ -1,6 +1,6 @@
 import { ClientTaskworktime } from '/client/main.js';
 import { Tasks, Cell, Partnumber, Changeover, Plan, Operator, EarnedTimePP,Anouncements,
-		Safetymessage, Department, Menu } from '/lib/collections.js';
+		Safetymessage, Department, Menu, Messages } from '/lib/collections.js';
 import moment from 'moment';
 //methods on client side
 var index = ['a1','a2','a3','a4','a5','a6'];

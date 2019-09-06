@@ -63,6 +63,12 @@ adminRoutes.route('/viewPdf',{
     }
 });
 
+adminRoutes.route('/chats',{
+    name: 'chats',
+    action() {
+        BlazeLayout.render("AppLayout", {main: "Chats"});
+    }
+});
 // var operatorRoutes = FlowRouter.group({
 //     prefix: '/operator',
 //     name: 'operator'

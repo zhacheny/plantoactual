@@ -2,6 +2,13 @@
  * Function to draw the column chart
  */
 var firstRendered = false;
+// var units = {
+//     'isPareto': function(name){
+//         console.log(name);
+//         return name == 'Pareto' ? '%':'Minutes';
+//     }
+// };
+
 function builtColumn() {
 
     $('#container-column').highcharts({
@@ -60,7 +67,8 @@ function builtColumn() {
         tooltip: {
             headerFormat: '<span style="font-size:15px">{point.key}</span><table>',
             pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-                '<td style="padding:0"><b>{point.y:.1f} minutes</b></td></tr>',
+                '<td style="padding:0"><b>{point.y:.1f}'+
+                '</b></td></tr>',
             footerFormat: '</table>',
             shared: true,
             useHTML: true
@@ -167,9 +175,10 @@ Tracker.autorun(function() {
 /*
  * Call the function to built the chart when the template is rendered
  */
-Template.columnDemo.rendered = function() {
+Template.ParetoChart.rendered = function() {
     renderCharts();
     firstRendered = true;
     // builtColumn();
 }
+
 

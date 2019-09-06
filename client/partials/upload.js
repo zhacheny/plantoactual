@@ -1,8 +1,16 @@
+import { Tasks, Partnumber, Plan, Operator, EarnedTimePP, Cell } from '/lib/collections.js';
+// var part = '';
+// var cell = '';
 Template.upload.onCreated( () => {
-  Template.instance().uploading = new ReactiveVar( false );
+  	Template.instance().uploading = new ReactiveVar( false );
 });
 
+
 Template.upload.helpers({
+  // getcell(){
+  // 	part = Partnumber.find().fetch();
+  // 	// return Partnumber.find();
+  // },
   uploading() {
     return Template.instance().uploading.get();
   }
@@ -48,7 +56,27 @@ Template.upload.events({
 	      }
 	    });
 	  },
+  	// 'change [name="updatepart"]' ( event, template ) {
+	  //   template.uploading.set( true );
 
+	  //   console.log(part.length);
+	  //   Papa.parse( event.target.files[0], {
+	  //     header: true,
+	  //     complete( results, file ) {
+	  //       Meteor.call( 'parseUpdate_part', results.data,part, ( error, response ) => {
+	  //         if ( error ) {
+	  //           // console.log( error.reason );
+	  //           // throw new Meteor.Error('bad', 'stuff happened');
+	  //           Bert.alert( error.reason, 'danger', 'growl-top-right' );
+	  //           template.uploading.set( false );
+	  //         } else {
+	  //           template.uploading.set( false );
+	  //           Bert.alert( 'Upload complete!', 'success', 'growl-top-right' );
+	  //         }
+	  //       });
+	  //     }
+	  //   });
+	  // },
 	// 'change [name="uploadCSV"]' ( event, template ) {
 	//     template.uploading.set( true );
 	//     var data = event.target.files[0];

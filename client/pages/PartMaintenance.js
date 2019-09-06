@@ -1,11 +1,15 @@
-import { Tasks, Partnumber, Plan, Operator, EarnedTimePP } from '/lib/collections.js';
+import { Tasks, Partnumber, Plan, Operator, EarnedTimePP, Cell } from '/lib/collections.js';
 var pre_url = "http://datuswes008/SOLIDWORKSPDM/Contains/EWS%20DB/Material/WM/Finished%20Goods?file=";
 
-// Template.PartMaintenance.onCreated(function(){
-// 	// Meteor.setInterval(function() {
-// 	// 	time.set(new Date());
-// 	// }, 1000);
-// });
+Template.PartMaintenance.onCreated(function(){
+	// Meteor.setInterval(function() {
+	// 	time.set(new Date());
+	// }, 1000);
+	this.autorun(() => {
+		this.subscribe('partnumber',false);
+	})
+
+});
 
 
 Template.PartMaintenance.events({
@@ -44,12 +48,22 @@ Template.PartMaintenance.events({
 	'keypress input.inputPart': function(event){
 		var part = $(event.target).val();
 		if(event.key == 'Enter'){
-			Session.set('inputPart',part);
+			data = Partnumber.find({part:part}).fetch();
+			
+			if(data && data.length == 0){
+				alert('Not find!');
+
+			}
+			Session.set('inputPart_data',data);
 			return false;
     	}
-		return false;
-		
 	},
+	// 'keyup input.inputPart': function(event){
+	// 	var part = $(event.target).val();
+	// 	Session.set('inputPart',part);
+	// 	return false;
+		
+	// },
 	'click .maintenance-edit': function(event){
 		Session.set('toggle-maintenance-edit','open');
 		// let data = [this.MinutesPP_one,this.MinutesPP_two,this.MinutesPP_three,
@@ -300,7 +314,7 @@ Template.PartMaintenance.helpers({
 		if(Session.get('toggle-maintenance') == 0){
 			return false;
 		}else{
-			if(Session.get('toggle-maintenance') == 1 && Session.get('inputPart') != null){
+			if(Session.get('toggle-maintenance') == 1 && Session.get('inputPart_data') != null){
 				return true;
 			}
 		}
@@ -324,8 +338,11 @@ Template.PartMaintenance.helpers({
 		if (Session.get('toggle-maintenance') == 0){
 			return false;
 		}else{
-			var part = Session.get('inputPart');
-			data = Partnumber.find({part:part}).fetch();
+			// var part = Session.get('inputPart');
+			// data = Partnumber.find({part:part}).fetch();
+			// console.log(data);
+			var data = Session.get('inputPart_data');
+			// console.log(data);
 			return data;
 		}
 	},

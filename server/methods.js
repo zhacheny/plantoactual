@@ -1,6 +1,7 @@
 import { Tasks, Cell, Partnumber, Changeover, Plan, Operator, EarnedTimePP,Anouncements,
-		Safetymessage, Department, Menu } from '/lib/collections.js';
-
+		Safetymessage, Department, Menu, Messages } from '/lib/collections.js';
+import { check, Match } from 'meteor/check';
+import moment from 'moment';
 //run on your server
 Meteor.methods({
 	// getServerTime: function () {
@@ -9,6 +10,42 @@ Meteor.methods({
  //            // console.log(_time);
  //            return _time;
  //    },
+ 	sendMessage(data, chattingIsuser) {
+
+		// check(data, {
+		// 		message: String, //the message to send
+	 //      name: Match.Optional(String) //if the user already has a name
+		// 	});
+		    
+	    if (data.message=="") {
+	      throw new Meteor.Error("message-empty", "Your message is empty");
+	    }
+	    
+	    let userName = (data.name && data.name!="") ? data.name : "Anonymous";
+
+	    
+	    // const matchName = data.message.match(/^My name is (.*)/i);
+	    
+	    if (chattingIsuser) {
+	      Messages.insert({
+	        name: userName,
+	        message: data.message,
+	        createdAt: new Date(),
+	        announcement: true
+	      });
+	    } else {
+	      Messages.insert({
+	        name: userName,
+	        message: data.message,
+	        createdAt: new Date()
+	      });
+	    }
+
+	    return {
+	      name: userName
+	    };
+			
+	},
 	insertOperator(operatorName,EENumber,Department,employIndicator,supervisorName,initial){
 		let exists = Operator.findOne( { EENumber: EENumber } );
 		if ( !exists ) {
@@ -130,6 +167,21 @@ Meteor.methods({
 	      }
 	    }
 	  },
+	// parseUpdate_part(data, part){
+	// 	for (let i = 0; i < part.length; i++){
+	// 		for (let j = data.length - 1; j >= 0; j--) {
+	// 			// let part   = data[ j ]['Assembly No'];
+	// 			let cellId   = data[ j ]['Cell ID'];
+	// 			let cellName   = data[ j ]['Cell Name'];
+	// 			if(part[i].cell == cellId){
+	// 				Partnumber.update({cell:cellId}, {
+	// 			      $set: { cell: cellName },
+	// 			    });
+	// 			}			
+	// 		}
+			
+	// 	}
+	// },
 	parseUpload_part( data ) {
 	    // check( data, Array );
 		// data.length
@@ -167,11 +219,9 @@ Meteor.methods({
 			let MinutesPP_one  = data[ i ]['1 Operator Minutes'];
 			let MinutesPP_two   = data[ i ]['2 Operator Minutes'];
 			let MinutesPP_three   = data[ i ]['3 Operator Minutes'];
-			let statusCode = data[ i ]['Status Code'];
-			let XMLname = '';
-			if(statusCode == '200'){
-				XMLname = data[ i ]['Links'];
-			}else{
+			// let statusCode = data[ i ]['Status Code'];
+			let XMLname = data[ i ]['Links'];
+			if(XMLname == ''){
 				XMLname = null;
 			}
 			let PiecesPH_one  = MinutesPP_one ==''? '': '' + MinutesPP_one*60;

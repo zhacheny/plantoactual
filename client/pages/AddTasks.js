@@ -666,7 +666,7 @@ Template.AddTasks.events({
 			Session.set('earnedTimePPiecePOpe',value);
 		}else{
 			var MinutesPP_one = Partnumber.findOne({cell:Session.get('cell'), part:partnumber}).MinutesPP_one;
-			value = MinutesPP_one;
+			value = MinutesPP_one == '0' ? 11.1 : MinutesPP_one;
 			// var value = 1/MinutesPP_one;
 			if (operatorcount >=2){
 			value = value/operatorcount;
@@ -684,6 +684,14 @@ Template.AddTasks.events({
 	    ClientTaskworktime.update(this, {
 	      $set: { plantoactual: value, partnumber: partnumber },
 	    });
+	},
+	'keypress .calculatestatus': function(event){
+		let content = $(event.target).val();
+		if(event.key == 'Enter' && content != null){
+	    	
+			document.getElementsByClassName('outline')[0].click();
+	      // add to database
+	    }
 	},
 	'keyup .calculatestatus':function(event){
 		event.preventDefault();
@@ -807,7 +815,7 @@ Template.AddTasks.events({
 		 //get the earnedtime per piece
 		if (partnumber != 'Part Not Available'){
 			let MinutesPP_one = Partnumber.findOne({cell:Session.get('cell'), part:partnumber}).MinutesPP_one;
-			var plannumber = MinutesPP_one;
+			var plannumber = MinutesPP_one == '0' ? 11.1 : MinutesPP_one;
 				// let MinutesPP_one = (partnumber == 'Part Not Available') ? 
 			// '0': Partnumber.findOne({cell:Session.get('cell'), part:partnumber}).MinutesPP_one;
 			var operatorcount = Session.get('operatorcount');
