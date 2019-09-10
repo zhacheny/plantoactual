@@ -1,5 +1,6 @@
 <template name="Chats">
 		<h1 class="page-title">Chats</h1>
+
 	<div class="chatbody">
 		<div class="hint-box-container {{#if hideHint}}hidden{{/if}}">
 	    <div class="hide-hint-button"></div>
@@ -8,7 +9,17 @@
 	      <div>You can send messages anonymously or tell us your name. To set your name, just send a message saying "My name is _____" and we'll introduce you!</div>
 	    </div>
 	  </div>
-	  
+<!-- 	  		<div class="messages1">
+	      	{{#each messages}}
+	            {{> message}}
+	          {{/each}}
+	          {{#each messages}}
+	            {{> message}}
+	          {{/each}}
+	          {{#each messages}}
+	            {{> message}}
+	          {{/each}}
+	      </div> -->
 	  <div class="messages-box">
 	    <div class="messages-scroll">
 <!-- 	      <div class="header">

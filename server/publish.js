@@ -62,6 +62,7 @@ Meteor.publish('cell', function(buildingnumber){
 	if(buildingnumber != null){
 		return Cell.find({buildingnumber:buildingnumber});
 	}
+	// return Cell.find({});
 });
 
 // Meteor.publish('plan', function(){

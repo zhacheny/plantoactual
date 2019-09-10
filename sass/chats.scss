@@ -179,25 +179,25 @@
 }
 
 .messages-box {
-  position: fixed;
-  margin-left: 80px;
-  min-height: 100vh;
+  margin-left: 40px;
+  height: 100%;
+  //width:50vw;
   //padding: 40px 40px;
-  top: 150px;
+  top: -90px;
   left: 0px;
   right: 0px;
-  bottom: 80px;
-  overflow: none;
+  bottom: 0px;
+  position: relative;
 }
-
 .messages-box .messages-scroll {
-  position: absolute;
+  position: relative;
   margin-left: 80px;
   min-height: 100vh;
+  //overflow-y: scroll;
   bottom: 0px;
   left: 0px;
   right: 0px;
-  overflow: auto;
+  overflow-y: auto;
   max-height: 100%;
 	-webkit-overflow-scrolling: touch; /* enable intertial scroll on mobile devices */
 }

@@ -10,30 +10,30 @@ Template.Chats.onCreated(function bodyOnCreated() {
   
 });
 
-Template.Chats.onRendered(function bodyOnRendered() {
+// Template.Chats.onRendered(function bodyOnRendered() {
   
-  const $messagesScroll = this.$('.messages-scroll');
+//   const $messagesScroll = this.$('.messages-scroll');
   
-  //this is used to auto-scroll to new messages whenever they come in
+//   //this is used to auto-scroll to new messages whenever they come in
   
-  let initialized = false;
+//   let initialized = false;
   
-  this.autorun(() => {
-    if (this.messagesSub.ready()) {
-      Messages.find({}, { fields: { _id: 1 } }).fetch();
-      Tracker.afterFlush(() => {
-        //only auto-scroll if near the bottom already
-        if (!initialized || Math.abs($messagesScroll[0].scrollHeight - $messagesScroll.scrollTop() - $messagesScroll.outerHeight()) < 200) {
-          initialized = true;
-          $messagesScroll.stop().animate({
-            scrollTop: $messagesScroll[0].scrollHeight
-          });
-        }
-      });
-    }
-  });
+//   this.autorun(() => {
+//     if (this.messagesSub.ready()) {
+//       Messages.find({}, { fields: { _id: 1 } }).fetch();
+//       Tracker.afterFlush(() => {
+//         //only auto-scroll if near the bottom already
+//         if (!initialized || Math.abs($messagesScroll[0].scrollHeight - $messagesScroll.scrollTop() - $messagesScroll.outerHeight()) < 200) {
+//           initialized = true;
+//           $messagesScroll.stop().animate({
+//             scrollTop: $messagesScroll[0].scrollHeight
+//           });
+//         }
+//       });
+//     }
+//   });
   
-});
+// });
 
 Template.Chats.helpers({
   

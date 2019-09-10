@@ -128,7 +128,13 @@ Template.AddTasks.helpers({
 		return Session.get('buildingnumber') != null ? Session.get('buildingnumber'):'';
 	},
 	selectedcell:function(){
-		return Session.get('cell') != null ? Session.get('cell'):'';
+		if(Session.get('cell') != null){
+			var cell = Session.get('cell');
+			return Cell.findOne({cellId:cell}).cellname;
+
+		}else{
+			return '';
+		}
 	},
 	selectedpart:function(){
 		// console.log(this.partnumber);
@@ -668,11 +674,13 @@ Template.AddTasks.events({
 			var MinutesPP_one = Partnumber.findOne({cell:Session.get('cell'), part:partnumber}).MinutesPP_one;
 			value = MinutesPP_one == '0' ? 11.1 : MinutesPP_one;
 			// var value = 1/MinutesPP_one;
-			if (operatorcount >=2){
-			value = value/operatorcount;
+			if (operatorcount == 2){
+				value = Partnumber.findOne({cell:Session.get('cell'), part:partnumber}).MinutesPP_two;
+			}else if(operatorcount == 3){
+				value = Partnumber.findOne({cell:Session.get('cell'), part:partnumber}).MinutesPP_three;
 			}
 			Session.set('earnedTimePPiecePOpe',value);
-			value = this.worktime.substring(0,2)/value;
+			value = value == ''? 0: this.worktime.substring(0,2)/value;
 			//returns the largest integer less than the value
 			value = Math.floor(value);
 			// value = Math.round( value * 10 ) / 10;
@@ -819,10 +827,13 @@ Template.AddTasks.events({
 				// let MinutesPP_one = (partnumber == 'Part Not Available') ? 
 			// '0': Partnumber.findOne({cell:Session.get('cell'), part:partnumber}).MinutesPP_one;
 			var operatorcount = Session.get('operatorcount');
-			if (operatorcount >=2){
-				plannumber = plannumber/operatorcount;
+			if (operatorcount == 2){
+				plannumber = Partnumber.findOne({cell:Session.get('cell'), part:partnumber}).MinutesPP_two;
+			}else if(operatorcount == 3){
+				plannumber = Partnumber.findOne({cell:Session.get('cell'), part:partnumber}).MinutesPP_three;
 			}
-			plannumber = realtimeused/plannumber;
+
+			plannumber = plannumber == ''? 0 : realtimeused/plannumber;
 			plannumber = Math.floor(plannumber);
 			// plannumber = Math.round( plannumber * 10 ) / 10;
 		}else{
@@ -876,7 +887,8 @@ Template.AddTasks.events({
 		var comment = tempobject.comment;
 		var buildingnumber = Session.get('buildingnumber');
 		var cell = Session.get('cell');
-		var earnedtime = Session.get('earnedTimePPiecePOpe') * actual;
+		//check if there no value set for multiple operator
+		var earnedtime = Session.get('earnedTimePPiecePOpe') == 0? worktime : Session.get('earnedTimePPiecePOpe') * actual;
 		console.log([Session.get('earnedTimePPiecePOpe'),actual,earnedtime])
     	var info = Session.get('taskIsComplete');
     	if(info != null){

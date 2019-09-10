@@ -114,10 +114,12 @@ Meteor.methods({
 			var MinutesPP_one = Partnumber.findOne({cell:Session.get('cell'), part:partnumber}).MinutesPP_one;
 			plantoactual_auto_generate = MinutesPP_one;
 			// var value = 1/MinutesPP_one;
-			if (operatorcount >=2){
-			plantoactual_auto_generate = plantoactual_auto_generate/operatorcount;
+			if (operatorcount == 2){
+				plantoactual_auto_generate = Partnumber.findOne({cell:Session.get('cell'), part:partnumber}).MinutesPP_two;
+			}else if (operatorcount == 2){
+				plantoactual_auto_generate = Partnumber.findOne({cell:Session.get('cell'), part:partnumber}).MinutesPP_three;
 			}
-			plantoactual_auto_generate = worktime/plantoactual_auto_generate;
+			plantoactual_auto_generate = plantoactual_auto_generate == '' ? 0 : worktime/plantoactual_auto_generate;
 			//returns the largest integer less than the value
 			plantoactual_auto_generate = Math.floor(plantoactual_auto_generate);
 			// value = Math.round( value * 10 ) / 10;
