@@ -36,12 +36,16 @@ Meteor.publish('safetymessage', function(){
 //publish task
 Meteor.publish('task', function(start,end,buildingnumber){
 	if(buildingnumber != null){
-		return Tasks.find({createdAt : { $gte : start, $lt: end }, 
-			buildingnumber:buildingnumber});
+		if(start == null,end == null){
+			return Tasks.find( {buildingnumber:buildingnumber});
+		}else{
+			return Tasks.find({createdAt : { $gte : start, $lt: end }, 
+				buildingnumber:buildingnumber});
+		}
+
 	}
 	// return Tasks.find({});
 });
-
 //publish partnumber
 Meteor.publish('partnumber', function(buildingnumber,cell){
 	if(buildingnumber != null && cell != null){
@@ -61,8 +65,10 @@ Meteor.publish('taskworktime', function(){
 Meteor.publish('cell', function(buildingnumber){
 	if(buildingnumber != null){
 		return Cell.find({buildingnumber:buildingnumber});
+	}else if (buildingnumber == 'all'){
+		return Cell.find({});
 	}
-	// return Cell.find({});
+
 });
 
 // Meteor.publish('plan', function(){

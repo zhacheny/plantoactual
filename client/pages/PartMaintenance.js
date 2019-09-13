@@ -280,7 +280,7 @@ Template.PartMaintenance.helpers({
 	PiecesPH_one_cal:()=>{
 		var value = Session.get('MinutesPP_one');
 		if(typeof(value) !== "undefined"){
-			value = ''+ Session.get('MinutesPP_one')*60;
+			value = ''+ 60/Session.get('MinutesPP_one');
 			Session.set('PiecesPH_one',value);
 			return value;
 		}else{
@@ -291,7 +291,7 @@ Template.PartMaintenance.helpers({
 	PiecesPH_two_cal:()=>{
 		var value = Session.get('MinutesPP_two');
 		if(typeof(value) !== "undefined"){
-			value = ''+ Session.get('MinutesPP_two')*60;
+			value = ''+ 60/Session.get('MinutesPP_two');
 			Session.set('PiecesPH_two',value);
 			return value;
 		}else{
@@ -302,7 +302,7 @@ Template.PartMaintenance.helpers({
 	PiecesPH_three_cal:()=>{
 		var value = Session.get('MinutesPP_three');
 		if(typeof(value) !== "undefined"){
-			value = ''+ Session.get('MinutesPP_three')*60;
+			value = ''+ 60/Session.get('MinutesPP_three');
 			Session.set('PiecesPH_three',value);
 			return value;
 		}else{

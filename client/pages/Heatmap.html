@@ -1,0 +1,253 @@
+<template name="Heatmap">
+	<h1 class="page-title">Heat Map</h1>
+{{#if Template.subscriptionsReady}}
+	<main class="wowBack clearfix">
+	
+		{{#transition in="zoomIn" out="bounceOut"}}
+			{{#if showmonitor}}
+				<table>
+		            <thead>
+		                <tr>
+		                    <th>Time Span</th>
+		                    <th>Part Number</th>
+		                    <th>Work Time</th>
+		                    <th>Plan</th>
+		                    <th>Actual</th>
+		                    <th>Reason</th>
+		                    <th>Comment</th>
+		                    <th>Status</th>
+		                    <th>operators</th>
+		                    <th><button class="toggle-back" style="float:right;">back</button></th>
+		                </tr>
+	                </thead>
+	                <tbody>
+	                	{{#each tasks}}
+			                <tr style="{{isgrey}}">
+			                	<td>{{timespan}}</td>
+			                	<td>{{partnumber}}</td>
+			                	<td>{{worktime}}</td>
+			                	<td>{{plan}}</td>
+			                	<td>{{actual}}</td>
+			                	<td>{{reason}}</td>
+			                	<td>{{comment}}</td>
+								{{#if isred}}
+			                        <td><div name="Ignore Select" id="select" style="background:rgba(224, 97, 0,1);" class="outlineinactive"></div></td>
+			                    {{else}}
+			                        {{#if isgreen}}
+			                            <td><div name="Ignore Select" id="select" style="background:rgba(141,198,63,1);" class="outlineinactive"></div></td>
+			                        {{else}}
+			                            <td><div name="Ignore Select" id="select" style="background:rgba(099,099,099,.2);" class="outlineinactive"></div></td>
+			                        {{/if}}
+			                    {{/if}}
+			                    <td>{{operatorID}}</td>
+			                    <td></td>
+			                </tr>
+			            {{/each}}
+		            </tbody>
+		        </table>
+    		{{else}}
+			<h4>Building 4</h4>
+			  <section class="wowWrap">
+			    
+				<div1>
+				{{#transition in="zoomIn" out="bounceOut"}}
+			<!-- 			<div class="animated shake">shake</div>
+					<div class="animated swing">swing</div>
+					<div class="animated tada">tada</div>
+					<div class="animated wobble">wobble</div>
+					<div class="animated out">5825</div>
+					<div class="animated bounce">5825</div>
+					<div class="animated flash">flash</div>
+					<div class="animated pulse">pulse</div>
+					<div class="animated rubberBand">rubberBand</div> -->
+					<div class="animated tada">void</div>
+					<div class="animated tada">void</div>
+					<div class="animated tada">void</div>
+					{{#if clicked}}
+						{{#if conditional "6167"}}
+							<divConditional class="animated tada celllabel">6167</divConditional>
+						{{else}}
+							<divnotConditional class="animated tada celllabel">6167</divnotConditional>
+						{{/if}}
+
+					{{/if}}
+				{{/transition}}
+				</div1>
+
+			    
+			    
+			  </section>
+
+			  <section class="wowWrap">
+				<div1>
+				{{#transition in="tada" out="bounceOut"}}
+					<div class="animated tada">void</div>
+					{{#if clicked}}
+						{{#if conditional "6149"}}
+							<divConditional class="animated tada celllabel">6149</divConditional>
+						{{else}}
+							<divnotConditional class="animated tada celllabel">6149</divnotConditional>
+						{{/if}}
+
+					{{/if}}
+					{{#if clicked}}
+						{{#if conditional "6102"}}
+							<divConditional class="animated tada celllabel">6102</divConditional>
+						{{else}}
+							<divnotConditional class="animated tada celllabel">6102</divnotConditional>
+						{{/if}}
+
+					{{/if}}
+
+
+					{{#if clicked}}
+						{{#if conditional "5829"}}
+							<divConditional class="animated tada celllabel">5829</divConditional>
+						{{else}}
+							<divnotConditional class="animated tada celllabel">5829</divnotConditional>
+						{{/if}}
+					{{/if}}
+
+				{{/transition}}
+				</div1>
+
+			    
+			    
+			  </section>
+
+			<section class="wowWrap">
+				<div1>
+				{{#transition in="zoomIn" out="bounceOut"}}
+					<div class="animated tada">void</div>
+					<div class="animated tada">void</div>
+					<div class="animated tada">void</div>
+					{{#if clicked}}
+						{{#if conditional "6164"}}
+							<divConditional class="animated tada celllabel">6164</divConditional>
+						{{else}}
+							<divnotConditional class="animated tada celllabel">6164</divnotConditional>
+						{{/if}}
+					{{/if}}
+					<div class="animated tada">void</div>
+					<div class="animated tada">void</div>
+				{{/transition}}
+				</div1>
+
+			    
+			    
+			  </section>
+
+			<section class="wowWrap">
+				<div1>
+				{{#transition in="zoomIn" out="bounceOut"}}
+					{{#if clicked}}
+						{{#if conditional "5825"}}
+							<divConditional class="animated tada celllabel">5825</divConditional>
+						{{else}}
+							<divnotConditional class="animated tada celllabel">5825</divnotConditional>
+						{{/if}}
+					{{/if}}
+					<div class="animated tada">void</div>
+					{{#if clicked}}
+						{{#if conditional "6116"}}
+							<divConditional class="animated tada celllabel">6116</divConditional>
+						{{else}}
+							<divnotConditional class="animated tada celllabel">6116</divnotConditional>
+						{{/if}}
+					{{/if}}
+					<div class="animated tada">void</div>
+					<div class="animated tada">void</div>
+				{{/transition}}
+				</div1>
+
+			    
+			    
+			  </section>
+			  <section class="wowWrap">
+				<div1>
+				{{#transition in="zoomIn" out="bounceOut"}}
+					<div class="animated tada">void</div>
+					<div class="animated tada">void</div>
+				{{/transition}}
+				</div1>
+
+			    
+			    
+			  </section>
+
+			<section class="wowWrap">
+				<div1>
+				{{#transition in="zoomIn" out="bounceOut"}}
+					<div class="animated tada">void</div>
+					<div class="animated tada">void</div>
+					{{#if clicked}}
+						{{#if conditional "5822"}}
+							<divConditional class="animated tada celllabel">5822</divConditional>
+						{{else}}
+							<divnotConditional class="animated tada celllabel">5822</divnotConditional>
+						{{/if}}
+					{{/if}}
+					{{#if clicked}}
+						{{#if conditional "5827"}}
+							<divConditional class="animated tada celllabel">5827</divConditional>
+						{{else}}
+							<divnotConditional class="animated tada celllabel">5827</divnotConditional>
+						{{/if}}
+					{{/if}}
+					<div class="animated tada">void</div>
+					{{#if clicked}}
+						{{#if conditional "6101"}}
+							<divConditional class="animated tada celllabel">6101</divConditional>
+						{{else}}
+							<divnotConditional class="animated tada celllabel">6101</divnotConditional>
+						{{/if}}
+					{{/if}}
+				{{/transition}}
+				</div1>
+
+			    
+			    
+			  </section>
+
+
+			<section class="wowWrap">
+				<div1>
+				{{#transition in="zoomIn" out="bounceOut"}}
+					<div class="animated tada">void</div>
+					<div class="animated tada">void</div>
+					{{#if clicked}}
+						{{#if conditional "5803"}}
+							<divConditional class="animated tada celllabel">5803</divConditional>
+						{{else}}
+							<divnotConditional class="animated tada celllabel">5803</divnotConditional>
+						{{/if}}
+					{{/if}}
+					{{#if clicked}}
+						{{#if conditional "5802"}}
+							<divConditional class="animated tada celllabel">5802</divConditional>
+						{{else}}
+							<divnotConditional class="animated tada celllabel">5802</divnotConditional>
+						{{/if}}
+					{{/if}}
+					<div class="animated tada">void</div>
+					{{#if clicked}}
+						{{#if conditional "6155"}}
+							<divConditional class="animated tada celllabel">6155</divConditional>
+						{{else}}
+							<divnotConditional class="animated tada celllabel">6155</divnotConditional>
+						{{/if}}
+					{{/if}}
+				{{/transition}}
+				</div1>
+
+			    
+			    
+			  </section>
+	  		{{/if}}
+		{{/transition}} 
+
+		
+	</main>
+{{/if}}
+
+</template>

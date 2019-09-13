@@ -258,17 +258,17 @@ Meteor.methods({
 			if(XMLname == ''){
 				XMLname = null;
 			}
-			let PiecesPH_one  = MinutesPP_one ==''? '': '' + MinutesPP_one*60;
-			let PiecesPH_two   = MinutesPP_two ==''? '':'' + MinutesPP_two*60;
-			let PiecesPH_three = MinutesPP_three ==''? '':'' + MinutesPP_three*60;
+			let PiecesPH_one  = MinutesPP_one ==''? '': data[ i ]['1 Operator Pcs/Hr'];
+			let PiecesPH_two   = MinutesPP_two ==''? '': data[ i ]['2 Operator Pcs/Hr'];
+			let PiecesPH_three = MinutesPP_three ==''? '': data[ i ]['3 Operator Pcs/Hr'];
 			let exists = Partnumber.findOne( { part: part } );
 			let exists_cell = Cell.findOne( { cellname: cell } );
-			if( !exists_cell ){
-				Cell.insert({
-						buildingnumber:buildingnumber,
-						cellname:cell,
-				});
-			}
+			// if( !exists_cell ){
+			// 	Cell.insert({
+			// 			buildingnumber:buildingnumber,
+			// 			cellname:cell,
+			// 	});
+			// }
 	      if ( !exists ) {
 			Partnumber.insert({
 				      part:part,

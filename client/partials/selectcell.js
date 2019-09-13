@@ -27,7 +27,8 @@ Template.selectcell.events({
 		var cell = $(evt.target).val();
 		// console.log(cell);
 		cellid = Cell.findOne({cellname:cell}).cellId;
-		if(typeof(cellid) == "undefined"){
+		// console.log(typeof(cellid) === 'undefined');
+		if(cellid == ''){
 			Session.set('cell', cell);
 		}else{
 			Session.set('cell', cellid);

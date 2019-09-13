@@ -130,7 +130,12 @@ Template.AddTasks.helpers({
 	selectedcell:function(){
 		if(Session.get('cell') != null){
 			var cell = Session.get('cell');
-			return Cell.findOne({cellId:cell}).cellname;
+			var cellobject = Cell.findOne({cellId:cell});
+			if(!cellobject){
+				return cell;
+			}else{
+				return cellobject.cellname;	
+			}
 
 		}else{
 			return '';

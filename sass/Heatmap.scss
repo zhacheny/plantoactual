@@ -1,0 +1,71 @@
+
+.wowBack {
+  position:relative; overflow:hidden;
+}
+.wowWrap divConditional {
+  background:#27ae60; 
+  color:white;
+  font-weight: 500;
+  text-align:center;
+  font-size: 1.5vw;
+  display:block;
+  width:75%;
+  margin:5% 0;
+  padding-top:10%;
+  padding-bottom:10%;
+}
+
+.wowWrap div {
+  background:#27ae60; 
+  color:white;
+  font-weight: 500;
+  text-align:center;
+  font-size: 1.5vw;
+  display:block;
+  width:75%;
+  margin:5% 0;
+  padding-top:10%;
+  padding-bottom:10%;
+  opacity: 0;
+}
+
+.wowWrap divnotConditional {
+  background:#de4f4f; 
+  color:white;
+  font-weight: 500;
+  text-align:center;
+  font-size: 1.5vw;
+  display:block;
+  width:75%;
+  margin:5% 0;
+  padding-top:10%;
+  padding-bottom:10%;
+}
+
+.wowWrap {
+  width:14%;
+  float:left;
+  padding: 0 .25%;
+  margin-top:2.5%;
+}
+
+.clearfix h4{
+text-align:center;
+  //position:fixed;
+  position:relative;
+  z-index:1;
+  width:100%;
+  padding:10px 0px 10px 0px;
+  margin:0;
+  top: 0px;
+  color:white;  
+  font-size:1.8vw;
+  background:rgba(22,22,22,.3)
+}
+
+/*.wowWrap div:first-of-type{
+  margin-top:25%; }
+  */
+
+/*I've assigned class wHighlight to all the animate.css classes that add elements onto the page with delay.  */
+.wHighlight {background:#28a !important}

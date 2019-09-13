@@ -69,6 +69,13 @@ adminRoutes.route('/chats',{
         BlazeLayout.render("AppLayout", {main: "Chats"});
     }
 });
+
+adminRoutes.route('/heatmap',{
+    name: 'heatmap',
+    action() {
+        BlazeLayout.render("AppLayout", {main: "Heatmap"});
+    }
+});
 // var operatorRoutes = FlowRouter.group({
 //     prefix: '/operator',
 //     name: 'operator'
