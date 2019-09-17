@@ -1,7 +1,9 @@
 export const ClientTaskworktime = new Mongo.Collection(null);
+import moment from 'moment';
 
 function getClientTime() {
         // var _time = (new Date).toTimeString();
+        // var _time = (new Date);
         var _time = (new Date);
         // console.log(_time);
         return _time;

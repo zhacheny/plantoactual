@@ -54,6 +54,7 @@ Template.ManageTasks.rendered = function() {
 Template.ManageTasks.onCreated(function(){
 	Session.set('toggle-Download',false);
 	Session.set('toggle-Generate',false);
+	Session.set('operator', null);
 	// Meteor.setInterval(function() {
 	// 	time.set(new Date());
 	// }, 1000);

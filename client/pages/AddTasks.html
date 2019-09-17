@@ -159,7 +159,11 @@
                     {{#if isNoprod @index displayRow}}
                         <td>No Production</td>
                     {{else}}
-                        <td>{{comment}}</td>
+                        {{#if $eq @index displayRow}}
+                            <td><input id="inputcomment2" style="width: 15vw;" type="comment" class="inputcomments"></td>
+                        {{else}}
+                            <td>{{comment}}</td>
+                        {{/if}}
                     {{/if}}
                     <!-- {{#if @index '==' }} -->
                     {{#if $eq @index displayRow}}

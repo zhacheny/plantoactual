@@ -109,7 +109,8 @@ Meteor.methods({
 	    //automatically changed the plan number
 		var plantoactual_auto_generate = 0;
 		if (partnumber == 'Part Not Available'){
-			Session.set('earnedTimePPiecePOpe',value);
+			// Session.set('earnedTimePPiecePOpe',value);
+			Session.set('earnedTimePPiecePOpe',0);
 		}else{
 			var MinutesPP_one = Partnumber.findOne({cell:Session.get('cell'), part:partnumber}).MinutesPP_one;
 			plantoactual_auto_generate = MinutesPP_one;
@@ -125,7 +126,7 @@ Meteor.methods({
 			// value = Math.round( value * 10 ) / 10;
 		}
 		ClientTaskworktime.update({id:curId}, {
-			$set: { worktime: worktime + ' min', comment: 'Not finish',plantoactual: plantoactual_auto_generate},
+			$set: { worktime: worktime + ' min', plantoactual: plantoactual_auto_generate},
 		});
 	},
 	checkIsnull(operatorinitial,initial,operatorcount,operatorID,operatorIDarray){

@@ -16,9 +16,9 @@
   },
   "author": "Chenyu",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/leveluptuts/Blaze-Base/issues"
-  },
+  // "bugs": {
+  //   "url": "https://github.com/leveluptuts/Blaze-Base/issues"
+  // },
   "meteor": {
     "mainModule": {
       "client": "client/main.js",

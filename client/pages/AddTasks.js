@@ -26,7 +26,8 @@ function inserttaskAschangover(iscomplete,currentTime){
 	var tempobject = Session.get('togglecomp');
 	if(iscomplete){
 		var curId = Session.get('tempchangeoverid') + count;
-		var changeoverDuration = ClientTaskworktime.findOne({id:curId}).worktime;
+		var changeoverDuration = ClientTaskworktime.findOne({id:curId}).worktime.substring(0,2);
+		console.log(changeoverDuration);
 	}else{
 		var starttime = Session.get('changeover-starttime');
 
@@ -724,11 +725,24 @@ Template.AddTasks.events({
 	'keyup .inputreports':function(event){
 		event.preventDefault();
 		var input = $(event.target).val();
-
+		if (input == ' '){
+			return;
+		}
 		var id = Session.get('togglecomp').id;
 	    ClientTaskworktime.update({id:id}, {
 	      $set: { comment: input },
 	    });
+		Session.set('togglecomp',ClientTaskworktime.findOne({id:id}));
+	},
+	'keyup .inputcomments':function(event){
+		event.preventDefault();
+		var input = $(event.target).val();
+		var id = this.id;
+		// console.log(id);
+	    ClientTaskworktime.update({id:id}, {
+	      $set: { comment: input },
+	    });
+	    document.getElementById('commentsinput').value = input;
 		Session.set('togglecomp',ClientTaskworktime.findOne({id:id}));
 	},
 	//close new job box
@@ -846,7 +860,7 @@ Template.AddTasks.events({
 		}
 
 	    ClientTaskworktime.update({id:this.id}, {
-	      $set: { worktime: realtimeused + ' min', comment: '', plantoactual:plannumber },
+	      $set: { worktime: realtimeused + ' min', plantoactual:plannumber },
 	    });
 		// this.plan = this.plan * (sec/60);
 		var info = [true,ClientTaskworktime.findOne({id:this.id}),timechanged];

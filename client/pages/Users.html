@@ -4,19 +4,23 @@
     	<table class="{{editMode}}">
     		<tr>
     			<th>Id</th>
+                <th>User Name</th>
     			<th>Email</th>
     			<th>First Name</th>
     			<th>Creat At</th>
     			<th>Admin</th>
+                <th>Role</th>
     		</tr>
     	{{#each users}}
     		<tr>
     			<td class="user_id">{{_id}}</td>
+                <td>{{username}}</td>
     			<td>{{userEmail}}</td>
 	    		<td>{{profile.firstName}}</td>
     			<td>{{dateFormat}}</td>
     			{{#if isAdmin '==' 'admin'}}
     			<td>{{isAdmin}}</td>
+                <td>{{roles}}</td>
     			{{else}}
     				{{#if isOperator '==' 'operator'}}
     				<td>{{isOperator}}</td>

@@ -29,7 +29,7 @@ Template.selectpart.helpers({
 		var selectbuilding =  Session.get('buildingnumber');
 		var selectcell = Session.get('cell');
 		Meteor.subscribe('partnumber',selectbuilding,selectcell);
-		return Partnumber.find({buildingnumber: selectbuilding,cell:selectcell});
+		return Partnumber.find({buildingnumber: selectbuilding,cell:selectcell}, { sort: { part: 1 }} );
 	},
 	
 });

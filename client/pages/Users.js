@@ -15,7 +15,10 @@ Template.Users.helpers({
 		return this.emails[0].address;
 	},
 	isAdmin: function(){
-		return Roles.userIsInRole(this._id,'admin') ? 'admin' : '';
+		return Roles.userIsInRole(this._id,'admin') ? 'True' : 'False';
+	},
+	roles: function(){
+		return Roles.getRolesForUser(this._id);
 	},
 	isOperator: function(){
 		return Roles.userIsInRole(this._id,'operator') ? 'operator' : '';
