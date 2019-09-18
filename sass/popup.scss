@@ -36,6 +36,7 @@
     border: solid 2px $dblue;
     top: 30%;
     left: 50%;
+    display:none;
     padding: 20px;
     width: 73%;
     transform: translate3d(25%, -80%, 0) scale(0.5);
@@ -45,6 +46,7 @@
     @include card(4);
     &.open {
         opacity: 1;
+        display:inline;
         transform: translateX(-50%) scale(1);
         //box-shadow: inset 0px 1px 2px darken(#ca5549,30%);
     }

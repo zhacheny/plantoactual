@@ -129,18 +129,7 @@ Template.AddTasks.helpers({
 		return Session.get('buildingnumber') != null ? Session.get('buildingnumber'):'';
 	},
 	selectedcell:function(){
-		if(Session.get('cell') != null){
-			var cell = Session.get('cell');
-			var cellobject = Cell.findOne({cellId:cell});
-			if(!cellobject){
-				return cell;
-			}else{
-				return cellobject.cellname;	
-			}
-
-		}else{
-			return '';
-		}
+		return Session.get('selectedcell') != null ? Session.get('selectedcell'):'';
 	},
 	selectedpart:function(){
 		// console.log(this.partnumber);

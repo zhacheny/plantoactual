@@ -168,29 +168,42 @@ Meteor.methods({
 	    }
 	  },
 	parseUpdate_cell(data, cell){
-		for (let i = 0; i < cell.length; i++){
-			for (let j = data.length - 1; j >= 0; j--) {
-				// let part   = data[ j ]['Assembly No'];
-				let cellId   = data[ j ]['Cell ID'];
-				let cellName   = data[ j ]['Cell Name'];
-				let mix = cellId + '-' + cellName;
-				if(cell[i].cellname == cellId){
-					Cell.update({cellname:cellId}, {
-				      $set: { 
-				      	cellname: mix,
-				      	cellId:cellId
-				      	 },
-				  },false,true);
-				}else{
-					Cell.update({cellname:cellId}, {
-					      $set: { 
-					      	cellname: '',
-					      	cellId:cellId
-					      	 },
-					  },false,true);
-				}		
-			}
+		// for (let i = 0; i < cell.length; i++){
+		// 	for (let j = data.length - 1; j >= 0; j--) {
+		// 		// let part   = data[ j ]['Assembly No'];
+		// 		let cellId   = data[ j ]['Cell ID'];
+		// 		let cellName   = data[ j ]['Cell Name'];
+		// 		let mix = cellId + '-' + cellName;
+		// 		if(cell[i].cellname == cellId){
+		// 			Cell.update({cellname:cellId}, {
+		// 		      $set: { 
+		// 		      	cellname: cellName,
+		// 		      	cellId:cellId
+		// 		      	 },
+		// 		  },false,true);
+		// 		}else{
+		// 			Cell.update({cellname:cellId}, {
+		// 			      $set: { 
+		// 			      	cellname: '',
+		// 			      	cellId:cellId
+		// 			      	 },
+		// 			  },false,true);
+		// 		}		
+		// 	}
 			
+		// }
+		for (let i = 0; i < data.length; i++){
+			// let part   = data[ j ]['Assembly No'];
+
+			let cellId   = data[ i ]['Cell ID'];		
+			let cellName   = data[ i ]['Cell Name'];
+			console.log(cellName);
+			let mix = cellId + '-' + cellName;
+			Cell.update({cellId:cellId}, {
+			      $set: { 
+			      	cellname: cellName,
+			      	 },
+			  });
 		}
 	},
 	parseUpdate_part(data, part){

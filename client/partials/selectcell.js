@@ -9,6 +9,9 @@ import { Tasks, Partnumber, Cell } from '/lib/collections.js';
 // })
 
 Template.selectcell.helpers({
+	mixedcellname:function(){
+		return this.cellname == '' ? this.cellId :this.cellname + '-' +  this.cellId;
+	},
 	selectcell:function(selected){
 		// console.log(selected);
 		return selected != '' ? true:false;
@@ -25,14 +28,25 @@ Template.selectcell.helpers({
 Template.selectcell.events({
 	'change .change-cell':function (evt) {
 		var cell = $(evt.target).val();
-		// console.log(cell);
-		cellid = Cell.findOne({cellname:cell}).cellId;
-		// console.log(typeof(cellid) === 'undefined');
-		if(cellid == ''){
-			Session.set('cell', cell);
+		var res_cell = cell.split('-');
+		if(res_cell.length>1){
+			Session.set('cell',cell.split('-')[1]);
+			var cellobject = Cell.findOne({cellId:cell.split('-')[1]});
 		}else{
-			Session.set('cell', cellid);
+			Session.set('cell',cell);
+			var cellobject = Cell.findOne({cellId:cell});
 		}
+
+		Session.set('selectedcell', cellobject.cellname + '-' +  cellobject.cellId);
+		// console.log(cell);
+
+		// cellid = Cell.findOne({cellname:cell}).cellId;
+		// // console.log(typeof(cellid) === 'undefined');
+		// if(cellid == ''){
+		// 	Session.set('cell', cell);
+		// }else{
+		// 	Session.set('cell', cellid);
+		// }
 		
 	},
 });
