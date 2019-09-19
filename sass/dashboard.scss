@@ -147,6 +147,7 @@ table {
     }
 
 }
+
 .minus-box-Anouncements-records, .minus-box-Menu-records{
     display:none;
     opacity: 0;
@@ -226,6 +227,7 @@ font-size: 2vw;
 .table tbody tr:hover {
   background: #d1d1d1;
 }
+
 //happy birthday added by Chenyu
 
 @import url(https://fonts.googleapis.com/css?family=Pacifico);
@@ -260,4 +262,11 @@ $text-color:white;
   background-size: 100% 40px;
   border: 0;
   outline: 0;
+}
+
+//
+.send-Safety-message{
+  float:right;
+  font-size: 0.8vw;
+  max-width: 100%;
 }

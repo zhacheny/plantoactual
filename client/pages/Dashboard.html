@@ -80,6 +80,8 @@
 								{{/each}}
 							{{/if}}
 						</div><!-- /.box-content -->
+						<!-- <i class="fa fa-paper-plane send-Safety-message">send message</i> -->
+						<button class="send-Safety-message">Report Safety Issue</button>
 					</div> <!-- /.box -->			
 				</div>
 				<div class="cl6">
@@ -166,5 +168,44 @@
 		</div> <!-- /.content -->
 	</div> <!-- /.main -->
 
+
+	<div class="Safety-popup-modal {{$.Session.get 'send-Safety-message'}}">
+        <!-- <i class="fa fa-close close-popup"></i> -->
+        <h3>Safety Report</h3>
+        <hr>
+        
+		<form class="Safety-form">
+			<h4>If you are in immediate danger, STOP and notify your supervisor</h4>
+			<hr>
+			<div class="group">
+	            <div class="left">
+	                <label>Building</label>
+	                {{> selectbuilding selected=selectedbuilding}}
+	            </div>
+	    	</div>
+
+			<div class="group">
+	            <div class="left">
+	                <label>Where</label>
+	                <input class="Initial" type="text-2">
+	            </div>
+	            <div class="left">
+	                <label>Your Name</label>
+	                <input class="Initial" type="text-2">
+	    		</div>
+	    	</div>
+			<label>Description of Situation</label>
+			<textarea class="edit-box-Safety-input" name="Text1" cols="40" rows="5"></textarea>
+
+	        <div class="group"> 
+	            <div class="left">
+	                <button class="Modal-delete-yes">Yes!</button>
+	            </div>
+	            <div class="right">
+	                <button class="Modal-delete-cancel">Cancel</button>
+	            </div>
+	        </div>
+        </form>
+    </div>
 
 </template>

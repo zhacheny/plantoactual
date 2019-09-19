@@ -183,6 +183,16 @@ Template.Dashboard.helpers({
 });
 
 Template.Dashboard.events({
+	'click .Modal-delete-yes': function(){
+		// Session.set('send-Safety-message','');
+	},
+	'click .Modal-delete-cancel': function(){
+		Session.set('send-Safety-message','');
+	},
+	'click .send-Safety-message': function(){
+		Session.set('send-Safety-message','open');
+		return;
+	},
 	'click .confirm-box-Safety': function(){
 		let content = Session.get('edit-box-Safety-input');
 		if(content != null){

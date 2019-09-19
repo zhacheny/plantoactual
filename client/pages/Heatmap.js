@@ -29,19 +29,32 @@ Template.Heatmap.helpers({
 		return this.status == 'green'? true : null;
 	},
 	tasks:function(){
-		return Tasks.find({cell:Session.get('clickedcell')}, { sort: { createdAt: 1 }});
+		var cell = Session.get('clickedcell');
+		return cell.length > 4 ? Tasks.find({cell:cell.substring(2)}, { sort: { createdAt: 1 }}):Tasks.find({cell:cell}, { sort: { createdAt: 1 }});
 	},
 	showmonitor: function() {
 		return Session.get('notclicked') == null ? false : true;
 	},
+	isgrey:function(cellid){
+		let red = Tasks.find({cell:cellid, status:'red'}).count();
+		let green = Tasks.find({cell:cellid, status:'green'}).count();
+		if(red == 0 && green == 0){
+			return true;
+		}
+	},
 	conditional:function(cellid){
 		let red = Tasks.find({cell:cellid, status:'red'}).count();
 		let green = Tasks.find({cell:cellid, status:'green'}).count();
+
 		// console.log([red,green]);
-		if(red != 0 && green!= 0){
-			return red < green;
-		}else{
-			return true;
+		if(red != 0 || green!= 0){
+			console.log(cellid);
+			console.log([red,green]);
+			if(red < green){
+				return true;
+			}else{
+				return false;
+			}
 		}
 	},
 	clicked:function(){
