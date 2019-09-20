@@ -23,21 +23,21 @@ Meteor.methods({
 			// console.log(1);
 			ClientTaskworktime.remove({});
 			var taskworktime = [
-			  { id: 'a', timespan: '6:00-7:00 am', worktime: '55 min', plantoactual:0, actual:"0", reason: "XXX",status:null, partnumber: "XXX",
+			  { id: 'a', timespan: '6:00-7:00 am', worktime: '55 min', plantoactual:'0', actual:"0", reason: "XXX",status:null, partnumber: "XXX",
 			  comment:"XXX",operator:"",earnedtime:"0"},
-			  { id: 'b', timespan: '7:00-8:00 am', worktime: '60 min', plantoactual:0, actual:"0", reason: "XXX" ,status:null, partnumber: "XXX",
+			  { id: 'b', timespan: '7:00-8:00 am', worktime: '60 min', plantoactual:'0', actual:"0", reason: "XXX" ,status:null, partnumber: "XXX",
 			  comment:"XXX",operator:"",earnedtime:"0"},
-			  { id: 'c', timespan: '8:00-9:00 am', worktime: '40 min', plantoactual:0, actual:"0", reason: "XXX" ,status:null, partnumber: "XXX",
+			  { id: 'c', timespan: '8:00-9:00 am', worktime: '40 min', plantoactual:'0', actual:"0", reason: "XXX" ,status:null, partnumber: "XXX",
 			  comment:"XXX",operator:"",earnedtime:"0"},
-			  { id: 'd', timespan: '9:00-10:00 am', worktime: '60 min', plantoactual:0, actual:"0", reason: "XXX" ,status:null, partnumber: "XXX",
+			  { id: 'd', timespan: '9:00-10:00 am', worktime: '60 min', plantoactual:'0', actual:"0", reason: "XXX" ,status:null, partnumber: "XXX",
 			  comment:"XXX",operator:"",earnedtime:"0"},
-			  { id: 'e', timespan: '10:00-11:00 am', worktime: '55 min', plantoactual:0, actual:"0", reason: "XXX" ,status:null, partnumber: "XXX",
+			  { id: 'e', timespan: '10:00-11:00 am', worktime: '55 min', plantoactual:'0', actual:"0", reason: "XXX" ,status:null, partnumber: "XXX",
 			  comment:"XXX",operator:"",earnedtime:"0"},
-			  { id: 'f', timespan: '11:00-12:00 am', worktime: '55 min', plantoactual:0, actual:"0", reason: "XXX" ,status:null, partnumber: "XXX",
+			  { id: 'f', timespan: '11:00-12:00 am', worktime: '55 min', plantoactual:'0', actual:"0", reason: "XXX" ,status:null, partnumber: "XXX",
 			  comment:"XXX",operator:"",earnedtime:"0"},	
-			  { id: 'g', timespan: '12:30-1:30 pm', worktime: '60 min', plantoactual:0, actual:"0", reason: "XXX",status:null , partnumber: "XXX",
+			  { id: 'g', timespan: '12:30-1:30 pm', worktime: '60 min', plantoactual:'0', actual:"0", reason: "XXX",status:null , partnumber: "XXX",
 			  comment:"XXX",operator:"",earnedtime:"0"},
-			  { id: 'h', timespan: '1:30-2:30 pm', worktime: '50 min', plantoactual:0, actual:"0", reason: "XXX",status:null , partnumber: "XXX",
+			  { id: 'h', timespan: '1:30-2:30 pm', worktime: '50 min', plantoactual:'0', actual:"0", reason: "XXX",status:null , partnumber: "XXX",
 			  comment:"XXX",operator:"",earnedtime:"0"},
 			];
 
@@ -51,21 +51,21 @@ Meteor.methods({
 			// console.log(2);
 			ClientTaskworktime.remove({});
 			var taskworktime = [
-			  { id: 'a', timespan: '3:00-4:00 pm', worktime: '55 min', plantoactual:0, actual:"0", reason: "XXX",status:null , partnumber: "XXX",
+			  { id: 'a', timespan: '3:00-4:00 pm', worktime: '55 min', plantoactual:'0', actual:"0", reason: "XXX",status:null , partnumber: "XXX",
 			  comment:"XXX",operator:"",actualmin:"",earnedtime:"0"},
-			  { id: 'b', timespan: '4:00-5:00 pm', worktime: '60 min', plantoactual:0, actual:"0", reason: "XXX",status:null , partnumber: "XXX",
+			  { id: 'b', timespan: '4:00-5:00 pm', worktime: '60 min', plantoactual:'0', actual:"0", reason: "XXX",status:null , partnumber: "XXX",
 			  comment:"XXX",operator:"",actualmin:"",earnedtime:"0"},
-			  { id: 'c', timespan: '5:00-6:00 pm', worktime: '40 min', plantoactual:0, actual:"0", reason: "XXX",status:null , partnumber: "XXX",
+			  { id: 'c', timespan: '5:00-6:00 pm', worktime: '40 min', plantoactual:'0', actual:"0", reason: "XXX",status:null , partnumber: "XXX",
 			  comment:"XXX",operator:"",actualmin:"",earnedtime:"0"},
-			  { id: 'd', timespan: '6:00-7:30 pm', worktime: '60 min', plantoactual:0, actual:"0", reason: "XXX",status:null , partnumber: "XXX",
+			  { id: 'd', timespan: '6:00-7:30 pm', worktime: '60 min', plantoactual:'0', actual:"0", reason: "XXX",status:null , partnumber: "XXX",
 			  comment:"XXX",operator:"",actualmin:"",earnedtime:"0"},
-			  { id: 'e', timespan: '7:00-8:00 pm', worktime: '55 min', plantoactual:0, actual:"0", reason: "XXX",status:null , partnumber: "XXX",
+			  { id: 'e', timespan: '7:00-8:00 pm', worktime: '55 min', plantoactual:'0', actual:"0", reason: "XXX",status:null , partnumber: "XXX",
 			  comment:"XXX",operator:"",actualmin:"",earnedtime:"0"},
-			  { id: 'f', timespan: '8:00-9:00 pm', worktime: '55 min', plantoactual:0, actual:"0", reason: "XXX",status:null , partnumber: "XXX",
+			  { id: 'f', timespan: '8:00-9:00 pm', worktime: '55 min', plantoactual:'0', actual:"0", reason: "XXX",status:null , partnumber: "XXX",
 			  comment:"XXX",operator:"",actualmin:"",earnedtime:"0"},
-			  { id: 'g', timespan: '9:30-10:30 pm', worktime: '60 min', plantoactual:0, actual:"0", reason: "XXX",status:null , partnumber: "XXX",
+			  { id: 'g', timespan: '9:30-10:30 pm', worktime: '60 min', plantoactual:'0', actual:"0", reason: "XXX",status:null , partnumber: "XXX",
 			  comment:"XXX",operator:"",actualmin:"",earnedtime:"0"},
-			  { id: 'h', timespan: '10:30-11:30 pm', worktime: '55 min', plantoactual:0, actual:"0", reason: "XXX",status:null , partnumber: "XXX",
+			  { id: 'h', timespan: '10:30-11:30 pm', worktime: '55 min', plantoactual:'0', actual:"0", reason: "XXX",status:null , partnumber: "XXX",
 			  comment:"XXX",operator:"",actualmin:"",earnedtime:"0"},
 
 			];

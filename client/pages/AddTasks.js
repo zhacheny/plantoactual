@@ -456,7 +456,14 @@ Template.AddTasks.helpers({
 			}
 		}
 	},
+	isCurrent:function(index,displayRow){
 
+		if (index >= displayRow){
+			return true;
+		}else{
+			return false;
+		}
+	},
 	// isDisabled: function(index){
 	// 	var taskfinished = Session.get('taskfinished');
 	// 	// taskfinished = 0;
@@ -493,6 +500,7 @@ Template.AddTasks.helpers({
 				displayindex = 0;
 				// Session.set('togglecompinfo',this);
 			}else if (min == parseInt(timearray[1])+1){
+				// console.log(document.getElementsByClassName('partnumberchange')[0]);
 				displayindex = 1;
 			}else if (min == parseInt(timearray[1])+2){
 				displayindex = 2;
@@ -502,10 +510,6 @@ Template.AddTasks.helpers({
 			// displayindex =4;
 			// console.log(submitChangeoverparseInt(timearray[1])+1);
 		}else{
-			// console.log(timeformat);
-			// Session.set('currenttime',timeformat);	
-
-
 			if (timeformat.isBetween(reststart1, restend1)) {
 				displayindex = 6;
 			} else if (timeformat.isBetween(reststart2, restend2)){
@@ -537,6 +541,13 @@ Template.AddTasks.helpers({
 		return displayindex;
 		// return 4;
   	},
+  	pre_selected:function(){
+  		// console.log(Session.get('partnumber'));
+  		return Session.get('partnumber') != null ? Session.get('partnumber'):null;
+  	},
+  	documentid:function(){
+  		return this.id;
+  	}
 	// plan: function(){
 	// 	// console.log(Tasks.find().fetch());
 	// 	var selectbuilding =  Session.get('buildingnumber');
@@ -616,6 +627,7 @@ Template.AddTasks.events({
 		var sec = moment(timeformat).format('ss');
 		var timearray = [hour,min,sec];
 		addtaskcountsum = 0;
+		Session.set('addtaskcountsum',0);
 		Session.set('test-mode-time',timearray);
 		Meteor.call('initializeClientTaskworktime',currentTime,test_mode_flag);
 		// Session.set('test-mode','open');

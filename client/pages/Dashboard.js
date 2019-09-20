@@ -35,6 +35,9 @@ Template.Dashboard.onCreated(function(){
 });
 
 Template.Dashboard.helpers({
+	selectedbuilding:function(){
+		return Session.get('buildingnumber') != null ? Session.get('buildingnumber'):'';
+	},
 	happyBirthday: function() {
 	    return 'Nero';
 	    // return moment(currentTime).startOf('minute');
@@ -188,6 +191,7 @@ Template.Dashboard.events({
 	},
 	'click .Modal-delete-cancel': function(){
 		Session.set('send-Safety-message','');
+		return false;
 	},
 	'click .send-Safety-message': function(){
 		Session.set('send-Safety-message','open');

@@ -246,7 +246,7 @@ Template.ManageTasks.events({
 	  var enddate = Session.get('enddate') != null ? Session.get('enddate') : false;
 	  var start = new Date(startdate);
 	  var end = new Date(enddate);
-	  var building = Session.get('buildingnumber') != null ? Session.get('buildingnumber') : false;
+	  var building = Session.get('buildingnumber_part_maintenance') != null ? Session.get('buildingnumber_part_maintenance') : false;
 	  Meteor.subscribe('task',start,end,building);
 	  Session.set('toggle-Generate',is_checked);
 	},
@@ -261,7 +261,7 @@ Template.ManageTasks.events({
 		var partnumber = Session.get('partnumber') != null ? Session.get('partnumber') : false;
 		var startdate = Session.get('startdate') != null ? Session.get('startdate') : false;
 		var enddate = Session.get('enddate') != null ? Session.get('enddate') : false;
-		var building = Session.get('buildingnumber') != null ? Session.get('buildingnumber') : false;
+		var building = Session.get('buildingnumber_part_maintenance') != null ? Session.get('buildingnumber_part_maintenance') : false;
 		var cell = Session.get('cell')!= null ? Session.get('cell') : false;
 		var shifts1 = Session.get('shifts1') != null ? Session.get('shifts1') : false;
 		var shifts2 = Session.get('shifts2') != null ? Session.get('shifts2') : false;
@@ -573,7 +573,7 @@ Template.ManageTasks.events({
 })
 Template.ManageTasks.helpers({
 	selectedbuilding:function(){
-		return Session.get('buildingnumber') != null ? Session.get('buildingnumber'):'';
+		return Session.get('buildingnumber_part_maintenance') != null ? Session.get('buildingnumber_part_maintenance'):'';
 	},
 	selectedcell:function(){
 		return Session.get('cell') != null ? Session.get('cell'):'';

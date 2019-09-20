@@ -225,7 +225,7 @@ Template.PartMaintenance.events({
 		var PiecesPH_one = Session.get('PiecesPH_one');
 		var PiecesPH_two = Session.get('PiecesPH_two');
 		var PiecesPH_three = Session.get('PiecesPH_three');
-		var buildingnumber = Session.get('buildingnumber');
+		var buildingnumber = Session.get('buildingnumber_part_maintenance');
 		let XMLname = pre_url + Drawingname;
 		//var QualityFlag = Session.get('QualityFlag');
 		// console.log(MinutesPP_three);

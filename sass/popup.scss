@@ -1,7 +1,7 @@
 @import '_base.scss';
 
 .Safety-popup-modal{
-    position:absolute;
+    position:fixed;
     border: solid 2px $dblue;
     top: 20%;
     left: 50%;

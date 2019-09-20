@@ -9,7 +9,15 @@ Template.selectbuilding.onCreated(function(){
 })
 
 Template.selectbuilding.helpers({
-	selectbuilding:function(selected){
+	// isProduction:function(type){
+	// 	console.log(type);
+	// 	if (type == "add_tasks"){
+	// 		return true;
+	// 	}else{
+	// 		return false;
+	// 	}
+	// },
+	selectbuilding:function(selected,type){
 		// console.log(selected);
 		return selected != '' ? true:false;
 		// return false;
@@ -18,10 +26,10 @@ Template.selectbuilding.helpers({
 		// console.log(Tasks.find().fetch());
 		return Cell.find();
 	},
-	partnumber: function(){
-		// console.log(Tasks.find().fetch());
-		return Partnumber.find();
-	},
+	// partnumber: function(){
+	// 	// console.log(Tasks.find().fetch());
+	// 	return Partnumber.find();
+	// },
 	
 });
 
@@ -29,8 +37,16 @@ Template.selectbuilding.events({
 	'change .change-building':function (evt) {
 		evt.preventDefault();
 		var build = $(evt.target).val();
-
-		Session.set('buildingnumber', build);
+		var type = $(evt.currentTarget).data('id');
+		// console.log(type);
+		if (type == "add_tasks"){
+			Session.set('buildingnumber', build);
+		}else if(type == "dash_board"){
+			Session.set('buildingnumber_safety', build);
+		}else{
+			Session.set('buildingnumber_part_maintenance', build);
+		}
+		// Session.set('buildingnumber', build);
 		// console.log(Session.get('buildingnumber') == "1");	
 	},
 });

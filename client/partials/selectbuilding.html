@@ -1,10 +1,12 @@
 <template name="selectbuilding">
     <div class="styled-select">
-        <select class ="change-building">
+        <select class ="change-building" data-id="{{type}}">
             <option selected>Select</option>
-            {{#if selectbuilding selected}}
-                <option selected>{{selected}}</option>
-                <option disabled="true">---New Selection---</option>
+            {{#if selectbuilding selected type}}
+                {{#if $eq type "add_tasks"}}
+                    <option selected>{{selected}}</option>
+                    <option disabled="true">---New Selection---</option>
+                {{/if}}
             {{/if}}
             <option>1</option>
             <option>2</option>

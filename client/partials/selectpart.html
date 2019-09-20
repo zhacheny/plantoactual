@@ -1,11 +1,17 @@
 <template name="selectpart">
     <div class="styled-select">
-        <select>
+        <select {{activeOrg isCurrent}}>
             <option selected>Select</option>
-            {{#if selectpart selected}}
-                <option selected>{{selected}}</option>
-                <option disabled="true">---New Selection---</option>
+            {{#if pre_selectedcheck pre_selected isCurrent documentid}}
+                <option selected>{{pre_selected}}</option>
+            {{else}}
+                {{#if selectpart selected}}
+                    <option selected>{{selected}}</option>
+                    <option disabled="true">---New Selection---</option>
+                {{/if}}
             {{/if}}
+
+
             <option>Part Not Available</option>
             {{#each partnumber}}
                 <option>{{part}}</option>
