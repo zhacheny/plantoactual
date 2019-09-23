@@ -1,5 +1,5 @@
 import { Tasks, Cell, Partnumber, Changeover, Plan, Operator, EarnedTimePP,Anouncements,
-		Safetymessage, Department, Menu, Messages } from '/lib/collections.js';
+		Safetymessage, Department, Menu, Messages, SafetyReport } from '/lib/collections.js';
 import { check, Match } from 'meteor/check';
 import moment from 'moment';
 //run on your server
@@ -10,6 +10,59 @@ Meteor.methods({
  //            // console.log(_time);
  //            return _time;
  //    },
+ 	SafetyReportsendEmail(to, from, subject, 
+ 		  currentTime,
+ 		  buildingnumber,
+		  where,
+		  name,
+		  report) {
+	    // Make sure that all arguments are strings.
+	    check([to, from, subject, currentTime, buildingnumber,where, name, report], [String]);
+
+	    // Let other method calls from the same client start running, without
+	    // waiting for the email sending to complete.
+	    this.unblock();
+
+	    Email.send({
+	    	to:to, 
+	    	from:from,
+	    	subject:subject, 
+	    	html: 
+	    	'<table width="100%" style="border: 1px solid #eee;">'+
+	          '<tr>'+
+	            '<th style="text-align: left; padding: 10px; border-bottom: 1px solid #eee; border-right: 1px solid #eee;">Name</th>' +
+	            '<td style="text-align: left; padding: 10px; border-bottom: 1px solid #eee;">'+ name +'</td>' +
+	          '</tr>'+
+	          '<tr>' +
+	            '<th style="text-align: left; padding: 10px; border-bottom: 1px solid #eee; border-right: 1px solid #eee;">When</th>'+
+	            '<td style="text-align: left; padding: 10px; border-bottom: 1px solid #eee;">'+currentTime+'</td>' +
+	          '</tr>' +
+	          '<tr>'+
+	            '<th style="text-align: left; padding: 10px; border-right: 1px solid #eee;">Where</th>'+
+	            '<td style="text-align: left; padding: 10px;">'+where+'</td>' +
+	          '</tr>'+
+	          '<tr>'+
+	            '<th style="text-align: left; padding: 10px; border-right: 1px solid #eee;">Building Number</th>'+
+	            '<td style="text-align: left; padding: 10px;">'+buildingnumber+'</td>' +
+	          '</tr>'+
+	          '<tr>'+
+	            '<th style="text-align: left; padding: 10px; border-right: 1px solid #eee;">Content</th>'+
+	            '<td style="text-align: left; padding: 10px;">'+report+'</td>' +
+	          '</tr>'+
+	        '</table>',
+    	});
+  	},
+	insertSafetyReport(report, where, name, currentTime , buildingnumber){
+
+		SafetyReport.insert({
+				report:report,
+				site:where,
+				name:name, 
+				createdAt:currentTime,
+				buildingnumber:buildingnumber,
+    	});
+
+	},
  	sendMessage(data, chattingIsuser) {
 
 		// check(data, {

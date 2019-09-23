@@ -15,8 +15,12 @@ var restend2 = moment('14:30:00',format);
 var restend3 = moment('22:30:00',format);
 var restend4 = moment('23:30:00',format);
 var shift_1_start = moment('05:50:00',format);
+var shift_1_start_1 = moment('05:49:58',format);
+var shift_1_start_2 = moment('05:49:59',format);
 var shift_1_end = moment('14:50:00',format);
 var shift_2_start = moment('15:00:00',format);
+var shift_2_start_1 = moment('14:59:58',format);
+var shift_2_start_2 = moment('14:59:59',format);
 var shift_2_end = moment('23:50:00',format);
 var count = 0;
 var countsum = 0;
@@ -281,7 +285,17 @@ Template.AddTasks.helpers({
 		var hour = moment(timeformat).format('HH');
 		var min = moment(timeformat).format('mm');
 		var sec = moment(timeformat).format('ss');
-		
+		if(timeformat.isBetween(shift_1_start_1, shift_1_start_2)){
+			document.location.reload(true);
+			alert('shift 1 start!');
+		}else if (timeformat.isBetween(shift_2_start_1, shift_2_start_2)) {
+				// Meteor.call('initializeClientTaskworktime',moment('7:29:59',format),false);
+				// console.log(111);
+			document.location.reload(true);
+			alert('shift 2 start!');
+		}
+
+
 		if (Session.get('test-mode-time') != null){
 
 			var timearray = Session.get('test-mode-time');``

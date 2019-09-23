@@ -186,10 +186,36 @@ Template.Dashboard.helpers({
 });
 
 Template.Dashboard.events({
-	'click .Modal-delete-yes': function(){
+	'click .Safety-popup-modal-submit': function(){
 		// Session.set('send-Safety-message','');
+		var report = Session.get('Safety-report-input');
+		var buildingnumber = Session.get('buildingnumber_safety');
+		var where = Session.get('Safety-report-where');
+		var name = Session.get('Safety-report-name');
+		var currentTime = Session.get('time');
+        Meteor.call( 'insertSafetyReport', report, where, name, currentTime , buildingnumber, ( error, response ) => {
+          if ( error ) {
+            // console.log( error.reason );
+            // throw new Meteor.Error('bad', 'stuff happened');
+            Bert.alert( error.reason, 'danger', 'growl-top-right' );
+          } else {
+            Bert.alert( 'send complete!', 'success', 'growl-top-right' );
+          }
+        });
+        // 'david.butterfield@legrand.us'
+        Meteor.call('SafetyReportsendEmail',
+		  'David <david.butterfield@legrand.us>',
+		  'chenyu.zhang@legrand.us',
+		  'Safety Report Test',
+		  currentTime.toTimeString(),
+		  buildingnumber,
+		  where,
+		  name,
+		  report
+		);
+        return false;
 	},
-	'click .Modal-delete-cancel': function(){
+	'click .Safety-popup-modal-cancel': function(){
 		Session.set('send-Safety-message','');
 		return false;
 	},
@@ -223,6 +249,20 @@ Template.Dashboard.events({
 	      // add to database
 	    }
 	},
+
+	'keyup .Safety-report-input': function(event){
+		let content = $(event.target).val();
+		Session.set('Safety-report-input',content);
+	},
+	'keyup .Safety-report-where': function(event){
+		let content = $(event.target).val();
+		Session.set('Safety-report-where',content);
+	},
+	'keyup .Safety-report-name': function(event){
+		let content = $(event.target).val();
+		Session.set('Safety-report-name',content);
+	},
+
 	'change .edit-box-Department-input': function(event){
 		let content = $(event.target).val();
 		Session.set('edit-box-Department-input',content);
