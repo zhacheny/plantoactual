@@ -2,14 +2,17 @@
     <div class="styled-select">
         <select {{activeOrg isCurrent}}>
             <option selected>Select</option>
-            {{#if pre_selectedcheck pre_selected isCurrent documentid}}
-                <option selected>{{pre_selected}}</option>
+
+            {{#if selectpart selected}}
+                <option selected>{{selected}}</option>
+                <option disabled="true">---New Selection---</option>
             {{else}}
-                {{#if selectpart selected}}
-                    <option selected>{{selected}}</option>
+                {{#if pre_selectedcheck pre_selected isCurrent documentid}}
+                    <option selected>{{pre_selected}}</option>
                     <option disabled="true">---New Selection---</option>
+                    
                 {{/if}}
-            {{/if}}
+            {{/if}} 
 
 
             <option>Part Not Available</option>
@@ -20,3 +23,4 @@
         <div class="select-button"><div class="small-arrow-down"></div></div>
     </div>
 </template>
+

@@ -546,6 +546,7 @@ Template.AddTasks.helpers({
   		return Session.get('partnumber') != null ? Session.get('partnumber'):null;
   	},
   	documentid:function(){
+  		console.log(this.id)
   		return this.id;
   	}
 	// plan: function(){

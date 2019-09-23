@@ -12,19 +12,30 @@ import { ClientTaskworktime } from '/client/main.js';
 // })
 function autofill_plannumber(id){
 	var indexofId = id.substring(0,1).charCodeAt(0);
-	var curId = String.fromCharCode(indexofId+1) ;
+	// var curId = String.fromCharCode(indexofId+1);
+	var curId = String.fromCharCode(indexofId);
 
     //automatically changed the plan number
 	var plantoactual_auto_generate = 0;
 	var partnumber = Session.get('partnumber');
 	var operatorcount = Session.get('operatorcount');
+
+	if (!ClientTaskworktime.findOne({id:curId})){
+		return;
+	}
 	var worktime = ClientTaskworktime.findOne({id:curId}).worktime.substring(0,2);
-	console.log(worktime);
+	// console.log([worktime,curId]);
+	// console.log(ClientTaskworktime.findOne({id:curId}));
 	if (partnumber == 'Part Not Available'){
 		// Session.set('earnedTimePPiecePOpe',value);
 		Session.set('earnedTimePPiecePOpe',0);
 	}else{
-		var MinutesPP_one = Partnumber.findOne({cell:Session.get('cell'), part:partnumber}).MinutesPP_one;
+		var partnumber_Object = Partnumber.findOne({cell:Session.get('cell'), part:partnumber});
+		if(!partnumber_Object){
+			console.log('object is null');
+			return;
+		}
+		var MinutesPP_one = partnumber_Object.MinutesPP_one;
 		plantoactual_auto_generate = MinutesPP_one;
 		// var value = 1/MinutesPP_one;
 		if (operatorcount == 2){
@@ -37,9 +48,9 @@ function autofill_plannumber(id){
 		plantoactual_auto_generate = Math.floor(plantoactual_auto_generate);
 		// value = Math.round( value * 10 ) / 10;
 	}
-		ClientTaskworktime.update({id:curId}, {
-			$set: { worktime:worktime, plantoactual: plantoactual_auto_generate},
-		});
+	ClientTaskworktime.update({id:curId}, {
+		$set: { partnumber:partnumber, plantoactual: plantoactual_auto_generate},
+	});
 }
 Template.selectpart.helpers({
 	activeOrg:function(isCurrent){
