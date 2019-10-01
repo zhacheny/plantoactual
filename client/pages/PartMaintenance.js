@@ -1,14 +1,31 @@
 import { Tasks, Partnumber, Plan, Operator, EarnedTimePP, Cell } from '/lib/collections.js';
 var pre_url = "http://datuswes008/SOLIDWORKSPDM/Contains/EWS%20DB/Material/WM/Finished%20Goods?file=";
+this.log_part_edit = new Logger();
+this.log_part_delete = new Logger();
+this.log_part_add = new Logger();
+this.log_cell_edit = new Logger();
+this.log_cell_delete = new Logger();
+this.log_cell_add = new Logger();
+(new LoggerFile(this.log_part_edit)).enable();
+(new LoggerFile(this.log_part_delete)).enable();
+(new LoggerFile(this.log_part_add)).enable();
+(new LoggerFile(this.log_cell_edit)).enable();
+(new LoggerFile(this.log_cell_delete)).enable();
+(new LoggerFile(this.log_cell_add)).enable();
 
 Template.PartMaintenance.onCreated(function(){
 	// Meteor.setInterval(function() {
 	// 	time.set(new Date());
 	// }, 1000);
+	Session.set('toggle-maintenance',0);
+
+
 	this.autorun(() => {
 		this.subscribe('partnumber',false);
 	})
-
+	this.autorun(() => {
+		this.subscribe('cell',null);
+	})
 });
 
 
@@ -16,7 +33,19 @@ Template.PartMaintenance.events({
 	'click .Modal-delete-yes': function(){
 		console.log(this._id);
 		Meteor.call('partnumberdelete',this._id);
-		Session.set('toggle-maintenance-delete',null);
+		Session.set('toggle-maintenance-delete','');
+		log_part_delete.warn('part delete' + ' | backup:' + 
+			 JSON.stringify(Partnumber.findOne({_id: this._id})) , Meteor.user().username);
+		alert('Deleted!');
+		return false;
+
+	},
+	'click .Modal-delete-cell-yes': function(){
+		console.log(this._id);
+		Meteor.call('celldelete',this._id);
+		Session.set('toggle-maintenance-cell-delete','');
+		log_cell_delete.warn('cell delete' + ' | backup:' + 
+			 JSON.stringify(Cell.findOne({_id: this._id})) , Meteor.user().username);
 		alert('Deleted!');
 		return false;
 
@@ -35,18 +64,35 @@ Template.PartMaintenance.events({
 	},
 	'click .label-add': function(event){
 		// console.log(0);
-		Session.set('toggle-maintenance',0);
+		if(Session.get('toggle-maintenance') == 0){
+			if(Session.get('add-partOrcell') == 1){
+				Session.set('add-partOrcell',0);
+			}else{
+				Session.set('add-partOrcell',1);
+			}
+		}else{
+			Session.set('toggle-maintenance',0);
+		}
 	},
 	'click .label-edit': function(event){
-		// console.log(1);
-		Session.set('toggle-maintenance',1);
+		// Session.set('toggle-maintenance',1);
+
+		if(Session.get('toggle-maintenance') == 1){
+			if(Session.get('edit-partOrcell') == 1){
+				Session.set('edit-partOrcell',0);
+			}else{
+				Session.set('edit-partOrcell',1);
+			}
+		}else{
+			Session.set('toggle-maintenance',1);
+		}
 	},
 	'click .label-import': function(event){
 		// console.log(1);
 		Session.set('toggle-maintenance',2);
 	},
 	'keypress input.inputPart': function(event){
-		var part = $(event.target).val();
+		let part = $(event.target).val();
 		if(event.key == 'Enter'){
 			data = Partnumber.find({part:part}).fetch();
 			
@@ -54,7 +100,23 @@ Template.PartMaintenance.events({
 				alert('Not find!');
 
 			}
-			Session.set('inputPart_data',data);
+			// Session.set('inputPart_data',data);
+			Session.set('inputPart_id',part);
+			return false;
+    	}
+	},
+
+	'keypress input.inputCell': function(event){
+		let cellId = $(event.target).val();
+		if(event.key == 'Enter'){
+			data = Cell.find({cellId:cellId}).fetch();
+			
+			if(data && data.length == 0){
+				alert('Not find!');
+
+			}
+			// Session.set('inputCell_data',data);
+			Session.set('inputCell_id', cellId);
 			return false;
     	}
 	},
@@ -88,11 +150,43 @@ Template.PartMaintenance.events({
 	'click .Modal-cancel': function(event){
 		Session.set('toggle-maintenance-delete','');
 		Session.set('toggle-maintenance-edit','');
+		Session.set('toggle-maintenance-cell-delete','');
+		Session.set('toggle-maintenance-cell-edit','');
+		return;
+	},
+	'click .maintenance-cell-edit': function(event){
+		Session.set('toggle-maintenance-cell-edit','open');
+
+		// alert('Deleted!');
+		return;
+	},
+	'click .maintenance-cell-delete': function(event){
+		Session.set('toggle-maintenance-cell-delete','open');
 		return;
 	},
 	'click .maintenance-delete': function(event){
 		Session.set('toggle-maintenance-delete','open');
 		return;
+	},
+	'click .maintenance-edit-cell-submit': function(){
+		let buildingnumber = Session.get('cell-buildingnumber-edit');
+		let cellId = Session.get('cell-cellId-edit') == null ? 
+			Session.get('inputCell_id'): Session.get('cell-cellId-edit');
+		let cellname = Session.get('cell-cellname-edit');
+
+        Meteor.call( 'updatecell', buildingnumber, cellId, cellname, ( error, response ) => {
+          if ( error ) {
+            // console.log( error.reason );
+            // throw new Meteor.Error('bad', 'stuff happened');
+            log_cell_edit.error('cell add: ' + ' | failed in' 
+				+ error.reason, Meteor.user().username);
+            Bert.alert( error.reason, 'danger', 'growl-top-right' );
+          } else {
+          	log_cell_edit.warn('cell add: ' + ' | Cell Id: ' 
+				+ cellId, Meteor.user().username);
+            Bert.alert( 'cell updated!', 'success', 'growl-top-right' );
+          }
+        });
 	},
 	'click .maintenance-edit-submit': function(events){
 		let MinutesPP_one = Session.get('MinutesPP_one-edit');
@@ -109,9 +203,56 @@ Template.PartMaintenance.events({
 		let id = Session.get('id-edit');
 		Meteor.call('editpartnumber', id,part,cell,XMLname,ProductCode,MinutesPP_one,
 		MinutesPP_two, MinutesPP_three, PiecesPH_one, PiecesPH_two, PiecesPH_three,
-		buildingnumber);
+		buildingnumber, ( error, response ) => {
+          if ( error ) {
+            // console.log( error.reason );
+            // throw new Meteor.Error('bad', 'stuff happened');
+            log_part_edit.error('part add: ' + ' | failed in' 
+				+ error.reason, Meteor.user().username);
+            Bert.alert( error.reason, 'danger', 'growl-top-right' );
+          } else {
+          	log_part_edit.warn('part add: ' + ' | Part Number: ' 
+				+ part, Meteor.user().username);
+            Bert.alert( 'cell updated!', 'success', 'growl-top-right' );
+          }
+        });
 		Session.set('toggle-maintenance-edit','');
 		alert('Update document successfully!');
+		return;
+	},
+	'click .add_cell_submit': function(){
+		let buildingnumber = Session.get('add-cell-building-number');
+		let cellid = Session.get('add-cell-id');
+		let cellname = Session.get('add-cell-name');
+
+        Meteor.call( 'insertcell', buildingnumber, cellid, cellname, ( error, response ) => {
+          if ( error ) {
+            // console.log( error.reason );
+            // throw new Meteor.Error('bad', 'stuff happened');
+            log_cell_add.error('cell add: ' + ' | failed in ' 
+				+ error.reason, Meteor.user().username);
+            Bert.alert( error.reason, 'danger', 'growl-top-right' );
+          } else {
+          	log_cell_edit.warn('cell add: ' + ' | Cell Id: ' 
+				+ cellId, Meteor.user().username);
+            Bert.alert( 'new cell added!', 'success', 'growl-top-right' );
+          }
+        });
+        return false;
+	},
+	'keyup .add-cell-building-number': function(event){
+		let value = $(event.target).val();
+		Session.set('add-cell-building-number',value);
+		return;
+	},
+	'keyup .add-cell-id': function(event){
+		let value = $(event.target).val();
+		Session.set('add-cell-id',value);
+		return;
+	},
+	'keyup .add-cell-name': function(event){
+		let value = $(event.target).val();
+		Session.set('add-cell-name',value);
 		return;
 	},
 	'keyup .MinutesPP_one': function(event){
@@ -159,6 +300,25 @@ Template.PartMaintenance.events({
 		Session.set('drawingname',value);
 		return;
 	},
+
+	//for cell edit
+	'keyup .cell-buildingnumber-edit': function(event){
+		let value = $(event.target).val();
+		Session.set('cell-buildingnumber-edit',value);
+		return;
+	},
+	'keyup .cell-cellId-edit': function(event){
+		let value = $(event.target).val();
+		Session.set('cell-cellId-edit',value);
+		return;
+	},
+	'keyup .cell-cellname-edit': function(event){
+		let value = $(event.target).val();
+		Session.set('cell-cellname-edit',value);
+		return;
+	},
+
+	//for part edit
 	'keyup .XMLname-edit': function(event){
 		let value = $(event.target).val();
 		Session.set('XMLname-edit',value);
@@ -239,8 +399,12 @@ Template.PartMaintenance.events({
 	          if ( error ) {
 	            // console.log( error.reason );
 	            // throw new Meteor.Error('bad', 'stuff happened');
+	            log_part_add.error('part add: ' + ' | failed in ' 
+				+ error.reason, Meteor.user().username);
 	            Bert.alert( error.reason, 'danger', 'growl-top-right' );
 	          } else {
+	          	log_part_add.warn('part add: ' + ' | Part Number: ' 
+				+ cellId, Meteor.user().username);
 	            Bert.alert( 'insert document successfully!', 'success', 'growl-top-right' );
 	          }
 	        });
@@ -250,6 +414,38 @@ Template.PartMaintenance.events({
 
 
 Template.PartMaintenance.helpers({
+	inputCell_placeholder:function(){
+		if (Session.get('inputCell_id') != null) {
+			return Session.get('inputCell_id');
+		}else{
+			return 'Cell ID';
+		}
+	},
+	inputPart_placeholder:function(){
+		if (Session.get('inputPart_id') != null) {
+			return Session.get('inputPart_id');
+		}else{
+			return 'Part Number';
+		}
+	},
+	edit_partOrcell:function(){
+		if(Session.get('edit-partOrcell') == null){
+			return true;
+		}else if (Session.get('edit-partOrcell') == 0){
+			return true;
+		}else{
+			return false;
+		}
+	},
+	add_partOrcell:function(){
+		if(Session.get('add-partOrcell') == null){
+			return true;
+		}else if (Session.get('add-partOrcell') == 0){
+			return true;
+		}else{
+			return false;
+		}
+	},
 	viewXMLname:function(){
 		let url = this.XMLname;
 		if(url != null){
@@ -311,11 +507,25 @@ Template.PartMaintenance.helpers({
 		}
 	},
 	displaytable: function(){
-		if(Session.get('toggle-maintenance') == 0){
+		if(Session.get('toggle-maintenance') == 0 || Session.get('toggle-maintenance') == 2){
 			return false;
 		}else{
-			if(Session.get('toggle-maintenance') == 1 && Session.get('inputPart_data') != null){
+			if(Session.get('inputPart_id') != null && 
+				(Session.get('edit-partOrcell') == 0 || Session.get('edit-partOrcell') == null)){
 				return true;
+			}else{
+				return false;
+			}
+		}
+	},
+	displaytable_cell:function(){
+		if(Session.get('toggle-maintenance') == 0 || Session.get('toggle-maintenance') == 2){
+			return false;
+		}else{
+			if(Session.get('inputCell_id') != null && Session.get('edit-partOrcell') == 1){
+				return true;
+			}else{
+				return false;
 			}
 		}
 	},
@@ -323,7 +533,10 @@ Template.PartMaintenance.helpers({
 		// if(Session.get('lostMin') != null){
 		// 	return "toggle-GenerateChart";
 		// }
-		if(Session.get('toggle-maintenance') == null){
+		if(Session.get('toggle-maintenance') == null || Session.get('toggle-maintenance') == 0){
+			if(Session.get('add-partOrcell') != null && Session.get('add-partOrcell') == 1){
+				return "toggle-Maintenance-addCell-page";
+			}
 			return false;
 		}else{
 			if(Session.get('toggle-maintenance') == 1){
@@ -335,14 +548,26 @@ Template.PartMaintenance.helpers({
 		
 	},
 	parts: function(){
-		if (Session.get('toggle-maintenance') == 0){
+		if (Session.get('toggle-maintenance') == 0 || Session.get('toggle-maintenance') == 2){
 			return false;
 		}else{
 			// var part = Session.get('inputPart');
 			// data = Partnumber.find({part:part}).fetch();
 			// console.log(data);
-			var data = Session.get('inputPart_data');
+			let part = Session.get('inputPart_id');
+			let data = Partnumber.find({part:part}).fetch();
 			// console.log(data);
+			return data;
+		}
+	},
+	cells: function(){
+		if (Session.get('toggle-maintenance') == 0 || Session.get('toggle-maintenance') == 2){
+			return false;
+		}else{
+			let cellId = Session.get('inputCell_id');
+
+			let data = Cell.find({cellId:cellId}).fetch();
+
 			return data;
 		}
 	},

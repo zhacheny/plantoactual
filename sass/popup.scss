@@ -17,6 +17,7 @@
         transform: translateX(-50%) scale(1);
     }
     h3 {
+        font-size:2vw;
         margin-top: 0;
     }
     .close-popup {
@@ -32,7 +33,7 @@
 }
 
 
-.delete-popup-modal{
+.delete-popup-modal, .delete-popup-cell-modal{
     position:absolute;
     border: solid 2px $dblue;
     top: 20%;
@@ -63,7 +64,7 @@
     }
 }
 
-.edit-popup-modal {
+.edit-popup-modal, .edit-popup-cell-modal {
     position: fixed;
     border: solid 2px $dblue;
     top: 30%;

@@ -52,3 +52,5 @@ mrt:cookies
 check
 webtempest:animate
 email
+ostrio:logger
+ostrio:loggerfile

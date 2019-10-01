@@ -43,6 +43,8 @@ Meteor.publish('task', function(start,end,buildingnumber){
 				buildingnumber:buildingnumber});
 		}
 
+	}else if(start == null,end == null){
+		return Tasks.find({});
 	}
 	// return Tasks.find({});
 });
@@ -65,7 +67,7 @@ Meteor.publish('taskworktime', function(){
 Meteor.publish('cell', function(buildingnumber){
 	if(buildingnumber != null){
 		return Cell.find({buildingnumber:buildingnumber});
-	}else if (buildingnumber == 'all'){
+	}else{
 		return Cell.find({});
 	}
 

@@ -1,0 +1,15 @@
+[WARN] | 27:51 | 'report edit:  | Comment: log test 02 | documentID: 52hawaygba9x4JPAE' | username: "zhacheny" | User Id: DfxXfZtjxFPGnN9Go
+[WARN] | 27:51 | 'report edit:  | Operator ID Array: 00155,null,null | documentID: 52hawaygba9x4JPAE' | username: "zhacheny" | User Id: DfxXfZtjxFPGnN9Go
+[WARN] | 28:52 | 'report edit:  | Comment: log test 03 | documentID: 52hawaygba9x4JPAE' | username: "zhacheny" | User Id: DfxXfZtjxFPGnN9Go
+[WARN] | 28:52 | 'report edit:  | Operator ID Array: 00155,null,null | documentID: 52hawaygba9x4JPAE' | username: "zhacheny" | User Id: DfxXfZtjxFPGnN9Go
+[WARN] | 30:4 | 'report edit:  | Actual Number: 3 | documentID: 52hawaygba9x4JPAE' | username: "zhacheny" | User Id: DfxXfZtjxFPGnN9Go
+[WARN] | 30:4 | 'report edit:  | Reason: log_ test 01 | documentID: 52hawaygba9x4JPAE' | username: "zhacheny" | User Id: DfxXfZtjxFPGnN9Go
+[WARN] | 30:4 | 'report edit:  | Status: green | documentID: 52hawaygba9x4JPAE' | username: "zhacheny" | User Id: DfxXfZtjxFPGnN9Go
+[WARN] | 30:4 | 'report edit:  | Comment: log test 03 | documentID: 52hawaygba9x4JPAE' | username: "zhacheny" | User Id: DfxXfZtjxFPGnN9Go
+[WARN] | 30:4 | 'report edit:  | Operator ID Array: 00155,null,null | documentID: 52hawaygba9x4JPAE' | username: "zhacheny" | User Id: DfxXfZtjxFPGnN9Go
+[WARN] | 46:53 | 'report delete | backup:{"_id":"JHRT3ZJNRmxMSXozs","id":"b","timespan":"4:00-5:00 pm","partnumber":"30TC-4V","worktime":4,"plan":0,"actual":0,"reason":null,"status":"changeover","comment":"changeover","createdAt":"2019-09-22T20:57:15.105Z","operatorID":["00155","null","null"],"earnedtime":0,"buildingnumber":"4A","cell":"5504"}' | username: "zhacheny" | User Id: DfxXfZtjxFPGnN9Go
+[WARN] | 47:54 | 'report edit:  | Status: changeover | documentID: JHRT3ZJNRmxMSXozs' | username: "zhacheny" | User Id: DfxXfZtjxFPGnN9Go
+[WARN] | 47:54 | 'report edit:  | Operator ID Array: 00155,null,null | documentID: JHRT3ZJNRmxMSXozs' | username: "zhacheny" | User Id: DfxXfZtjxFPGnN9Go
+[WARN] | 47:54 | 'report edit:  | Actual Number: 3 | documentID: JHRT3ZJNRmxMSXozs' | username: "zhacheny" | User Id: DfxXfZtjxFPGnN9Go
+[INFO] | 48:15 | 'log out' | username: "zhacheny" | User Id: DfxXfZtjxFPGnN9Go
+[INFO] | 48:37 | 'log in' | username: "HR_test" | User Id: 5ugvJ8DvsMnsu3Kd6

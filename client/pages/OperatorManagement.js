@@ -1,4 +1,10 @@
 import { Tasks, Partnumber, Taskworktime, Plan, Operator, EarnedTimePP } from '/lib/collections.js';
+this.log_operator_edit = new Logger();
+this.log_operator_delete = new Logger();
+this.log_operator_add = new Logger();
+(new LoggerFile(this.log_operator_edit)).enable();
+(new LoggerFile(this.log_operator_delete)).enable();
+(new LoggerFile(this.log_operator_add)).enable();
 
 Template.OperatorManagement.onCreated(function(){
 
@@ -23,6 +29,8 @@ Template.OperatorManagement.events({
 		Meteor.call('editoperator', id,operatorName,EENumber,Department,employIndicator,
 		supervisorName, initial);
 		Session.set('toggle-OperatorManagement-edit','');
+		log_operator_edit.warn('operator edit: ' + ' | EE Number: ' 
+			+ EENumber, Meteor.user().username);
 		alert('Update document successfully!');
 		return;
 	},
@@ -45,8 +53,10 @@ Template.OperatorManagement.events({
 	},
 	'click .Modal-delete-yes': function(){
 		console.log(this._id);
-		Meteor.call('operatordelete',this._id);
+		// Meteor.call('operatordelete',this._id);
 		Session.set('toggle-OperatorManagement-delete',null);
+		log_operator_delete.warn('operator delete' + ' | backup:' + 
+			 JSON.stringify(Operator.findOne({_id: this._id})) , Meteor.user().username);
 		alert('Deleted!');
 		return false;
 
@@ -55,6 +65,19 @@ Template.OperatorManagement.events({
 		var EENumber = $(event.target).val();
 		Session.set('input-EENumber',EENumber);
 		return false;
+		
+	},
+	'keypress .inputEEnumber': function(event){
+		var EENumber = $(event.target).val();
+		if(event.key == 'Enter'){
+			data = Operator.find({EENumber:EENumber}).fetch();
+			
+			if(data && data.length == 0){
+				alert('Not find!');
+
+			}
+			return false;
+		}
 		
 	},
 	'click .OperatorManagement-delete': function(event){
@@ -130,6 +153,8 @@ Template.OperatorManagement.events({
             alert( 'Added!' );
           }
         });
+        log_operator_add.warn('operator add: ' + ' | EE Number: ' 
+			+ EENumber, Meteor.user().username);
 		return false;
 	},
 	'click .OperatorManagement-Viewall': function(){

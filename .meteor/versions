@@ -90,6 +90,9 @@ npm-bcrypt@0.7.8_2
 npm-mongo@1.4.42
 observe-sequence@1.0.10
 ordered-dict@1.0.6
+ostrio:logger@1.1.2
+ostrio:loggerfile@1.1.2
+ostrio:meteor-root@1.0.8
 pfafman:filesaver@1.3.2
 promise@0.6.6
 raix:handlebar-helpers@0.2.5

@@ -49,11 +49,17 @@
     max-height:200px;
 }
 
+.toggle-Maintenance-addCell-page .Maintenance{
+    padding: 20px;
+    max-height:370px;
+}
+
+
 .toggle-Maintenance-import-page .Maintenance{
     padding: 20px;
     max-height:350px;
 }
-
+//add-part
 .toggle-Maintenance-page .Maintenance-add{
     display:none;
     opacity: 0;
@@ -63,6 +69,7 @@
     display:none;
     opacity: 0;
 }
+
 
 .toggle-Maintenance-page .Maintenance-edit{
     //padding: 10px;

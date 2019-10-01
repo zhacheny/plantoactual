@@ -9,6 +9,14 @@ var timespan_worktime = ['55','60','40','60','55','55','60','50','55','60','40',
 var timespan_merge = timespan1.concat(timespan2);
 var data = "";
 var firstRendered = false;
+this.log_report_edit = new Logger();
+this.log_report_delete = new Logger();
+this.log_report_error = new Logger();
+// this.log_report_add = new Logger();
+(new LoggerFile(this.log_report_edit)).enable();
+(new LoggerFile(this.log_report_delete)).enable();
+(new LoggerFile(this.log_report_error)).enable();
+// (new LoggerFile(this.log_report_add)).enable();
 
 function renderPicker(){
 	$('#picker-1, #picker-2').datetimepicker({
@@ -58,6 +66,25 @@ Template.ManageTasks.onCreated(function(){
 	// Meteor.setInterval(function() {
 	// 	time.set(new Date());
 	// }, 1000);
+});
+
+Tracker.autorun(function() {
+	let startdate = Session.get('startdate');
+	let enddate = Session.get('enddate');
+	let buildingnumber = Session.get('buildingnumber_part_maintenance');
+	let start = new Date(startdate);
+	let end = new Date(enddate);
+	if ( startdate != null && enddate != null 
+		&& buildingnumber != null){
+		//subscribe data from the backend 
+		Meteor.subscribe('task',start,end,buildingnumber, function(){
+	     //Set the reactive session as true to indicate that the data have been loaded
+	     // console.log(2222); 
+	  });
+		// return;
+	}
+
+
 });
 
 Template.ManageTasks.events({
@@ -139,6 +166,19 @@ Template.ManageTasks.events({
 		// console.log([id,actualInput, reasonInput, commentInput]);
 		Meteor.call('updateAll', id, actualInput, reasonInput,
 			commentInput,operatorIDarray,status);
+		//add log edit file
+		if (Session.get('updateactual') != null ) {
+			log_report_edit.warn('report edit: ' + ' | Actual Number: ' 
+			+ actualInput + ' | documentID: ' + id, Meteor.user().username);
+			log_report_edit.warn('report edit: ' + ' | Status: ' 
+			+ status + ' | documentID: ' + id, Meteor.user().username);
+		}
+		if (Session.get('updatereason') != null ) {log_report_edit.warn('report edit: ' + ' | Reason: ' 
+			+ reasonInput + ' | documentID: ' + id, Meteor.user().username);}
+		if (Session.get('updatecomment') != null ) {log_report_edit.warn('report edit: ' + ' | Comment: ' 
+			+ commentInput + ' | documentID: ' + id, Meteor.user().username);}
+		log_report_edit.warn('report edit: ' + ' | Operator ID Array: ' 
+			+ operatorIDarray + ' | documentID: ' + id, Meteor.user().username);
 		alert('Edit Successfully!');
 		return false;
 	},
@@ -173,7 +213,11 @@ Template.ManageTasks.events({
 	},
 	
 	'click .Modal-yes': function(event){
-		Meteor.call('deletetask', Session.get('inputID'));
+		var id = Session.get('inputID');
+		Meteor.call('deletetask', id);
+		log_report_delete.warn('report delete' + ' | backup:' + 
+			 JSON.stringify(Tasks.findOne({_id: id})) , Meteor.user().username);
+		Session.set('toggle-search-delete','');
 		alert('Deleted!');
 		return;
 	},
@@ -190,7 +234,12 @@ Template.ManageTasks.events({
 		var id = $(event.target).val();
 		if(event.key == 'Enter'){
 			Session.set('inputID',id);
-			var operatorID = Tasks.findOne({_id:id}).operatorID;
+			var opreatorObject = Tasks.findOne({_id:id})
+			if(!opreatorObject){
+				alert('No record find!');
+				return false;
+			}
+			var operatorID = opreatorObject.operatorID;
 			var operatorinitial = ['null','null','null'];
 			var operatorFullName = ['null','null','null'];
 			for (var i = operatorID.length - 1; i >= 0; i--) {
@@ -214,6 +263,7 @@ Template.ManageTasks.events({
 	'click .label-searchID': function(event){
 		// console.log(1);
 		Session.set('toggle-search',1);
+		Meteor.subscribe('task',null,null,null);
 	},
 	'blur #picker-1': function (event, template) {
 	  // Get the selected start date
@@ -247,9 +297,9 @@ Template.ManageTasks.events({
 	  var start = new Date(startdate);
 	  var end = new Date(enddate);
 	  var building = Session.get('buildingnumber_part_maintenance') != null ? Session.get('buildingnumber_part_maintenance') : false;
-	  Meteor.subscribe('task',start,end,building);
 	  Session.set('toggle-Generate',is_checked);
 	},
+
 	'change .partnumberchange':function(evt){
 		var partnumber = $(evt.target).val();
 		Session.set('partnumber',partnumber);
@@ -270,6 +320,7 @@ Template.ManageTasks.events({
 			alert("invalid input");
 			return false;
 		}
+
 		// Session.set('searchCondition',[true,[startdate, enddate, building, cell, partnumber,[shifts1,shifts2],operator]]);
 		var start = new Date(startdate);
 		var end = new Date(enddate);
@@ -288,6 +339,7 @@ Template.ManageTasks.events({
 		if (!building || building == "Select"){
 			query_search = {};
 		}
+
 		// console.log(query_search);
 		if(operator == "All" || !operator){
 			//check whether user select the shift button
@@ -324,7 +376,10 @@ Template.ManageTasks.events({
 				return false;
 			}
 		}
-
+		if(data.length == 0){
+			alert('No data in this interval');
+			return false;
+		}
 		// produce data
 		if(Session.get('toggle-Download')){
 			const revised_data = JSON.parse(JSON.stringify(data));
@@ -347,10 +402,6 @@ Template.ManageTasks.events({
 		}
 		//generate charts
 		if(Session.get('toggle-Generate')){
-			if(data.length == 0){
-				alert('No data in this interval');
-				return false;
-			}
 			//extract tendency attributes
 			//calculate the date difference
 			const diffTime = Math.abs(end.getTime() - start.getTime());
@@ -446,8 +497,15 @@ Template.ManageTasks.events({
 			var operatorFullName = [];
 			for (var i = operatorArray.length - 1; i >= 0; i--) {
 				if(operatorArray[i] != 'null'){
-
-					operatorFullName[i] = Operator.findOne({EENumber:operatorArray[i]}).operatorName;
+					var opreatorObject =  Operator.findOne({EENumber:operatorArray[i]});
+					if(!opreatorObject){
+						alert("Something Wrong Happened, someone delete the operator!")
+						log_report_error.error('report error: ' + 'someone delete the operator' +
+			 ' | EE Number: ' + operatorArray[i], Meteor.user().username);
+					}else{
+						operatorFullName[i] = opreatorObject.operatorName;
+					}
+					
 				}
 			}
 			//sort the array

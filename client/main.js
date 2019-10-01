@@ -1,5 +1,7 @@
 export const ClientTaskworktime = new Mongo.Collection(null);
 import moment from 'moment';
+import { Logger } from 'meteor/ostrio:logger';
+import { LoggerFile } from 'meteor/ostrio:loggerfile';
 
 function getClientTime() {
         // var _time = (new Date).toTimeString();
@@ -38,6 +40,8 @@ if (Meteor.isClient){
 	    var operatorinitial = [['null','null','null'],['null','null','null']];
 	    Session.set('operatorarray',operatorinitial);
 	    Session.set('tempchangeoverid',"a");
+
+     // console.log("Meteor.log.file.path", Meteor.log.file.path);
 	    // Session.set('changeover-showup',false);
 		// Meteor.call('initializeClientTaskworktime');
 

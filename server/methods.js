@@ -353,7 +353,7 @@ Meteor.methods({
 				    });
 	      } else {
 	        // Session.set('part-insert-error','Rejected. This item already exists.');
-	        throw new Meteor.Error('bad', 'Rejected. This item already exists.');
+	        throw new Meteor.Error('bad', 'Rejected. This cell already exists.');
 	      }
 	    }
 	  },
@@ -362,6 +362,30 @@ Meteor.methods({
 	},
 	partnumberdelete(Id){
 		Partnumber.remove({_id: Id});
+	},
+	celldelete(Id){
+		Cell.remove({_id: Id});
+	},
+	insertcell(buildingnumber, cellId, cellname){
+		let exists_cell = Cell.findOne( { cellId: cellId } );
+		if ( !exists_cell ) {
+			Cell.insert({
+				buildingnumber:buildingnumber,
+				cellname:cellname,
+				cellId: cellId
+			});
+		}else{
+			throw new Meteor.Error('bad', 'Rejected. This cell already exists.');
+		}
+	},
+	updatecell(buildingnumber, cellId, cellname){
+		console.log(0);
+	    Cell.update({cellId:cellId}, {
+	      $set: { 
+	      		buildingnumber:buildingnumber,
+				cellname:cellname,
+	       },
+	    });
 	},
 	insertpartnumber(part,cell,XMLname,ProductCode,MinutesPP_one,
 		MinutesPP_two, MinutesPP_three, PiecesPH_one, PiecesPH_two, PiecesPH_three,

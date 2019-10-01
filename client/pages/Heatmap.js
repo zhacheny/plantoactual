@@ -1,5 +1,6 @@
 import { Tasks, Cell, Partnumber, Plan, Operator, EarnedTimePP,Anouncements,
 		Safetymessage, Department, Menu } from '/lib/collections.js';
+
 Template.Heatmap.events({
 	// 'click .bounce': function(){
 
@@ -15,6 +16,29 @@ Template.Heatmap.events({
 	},
 })
 Template.Heatmap.helpers({
+	total_earned_hours:function(){
+		let tasks_object = Tasks.find({}).fetch();
+		let sum = 0;
+		for (var i = tasks_object.length - 1; i >= 0; i--) {
+			sum += tasks_object[i].earnedtime;
+		}
+		sum /= 60;
+		return sum + ' hours';
+	},
+	total_efficiency:function(){
+		let tasks_object = Tasks.find({}).fetch();
+		let sum_earnetime = 0;
+		let sum_worktime = 0;
+		for (var i = tasks_object.length - 1; i >= 0; i--) {
+			sum_earnetime += tasks_object[i].earnedtime;
+			sum_worktime += tasks_object[i].worktime;
+		}
+		console.log(sum_earnetime);
+		console.log(sum_worktime);
+		let res = sum_earnetime / sum_worktime;
+		res /= 60;
+		return res > 0 ? res + ' hours': 0 + ' hours';
+	},
 	isgrey:function(){
 		if(this.actual == 0){
 			return 'background: #EEE';
@@ -48,8 +72,8 @@ Template.Heatmap.helpers({
 
 		// console.log([red,green]);
 		if(red != 0 || green!= 0){
-			console.log(cellid);
-			console.log([red,green]);
+			// console.log(cellid);
+			// console.log([red,green]);
 			if(red < green){
 				return true;
 			}else{

@@ -1,4 +1,8 @@
+import { Logger }     from 'meteor/ostrio:logger';
+import { LoggerFile } from 'meteor/ostrio:loggerfile';
 var pwd = AccountsTemplates.removeField('password');
+this.login = new Logger();
+(new LoggerFile(this.login)).enable();
 AccountsTemplates.removeField('email');
 AccountsTemplates.addFields([
   {
@@ -24,10 +28,18 @@ var myLogoutFunc = function(){
 	FlowRouter.go('/');
 }
 
+var mySubmitFunc = function(){
+	// console.log(Meteor.user().profile.firstName);
+    login.info('log in', Meteor.user().username);
+}
+
 AccountsTemplates.configure({
 	privacyUrl: 'privacy',
     termsUrl: 'terms-of-use',
     onLogoutHook: myLogoutFunc,
+    onSubmitHook: mySubmitFunc,
+    // preSignUpHook: myPreSubmitFunc,
+    // postSignUpHook: myPostSubmitFunc,
 });
 
 AccountsTemplates.addFields([

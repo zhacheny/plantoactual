@@ -5,8 +5,27 @@
 	        <div class="Maintenance">
 	            <div class="Maintenance-nav">
 	                <ul></ul>
-	                  <li class="label-add"><a href=""><span>Add</span></a></li>
-	                  <li class="label-edit"><a href=""><span>Edit</span></a>
+	                  <li class="label-add">
+	                  	<a href="">Add
+		                  	{{#if add_partOrcell}}
+		                  		<span style="color:#de4f4f">Part</span> /
+		                  		<span>Cell</span>
+		                  	{{else}}
+		                  		<span>Part</span> /
+		                  		<span style="color:#de4f4f">Cell</span>
+		                  	{{/if}}
+	                  	</a>
+	                  </li>
+	                  <li class="label-edit">
+	                  	<a href="">Edit
+		                  	{{#if edit_partOrcell}}
+		                  		<span style="color:#de4f4f">Part</span> /
+		                  		<span>Cell</span>
+	                  		{{else}}
+	                  			<span>Part</span> /
+		                  		<span style="color:#de4f4f">Cell</span>
+	                  		{{/if}}
+                  		</a>
 	                  </li>
 	                  <li class="label-import"><a href=""><span>Import</span></a>
 	                  </li>
@@ -16,97 +35,131 @@
 	 				{{> upload type="part"}}
 	 				<!-- {{> upload type="updatepart"}} -->
 	 			</div>
-	            <form class="Maintenance-add">
-	              <div class="group">
-	                <div class="left">
-	                    <label>Part</label>
-	                    <input class="partnumber" type="text-2">
-	                </div>
-	                <div class="right">
-	                  <label>Cell</label>
-	                  <input class="cellnumber" type="text-2">
-	                </div>
-	              </div>
+	 			<form class="Maintenance-add">
+		 			{{#if add_partOrcell}}
+		              <div class="group">
+		                <div class="left">
+		                    <label>Part</label>
+		                    <input class="partnumber" type="text-2">
+		                </div>
+		                <div class="right">
+		                  <label>Cell</label>
+		                  <input class="cellnumber" type="text-2">
+		                </div>
+		              </div>
 
-	              <div class="group">
-	                <div class="left">
-	                    <label>Drawing Name:</label>
-	                    <input class="Drawingname" type="text-2">
-	                </div>
-	              </div>
-	              <div class="group">
-	              	<div class="left"><label>Preview:</label></div>
-	                	<textarea class="Linkpreview">{{previewLink}}</textarea>
-	              </div>
-  	              <div class="group">
-	                <div class="left">
-	                    <label>Product Code:</label>
-	                    {{> selectProc}}
-	                </div>
-	                <div class="right">
-	                    <label>Building Number:</label>
-	                    {{> selectbuilding selected=selectedbuilding type="part_maintencance"}}
-	                </div>
-	              </div>
-	              <label>1 Operator Rate</label>
-	              <div class="group">
-	                <div class="left">
-	                    <label>Minutes Per Piece</label>
-	                    <input class="MinutesPP_one" type="text-2">
-	                </div>
-	                <div class="right">
-	                    <label>Pieces Per Hour</label>
-	                    <input class="PiecesPH_one" type="text-2" value="{{PiecesPH_one_cal}}">
-	                </div>
-	              </div>
-	              <label>2 Operator Rate</label>
-  	              <div class="group">
-	                <div class="left">
-	                    <label>Minutes Per Piece</label>
-	                    <input class="MinutesPP_two" type="text-2">
-	                </div>
-	                <div class="right">
-	                    <label>Pieces Per Hour</label>
-	                    <input class="PiecesPH_two" type="text-2" value="{{PiecesPH_two_cal}}">
-	                </div>
-	              </div>
-	              <label>3 Operator Rate</label>
-  	              <div class="group">
-	                <div class="left">
-	                    <label>Minutes Per Piece</label>
-	                    <input class="MinutesPP_three" type="text-2">
-	                </div>
-	                <div class="right">
-	                    <label>Pieces Per Hour</label>
-	                    <input class="PiecesPH_three" type="text-2" value="{{PiecesPH_three_cal}}">
-	                </div>
-	              </div>
-					<hr>
-	                <div class="group">
-	                    <div class="left">
-	                        <input type="checkbox" id="checkbox1">
-	                        <label for="checkbox1">Quality Flag</label>
-	                    </div>
-	                    <div class="right">
-	                    </div>
-	                </div>
-	                <div class="group">
-	                    <div class="left">
-	                        <button class="maintenance-submit">Submit</button>
-	                    </div>
-	                    <div class="right">
-	                        <!-- <button class="maintenance-Viewall">View All</button> -->
-	                        <!-- <button class="maintenance-Import">Import</button> -->
-	                    </div>
-	                </div>
+		              <div class="group">
+		                <div class="left">
+		                    <label>Drawing Name:</label>
+		                    <input class="Drawingname" type="text-2">
+		                </div>
+		              </div>
+		              <div class="group">
+		              	<div class="left"><label>Preview:</label></div>
+		                	<textarea class="Linkpreview">{{previewLink}}</textarea>
+		              </div>
+	  	              <div class="group">
+		                <div class="left">
+		                    <label>Product Code:</label>
+		                    {{> selectProc}}
+		                </div>
+		                <div class="right">
+		                    <label>Building Number:</label>
+		                    {{> selectbuilding selected=selectedbuilding type="part_maintencance"}}
+		                </div>
+		              </div>
+		              <label>1 Operator Rate</label>
+		              <div class="group">
+		                <div class="left">
+		                    <label>Minutes Per Piece</label>
+		                    <input class="MinutesPP_one" type="text-2">
+		                </div>
+		                <div class="right">
+		                    <label>Pieces Per Hour</label>
+		                    <input class="PiecesPH_one" type="text-2" value="{{PiecesPH_one_cal}}">
+		                </div>
+		              </div>
+		              <label>2 Operator Rate</label>
+	  	              <div class="group">
+		                <div class="left">
+		                    <label>Minutes Per Piece</label>
+		                    <input class="MinutesPP_two" type="text-2">
+		                </div>
+		                <div class="right">
+		                    <label>Pieces Per Hour</label>
+		                    <input class="PiecesPH_two" type="text-2" value="{{PiecesPH_two_cal}}">
+		                </div>
+		              </div>
+		              <label>3 Operator Rate</label>
+	  	              <div class="group">
+		                <div class="left">
+		                    <label>Minutes Per Piece</label>
+		                    <input class="MinutesPP_three" type="text-2">
+		                </div>
+		                <div class="right">
+		                    <label>Pieces Per Hour</label>
+		                    <input class="PiecesPH_three" type="text-2" value="{{PiecesPH_three_cal}}">
+		                </div>
+		              </div>
+						<hr>
+		                <div class="group">
+		                    <div class="left">
+		                        <input type="checkbox" id="checkbox1">
+		                        <label for="checkbox1">Quality Flag</label>
+		                    </div>
+		                    <div class="right">
+		                    </div>
+		                </div>
+		                <div class="group">
+		                    <div class="left">
+		                        <button class="maintenance-submit">Submit</button>
+		                    </div>
+		                    <div class="right">
+		                        <!-- <button class="maintenance-Viewall">View All</button> -->
+		                        <!-- <button class="maintenance-Import">Import</button> -->
+		                    </div>
+		                </div>
+			        {{else}}
+		                <div class="group">
+			                <div class="left">
+			                    <label>Building Number</label>
+			                    <input class="add-cell-building-number" type="text-2">
+			                </div>
+			                <div class="right">
+			                    <label>Cell Id</label>
+			                    <input class="add-cell-id" type="text-2">
+			                </div>
+			              </div>
+		  	              <div class="group">
+			                <div class="left">
+			                    <label>Cell Name</label>
+			                    <input class="add-cell-name" type="text-2">
+			                </div>
+		                </div>
+		                <hr>
+		                <div class="group">
+		                    <div class="left">
+		                        <button class="add_cell_submit">Submit</button>
+		                    </div>
+		                </div>
+			        {{/if}}
 	            </form>
+	            <!-- <button class="add_cell_submit">Submit</button> -->
 	            <!-- <button class="maintenance-submit">Submit</button> -->
 	            <form class="Maintenance-edit">
-	                <div class="iwg-input-container">
-	                    <input class="inputPart" placeholder="Part Number" />
-	                    <div class="iwg-input-border"></div>
-	                    <div class="iwg-input-border"></div>
-	                </div>
+	            	{{#if edit_partOrcell}}
+		                <div class="iwg-input-container">
+		                    <input class="inputPart" placeholder="{{inputPart_placeholder}}" />
+		                    <div class="iwg-input-border"></div>
+		                    <div class="iwg-input-border"></div>
+		                </div>
+	                {{else}}
+		                <div class="iwg-input-container">
+		                    <input class="inputCell" placeholder="{{inputCell_placeholder}}" />
+		                    <div class="iwg-input-border"></div>
+		                    <div class="iwg-input-border"></div>
+		                </div>
+	                {{/if}}
 	<!--                     <hr> -->
 	                <!-- <button class="searchID">Search!</button> -->
 	            </form>
@@ -201,7 +254,34 @@
 		        </tbody>
 		    </table>
 	    {{/if}}
+		{{#if displaytable_cell}}
+		    <table class="table">
+		        <thead>
+		            <tr>
+		                <td>Buiding Number</td>
+		                <td>Cell Id</td>
+		                <td>Cell Name</td>
+		                <td>Display Name</td>
+		                <td></td>
+		                <td></td>
 
+		            </tr>
+		        </thead>
+		        <tbody>
+		            {{#each cells}}
+		            <tr>
+		                <td>{{buildingnumber}}</td>
+		                <td>{{cellId}}</td>
+		                <td>{{cellname}}</td>
+		                <td>{{cellname}}-{{cellId}}</td>
+		                <td style="width: 50px"><button class="maintenance-cell-edit">Edit</button></td>
+		                <td style="width: 50px"><button class="maintenance-cell-delete" >Delete</button></td>
+		                
+		            </tr>
+		            {{/each}}
+		        </tbody>
+		    </table>
+	    {{/if}}
 		<div class="delete-popup-modal {{$.Session.get 'toggle-maintenance-delete'}}">
 	        <!-- <i class="fa fa-close close-popup"></i> -->
 	        <h3>Are you sure you want to delete this document?</h3>
@@ -211,10 +291,65 @@
 	                <button class="Modal-delete-yes">Yes!</button>
 	            </div>
 	            <div class="right">
-	                <button class="Modal-delete-cancel">Cancel</button>
+	                <button class="Modal-cancel">Cancel</button>
 	            </div>
 	        </div>
 	        {{/each}}
+	    </div>
+		<div class="delete-popup-cell-modal {{$.Session.get 'toggle-maintenance-cell-delete'}}">
+	        <!-- <i class="fa fa-close close-popup"></i> -->
+	        <h3>Are you sure you want to delete this document?</h3>
+	        {{#each cells}}
+	        <div class="group"> 
+	            <div class="left">
+	                <button class="Modal-delete-cell-yes">Yes!</button>
+	            </div>
+	            <div class="right">
+	                <button class="Modal-cancel">Cancel</button>
+	            </div>
+	        </div>
+	        {{/each}}
+	    </div>
+	    <div class="edit-popup-modal {{$.Session.get 'toggle-maintenance-cell-edit'}}">
+	    	<table class="table">
+		        <thead>
+		            <tr>
+		                <td>Buiding Number</td>
+		                <td>Cell Id</td>
+		                <td>Cell Name</td>
+		                <td>Display Name</td>
+
+		            </tr>
+		        </thead>
+		        <tbody>
+		            {{#each cells}}
+		            <tr>
+		                <td>
+	                		<input type="text-2" style = "width: 60px" class="cell-buildingnumber-edit" id="reasonInput"  placeholder="{{buildingnumber}}">
+		                </td>
+		                <td>
+	                		<input type="text-2" style = "width: 75px" class="cell-cellId-edit" id="reasonInput"  placeholder="{{cellId}}">
+		                </td>
+		                <td>
+	                		<input type="text-2" style = "width: 100px" class="cell-cellname-edit" id="reasonInput"  placeholder="{{cellname}}">
+		                </td>
+		                <td>
+	                		{{cellname}}-{{cellId}}
+		                </td>
+		                
+		            </tr>
+		            {{/each}}
+		        </tbody>
+		    </table>
+	    	<h3></h3>
+		    <div class="group">
+	            <div class="left">
+	                <button class="maintenance-edit-cell-submit">Submit!</button>
+	            </div>
+	            <div class="right">
+	                <button class="Modal-cancel">Cancel</button>
+	            </div>
+        	</div>
 	    </div>
 		<div class="edit-popup-modal {{$.Session.get 'toggle-maintenance-edit'}}">
 	        <!-- <i class="fa fa-close close-popup"></i> -->
