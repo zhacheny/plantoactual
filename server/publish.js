@@ -36,15 +36,21 @@ Meteor.publish('safetymessage', function(){
 //publish task
 Meteor.publish('task', function(start,end,buildingnumber){
 	if(buildingnumber != null){
-		if(start == null,end == null){
+		if(start == null || end == null){
 			return Tasks.find( {buildingnumber:buildingnumber});
 		}else{
 			return Tasks.find({createdAt : { $gte : start, $lt: end }, 
 				buildingnumber:buildingnumber});
 		}
 
-	}else if(start == null,end == null){
-		return Tasks.find({});
+	}else{
+		if(start == null || end == null){
+			return Tasks.find({});
+		}else{
+
+			return Tasks.find({createdAt : { $gte : start, $lt: end }});
+		}
+		
 	}
 	// return Tasks.find({});
 });

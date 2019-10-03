@@ -92,8 +92,11 @@ function builtArea() {
 }
 
 function renderCharts() {
+    //get trend data from the session
     var All_data = Session.get('eff-trend');
-    console.log(All_data);
+    var shift_1_data = Session.get('eff-trend_shift_1');
+    var shift_2_data = Session.get('eff-trend_shift_2');
+    // console.log(All_data);
     // builtColumn(All_data,operator,date_per_operator);
     builtArea();
      if(Session.get('hasOperator')[0]){
@@ -110,7 +113,19 @@ function renderCharts() {
 
         };
     }
-   $('#container-area').highcharts().addSeries(series_All);
+    var series_shift_1  = {
+            name: 'shift 1',
+            data: shift_1_data,
+            visible: false,
+        };
+    var series_shift_2  = {
+        name: 'shift 2',
+        data: shift_2_data,
+        visible: false,
+    };
+    $('#container-area').highcharts().addSeries(series_All);
+    $('#container-area').highcharts().addSeries(series_shift_1);
+    $('#container-area').highcharts().addSeries(series_shift_2);
     var subtitle = 'from ' + Session.get('dateRange')[0] + ' to ' + Session.get('dateRange')[1];
     $('#container-area').highcharts().setTitle(null, { text: subtitle});
 };

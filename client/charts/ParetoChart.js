@@ -99,21 +99,35 @@ function builtColumn() {
         // }]
     });
 }
+
 function renderCharts() {
     var All_data = Session.get('lostMin')[0];
-    var operator = Session.get('lostMin-per-operator')[0];
-    var date_per_operator = Session.get('lostMin-per-operator')[1];
-    var lostMin_percentage =Session.get('lostMin_percentage');
+    var LostMin_shift_1 = Session.get('LostMin_shift_1')[0];
+    var LostMin_shift_2 = Session.get('LostMin_shift_2')[0];
+    // var operator = Session.get('lostMin-per-operator')[0];
+    // var date_per_operator = Session.get('lostMin-per-operator')[1];
+    var lostMin_percentage = Session.get('lostMin_percentage');
     // builtColumn(All_data,operator,date_per_operator);
     builtColumn();
     $('#container-column').highcharts().xAxis[0].setCategories(Session.get('lostMin')[1]);
 
     if(!Session.get('hasOperator')[0]){
-        var series = {
+        var series_shift_both = {
             name: 'All',
             data: All_data,
             yAxis: 0,
         };
+
+    }else{
+        var subtitle = 'For ' + Session.get('hasOperator')[1];
+        $('#container-column').highcharts().setTitle(null, { text: subtitle});
+        var series_shift_both = {
+            name: Session.get('hasOperator')[1],
+            data: All_data,
+            yAxis: 0,
+        };
+
+    }
         var spline_series = {
             type: 'spline',
             name: 'Pareto',
@@ -121,48 +135,25 @@ function renderCharts() {
             yAxis: 1,
             data: lostMin_percentage,
         };
-    $('#container-column').highcharts().addSeries(series);
-    $('#container-column').highcharts().addSeries(spline_series);
-        for (var i = operator.length - 1; i >= 0; i--) {
-            if(Session.get('hasOperator')[1] != operator[i]){
-                var series_per_operator = {
-                    name: operator[i],
-                    data: date_per_operator[i],
-                    visible: false,
-                }; 
-            }else{
-                var series_per_operator = {
-                    name: operator[i],
-                    data: date_per_operator[i],
-                }; 
-            }
-
-            $('#container-column').highcharts().addSeries(series_per_operator);
-        }
-    }else{
-        var subtitle = 'For ' + Session.get('hasOperator')[1];
-        $('#container-column').highcharts().setTitle(null, { text: subtitle});
-        for (var i = operator.length - 1; i >= 0; i--) {
-            if(Session.get('hasOperator')[1] == operator[i]){
-                var series_per_operator = {
-                    name: operator[i],
-                    data: date_per_operator[i],
-                }; 
-            }
-        }
-        var spline_series = {
-            type: 'spline',
-            name: 'Pareto',
-            baseSeries: 0,
-            yAxis: 1,
-            data: lostMin_percentage,
+        var series_shift_1 = {
+            name: 'shift 1',
+            data: LostMin_shift_1,
+            visible: false,
+            yAxis: 0,
         };
-    $('#container-column').highcharts().addSeries(series_per_operator);
-    $('#container-column').highcharts().addSeries(spline_series);
-
-    }
+        var series_shift_2 = {
+            name: 'shift 2',
+            data: LostMin_shift_2,
+            visible: false,
+            yAxis: 0,
+        };
+        $('#container-column').highcharts().addSeries(series_shift_both);
+        $('#container-column').highcharts().addSeries(spline_series);
+        $('#container-column').highcharts().addSeries(series_shift_1);
+        $('#container-column').highcharts().addSeries(series_shift_2);
 
 };
+
 //reactively change the charts
 Tracker.autorun(function() {
     
@@ -181,4 +172,70 @@ Template.ParetoChart.rendered = function() {
     // builtColumn();
 }
 
+
+
+// function renderCharts() {
+//     var All_data = Session.get('lostMin')[0];
+//     var operator = Session.get('lostMin-per-operator')[0];
+//     var date_per_operator = Session.get('lostMin-per-operator')[1];
+//     var lostMin_percentage = Session.get('lostMin_percentage');
+//     // builtColumn(All_data,operator,date_per_operator);
+//     builtColumn();
+//     $('#container-column').highcharts().xAxis[0].setCategories(Session.get('lostMin')[1]);
+
+//     if(!Session.get('hasOperator')[0]){
+//         var series = {
+//             name: 'All',
+//             data: All_data,
+//             yAxis: 0,
+//         };
+//         var spline_series = {
+//             type: 'spline',
+//             name: 'Pareto',
+//             baseSeries: 1,
+//             yAxis: 1,
+//             data: lostMin_percentage,
+//         };
+//     $('#container-column').highcharts().addSeries(series);
+//     $('#container-column').highcharts().addSeries(spline_series);
+//         for (var i = operator.length - 1; i >= 0; i--) {
+//             if(Session.get('hasOperator')[1] != operator[i]){
+//                 var series_per_operator = {
+//                     name: operator[i],
+//                     data: date_per_operator[i],
+//                     visible: false,
+//                 }; 
+//             }else{
+//                 var series_per_operator = {
+//                     name: operator[i],
+//                     data: date_per_operator[i],
+//                 }; 
+//             }
+
+//             $('#container-column').highcharts().addSeries(series_per_operator);
+//         }
+//     }else{
+//         var subtitle = 'For ' + Session.get('hasOperator')[1];
+//         $('#container-column').highcharts().setTitle(null, { text: subtitle});
+//         for (var i = operator.length - 1; i >= 0; i--) {
+//             if(Session.get('hasOperator')[1] == operator[i]){
+//                 var series_per_operator = {
+//                     name: operator[i],
+//                     data: date_per_operator[i],
+//                 }; 
+//             }
+//         }
+//         var spline_series = {
+//             type: 'spline',
+//             name: 'Pareto',
+//             baseSeries: 0,
+//             yAxis: 1,
+//             data: lostMin_percentage,
+//         };
+//     $('#container-column').highcharts().addSeries(series_per_operator);
+//     $('#container-column').highcharts().addSeries(spline_series);
+
+//     }
+
+// };
 

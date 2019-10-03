@@ -57,7 +57,7 @@ Meteor.methods({
 			  comment:"XXX",operator:"",actualmin:"",earnedtime:"0"},
 			  { id: 'c', timespan: '5:00-6:00 pm', worktime: '40 min', plantoactual:'0', actual:"0", reason: "XXX",status:null , partnumber: "XXX",
 			  comment:"XXX",operator:"",actualmin:"",earnedtime:"0"},
-			  { id: 'd', timespan: '6:00-7:30 pm', worktime: '60 min', plantoactual:'0', actual:"0", reason: "XXX",status:null , partnumber: "XXX",
+			  { id: 'd', timespan: '6:00-7:00 pm', worktime: '60 min', plantoactual:'0', actual:"0", reason: "XXX",status:null , partnumber: "XXX",
 			  comment:"XXX",operator:"",actualmin:"",earnedtime:"0"},
 			  { id: 'e', timespan: '7:00-8:00 pm', worktime: '55 min', plantoactual:'0', actual:"0", reason: "XXX",status:null , partnumber: "XXX",
 			  comment:"XXX",operator:"",actualmin:"",earnedtime:"0"},

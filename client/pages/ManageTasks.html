@@ -4,70 +4,148 @@
 <!--     {{#if triggerCharts}} -->
 <div class="{{Mask_managetasks}}">
     {{#if triggerCharts}}
-    <div class="displayChart">
-        <div class="print-hide-bar">
-            <div class="wrapper_back">
-                <a href="#" class="back">Back to Selection</a>
+        <div class="displayChart">
+            <div class="print-hide-bar">
+                <div class="wrapper_back">
+                    <a href="#" class="back">Back to Selection</a>
+                </div>
+                <button1 class="print-button"><span class="print-icon"></span></button1>  
             </div>
-            <button1 class="print-button"><span class="print-icon"></span></button1>  
-        </div>
-        <div class='displayChartContainer'>
-          <div class='datapad'>
-            <div class='tabs'>
-              <table class="report-table">
-                <thead>
-                    <tr>
-                        <th>{{date_range_1}}</th>
-                    </tr>
-                    <tr>
-                        <th>To</th>
-                    </tr>
-                    <tr>
-                        <th>{{date_range_2}}</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Actual Hour</td>
-                    </tr>
-                    <tr>
-                        <td>{{sum_Actualtime}}</td>
-                    </tr>
-                    <tr>
-                        <td>Earned Hour</td>
-                    </tr>
-                    <tr>
-                        <td>{{sum_Earnedtime}}</td>
-                    </tr>
-                    <tr>
-                        <td>Changeover Hour</td>
-                    </tr>
-                    <tr>
-                        <td>{{sum_changeovertime}}</td>
-                    </tr>
-                    <tr>
-                        <td>Overall Efficiency</td>
+            <div class='displayChartContainer'>
+              <div class='datapad'>
+                <div class='tabs'>
+                  <table class="report-table">
+                    <thead>
+                        <tr>
+                            <th>{{date_range_1}}</th>
+                        </tr>
+                        <tr>
+                            <th>To</th>
+                        </tr>
+                        <tr>
+                            <th>{{date_range_2}}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Actual Hour</td>
+                        </tr>
+                        <tr>
+                            <td>{{sum_Actualtime}}</td>
+                        </tr>
+                        <tr>
+                            <td>Earned Hour</td>
+                        </tr>
+                        <tr>
+                            <td>{{sum_Earnedtime}}</td>
+                        </tr>
+                        <tr>
+                            <td>Changeover Hour</td>
+                        </tr>
+                        <tr>
+                            <td>{{sum_changeovertime}}</td>
+                        </tr>
+                        <tr>
+                            <td>Overall Efficiency</td>
 
-                    </tr>
-                    <tr>
-                        <td>{{overall_eff}}</td>
-                    </tr>
-                    <tr>
-                        <td>Shifts</td>
-                    </tr>
-                    <tr>
-                        <td>{{shifts}}</td>
-                    </tr>
-                </tbody>
-            </table>
+                        </tr>
+                        <tr>
+                            <td>{{overall_eff}}</td>
+                        </tr>
+    <!--                     <tr>
+                            <td>Shifts</td>
+                        </tr>
+                        <tr>
+                            <td>{{shifts}}</td>
+                        </tr> -->
+                    </tbody>
+                </table>
+                </div>
+              </div>
+              <div class='charts'>
+                <div class="chart1">{{> ParetoChart}}</div>
+                <div class="chart2">{{> areaDemo}}</div>
+              </div>
             </div>
-          </div>
-          <div class='charts'>
-            <div class="chart1">{{> ParetoChart}}</div>
-            <div class="chart2">{{> areaDemo}}</div>
-          </div>
+            {{#if isAllcell}}
+                <table class="report-table">
+                    <thead>
+                        <tr>
+                            <th>Building</th>
+                            <th>Efficiency</th>
+                            <th>Actual Hours</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>2</td>
+                            <td>{{eff_per_building '2'}}</td>
+                            <td>{{actualhour_per_building '2'}}</td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>{{eff_per_building '3'}}</td>
+                            <td>{{actualhour_per_building '3'}}</td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td>{{eff_per_building '4'}}</td>
+                            <td>{{actualhour_per_building '4'}}</td>
+                        </tr>
+                        <tr>
+                            <td>4A</td>
+                            <td>{{eff_per_building '4A'}}</td>
+                            <td>{{actualhour_per_building '4A'}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            {{else}}
+                <table class="report-table" style="float: left; width: 50%">
+                    <thead>
+                        <tr>
+                            <th>Cell Name</th>
+                            <th>Cell Id</th>
+                            <th>Efficiency</th>
+                            <th>Actual Hours</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each cells}}
+                            {{#if cell_count_isodd @index}}
+                                <tr>
+                                    <td>{{cellname}}</td>
+                                    <td>{{cellId}}</td>
+                                    <td>{{eff_per_cell cellId}}</td>
+                                    <td>{{actualhour_per_cell cellId}}</td>
+                                </tr>
+                            {{/if}}
+                        {{/each}}
+                    </tbody>
+                </table>
+                <table class="report-table" style="float: left; width: 50%">
+                    <thead>
+                        <tr>
+                            <th>Cell Name</th>
+                            <th>Cell Id</th>
+                            <th>Efficiency</th>
+                            <th>Actual Hours</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each cells}}
+                            {{#if cell_count_iseven @index}}
+                                <tr>
+                                    <td>{{cellname}}</td>
+                                    <td>{{cellId}}</td>
+                                    <td>{{eff_per_cell cellId}}</td>
+                                    <td>{{actualhour_per_cell cellId}}</td>
+                                </tr>
+                            {{/if}}
+                        {{/each}}
+                    </tbody>
+                </table>
+            {{/if}}
         </div>
-    </div>
     {{/if}}
     <!-- {{else}} -->
     <div class="{{searchpage}}">

@@ -1,7 +1,11 @@
 <template name="selectbuilding">
     <div class="styled-select">
         <select class ="change-building" data-id="{{type}}">
-            <option selected>Select</option>
+            {{#if $eq type "manage_tasks"}}
+                <option selected>All</option>
+            {{else}}
+                <option selected>Select</option>
+            {{/if}}
             {{#if selectbuilding selected type}}
                 {{#if $eq type "add_tasks"}}
                     <option selected>{{selected}}</option>

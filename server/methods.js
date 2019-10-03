@@ -170,19 +170,25 @@ Meteor.methods({
 	editpartnumber( id,part,cell,XMLname,ProductCode,MinutesPP_one,
 		MinutesPP_two, MinutesPP_three, PiecesPH_one, PiecesPH_two, PiecesPH_three,
 		buildingnumber ){
-		Partnumber.update({_id:id}, {
-	      $set: { part:part,
-				      cell:cell,
-				      buildingnumber:buildingnumber,
-				      XMLname:XMLname,
-				      ProductCode:ProductCode,
-				      MinutesPP_one:MinutesPP_one,
-				      MinutesPP_two:MinutesPP_two,
-				      MinutesPP_three:MinutesPP_three,
-				      PiecesPH_one:PiecesPH_one,
-				      PiecesPH_two:PiecesPH_two,
-				      PiecesPH_three:PiecesPH_three, },
-	    });
+
+		let exists = Partnumber.findOne( { _id:id } );
+	      	if ( !exists ) {
+				throw new Meteor.Error('bad', 'Rejected. This part NOT exists.');
+			} else {
+				Partnumber.update({_id:id}, {
+			      $set: { part:part,
+						      cell:cell,
+						      buildingnumber:buildingnumber,
+						      XMLname:XMLname,
+						      ProductCode:ProductCode,
+						      MinutesPP_one:MinutesPP_one,
+						      MinutesPP_two:MinutesPP_two,
+						      MinutesPP_three:MinutesPP_three,
+						      PiecesPH_one:PiecesPH_one,
+						      PiecesPH_two:PiecesPH_two,
+						      PiecesPH_three:PiecesPH_three, },
+			    });
+			}
 	},
 	parseUpload_operator( data ) {
 	    // check( data, Array );
@@ -379,13 +385,17 @@ Meteor.methods({
 		}
 	},
 	updatecell(buildingnumber, cellId, cellname){
-		console.log(0);
-	    Cell.update({cellId:cellId}, {
-	      $set: { 
-	      		buildingnumber:buildingnumber,
-				cellname:cellname,
-	       },
-	    });
+		let exists_cell = Cell.findOne( { cellId: cellId } );
+		if ( !exists_cell ) {
+			throw new Meteor.Error('bad', 'Rejected. This cell NOT exists.');
+		}else{
+		    Cell.update({cellId:cellId}, {
+		      $set: { 
+		      		buildingnumber:buildingnumber,
+					cellname:cellname,
+		       },
+		    });
+		}
 	},
 	insertpartnumber(part,cell,XMLname,ProductCode,MinutesPP_one,
 		MinutesPP_two, MinutesPP_three, PiecesPH_one, PiecesPH_two, PiecesPH_three,

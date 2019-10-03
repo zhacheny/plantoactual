@@ -1,10 +1,10 @@
-import { Tasks, Partnumber, Taskworktime, Plan, Operator, EarnedTimePP } from '/lib/collections.js';
+import { Tasks, Partnumber, Taskworktime, Plan, Operator, EarnedTimePP, Cell } from '/lib/collections.js';
 import moment from 'moment';
 //setting up the shift point
 //var timeSpan = ['6-7 am','7-8 am','8-9 am','9-10 am','10-11 am','11-12 am','12:30-13:30 pm','13:30-14:30 pm','14:30-15:30 pm'];
 var reasonCode = ['Meeting/Training','Machine Down','Quality Isssue','Safety','Waiting on Material','Write in'];
 var timespan1 = ['6:00-7:00 am','7:00-8:00 am','8:00-9:00 am','9:00-10:00 am','10:00-11:00 am','11:00-12:00 am','12:30-1:30 pm','1:30-2:30 pm'];
-var timespan2 = ['3:00-4:00 pm','4:00-5:00 pm', '5:00-6:00 pm', '7:00-10:00 pm', '10:00-9:00 pm', '9:30-10:30 pm','10:30-11:30 pm'];
+var timespan2 = ['3:00-4:00 pm','4:00-5:00 pm', '5:00-6:00 pm', '6:00-7:00 pm','7:00-8:00 pm', '8:00-9:00 pm', '9:30-10:30 pm','10:30-11:30 pm'];
 var timespan_worktime = ['55','60','40','60','55','55','60','50','55','60','40','60','55','55','60','30'];
 var timespan_merge = timespan1.concat(timespan2);
 var data = "";
@@ -17,6 +17,124 @@ this.log_report_error = new Logger();
 (new LoggerFile(this.log_report_delete)).enable();
 (new LoggerFile(this.log_report_error)).enable();
 // (new LoggerFile(this.log_report_add)).enable();
+
+function download_data(data, startdate, enddate){
+	const revised_data = JSON.parse(JSON.stringify(data));
+	// var revised_data = data;
+	for (var i = revised_data.length - 1; i >= 0; i--) {
+		for (var j = 0; j < 3; j++) {
+			if(revised_data[i].operatorID[j] != "null"){
+				revised_data[i].operatorID[j] = Operator.findOne({EENumber:revised_data[i].operatorID[j]}).operatorName;
+			}
+		}
+	}
+	var CSVData = Papa.unparse(revised_data);
+	var reportName = "Report_" + startdate + "_to_" + enddate + ".csv";
+
+	// console.log(CSVData);
+	var blob = new Blob([CSVData], 
+        {type: "text/csv;charset=utf-8"});
+		saveAs(blob, reportName);
+}
+
+function calculate_overall_eff(data, trigger){
+	//calculate the summation of the worked time and the earned time
+	var sum_changeover = 0;
+	var sum_Actualtime = 0;
+	var sum_Earnedtime = 0;
+
+	for (var i = data.length - 1; i >= 0; i--) {
+		if(data[i].status != 'changeover'){
+			sum_Actualtime += parseFloat(data[i].worktime);
+			sum_Earnedtime += parseFloat(data[i].earnedtime);
+		}else{
+			sum_changeover += parseFloat(data[i].worktime);
+		}
+
+	}
+	overall_eff = sum_Earnedtime/sum_Actualtime;
+	if(trigger == 'datapad'){
+		return [sum_Actualtime, sum_Earnedtime,sum_changeover,overall_eff];
+	}else if (trigger == 'eff'){
+		return overall_eff;
+	}else{
+		return sum_Actualtime;
+	}
+	
+}
+
+function calculate_total_eff(data, diffDays, start, end, startdate){
+	//collect data from the 2ed day to the penultimate day
+	var All_sum_eff = [];
+	var sum_Alltime = 0;
+	for (var i = 0; i < diffDays; i++) {
+		var eff = 0;
+		var eff_worktime = 0;
+		var eff_earnedtime = 0;
+		var changeover_time = 0;
+		var curDate = start.getDate();
+		var curDate_start = new Date(startdate).setHours(0,0,0,0);
+		var curDate_end = new Date(startdate).setHours(23,59,59,999);
+		curDate_start = new Date(curDate_start).setDate(curDate + i);
+		curDate_end = new Date(curDate_end).setDate(curDate + i);
+		curDate_start = new Date(curDate_start);
+		curDate_end = new Date(curDate_end);
+		//set the 1st day
+		if(i == 0){
+			curDate_start = start;
+		}
+		//set the last day
+		if(i == diffDays-1){
+			curDate_end = end;
+		}
+		for (var j = data.length - 1; j >= 0; j--) {
+			if(moment(data[j].createdAt).isBetween(moment(curDate_start), moment(curDate_end))) {
+				//scale the earnedtime value when the part is not available
+				if(data[j].plan == 0){
+					data[j].earnedtime = data[j].worktime;
+				}
+
+				eff_worktime += parseFloat(data[j].worktime);
+				eff_earnedtime += parseFloat(data[j].earnedtime);	
+
+			}
+		}
+
+		if(eff_worktime == 0){
+			All_sum_eff[i] = 0;
+		}else{
+			All_sum_eff[i] = eff_earnedtime/eff_worktime;
+			//math round at most 2 decimal places
+			All_sum_eff[i] = Math.round(All_sum_eff[i] * 100) / 100;
+		}
+		
+	}
+	return All_sum_eff;
+}
+
+function calculateLostMin_shift(data){
+	var per_Actualtime = [];
+	var per_Earnedtime = [];
+	var lostMin = [];
+	//extract lost minutes per cell
+	for (var i = reasonCode.length - 1; i >= 0; i--) {
+		var temp_Actualtime = 0;
+		var temp_Earnedtime = 0;
+		for (var j = data.length - 1; j >= 0; j--) {
+			//collect the summation
+			if(data[j].reason == reasonCode[i]){
+				temp_Actualtime += parseFloat(data[j].worktime);
+				temp_Earnedtime += parseFloat(data[j].earnedtime);
+			}
+
+		}
+		per_Actualtime[i]=temp_Actualtime;
+		per_Earnedtime[i]=temp_Earnedtime;
+		lostMin[i] = Math.round(per_Actualtime[i]-per_Earnedtime[i]);
+	}
+	lostMin_with_index = sort_lostMin_indexes(lostMin,reasonCode);	
+	return lostMin_with_index;
+}
 
 function renderPicker(){
 	$('#picker-1, #picker-2').datetimepicker({
@@ -74,13 +192,24 @@ Tracker.autorun(function() {
 	let buildingnumber = Session.get('buildingnumber_part_maintenance');
 	let start = new Date(startdate);
 	let end = new Date(enddate);
-	if ( startdate != null && enddate != null 
-		&& buildingnumber != null){
-		//subscribe data from the backend 
-		Meteor.subscribe('task',start,end,buildingnumber, function(){
-	     //Set the reactive session as true to indicate that the data have been loaded
-	     // console.log(2222); 
-	  });
+
+	if ( startdate != null && enddate != null){
+
+		if(buildingnumber != null && buildingnumber != 'All'){
+			//subscribe data from the backend 
+			Meteor.subscribe('task',start,end,buildingnumber, function(){
+			     //Set the reactive session as true to indicate that the data have been loaded
+			     // console.log(2222); 
+			});
+		}else if(buildingnumber == null || buildingnumber == 'All'){
+			console.log(0);
+			Meteor.subscribe('task',start,end,null, function(){
+			     //Set the reactive session as true to indicate that the data have been loaded
+			     console.log(1);
+			});
+		}
+
+
 		// return;
 	}
 
@@ -307,7 +436,7 @@ Template.ManageTasks.events({
 
 	'click .search':function(evt){
 		// evt.preventDefault();
-
+		var dowload_data = [];
 		var partnumber = Session.get('partnumber') != null ? Session.get('partnumber') : false;
 		var startdate = Session.get('startdate') != null ? Session.get('startdate') : false;
 		var enddate = Session.get('enddate') != null ? Session.get('enddate') : false;
@@ -316,7 +445,7 @@ Template.ManageTasks.events({
 		var shifts1 = Session.get('shifts1') != null ? Session.get('shifts1') : false;
 		var shifts2 = Session.get('shifts2') != null ? Session.get('shifts2') : false;
 		var operator = Session.get('operator') != null ? Session.get('operator') : false;
-		if(!building || !startdate || !enddate){
+		if(!startdate || !enddate){
 			alert("invalid input");
 			return false;
 		}
@@ -340,64 +469,69 @@ Template.ManageTasks.events({
 			query_search = {};
 		}
 
-		// console.log(query_search);
 		if(operator == "All" || !operator){
+
 			//check whether user select the shift button
 			if(shifts1 && shifts2){
-				data = Tasks.find({timespan:{ $in : timespan_merge},
+				dowload_data = Tasks.find({timespan:{ $in : timespan_merge},
 					createdAt : { $gte : start, $lt: end }},query_search).fetch();
 			}else if(shifts1 && !shifts2){
-				data = Tasks.find({timespan:{ $in : timespan1},
+				dowload_data = Tasks.find({timespan:{ $in : timespan1},
 					createdAt : { $gte : start, $lt: end }},query_search).fetch();
 			}else if(!shifts1 && shifts2){
-				data = Tasks.find({timespan:{ $in : timespan2},
+				dowload_data = Tasks.find({timespan:{ $in : timespan2},
 					createdAt : { $gte : start, $lt: end }},query_search).fetch();
-			}else{
-				alert("please select the shifts!");
-				return false;
 			}
+
+			// data = Tasks.find({createdAt : { $gte : start, $lt: end }},query_search).fetch();
+			var All_shift_data = Tasks.find({timespan:{ $in : timespan_merge},
+				createdAt : { $gte : start, $lt: end }},query_search).fetch();
+			var shift_1_data = Tasks.find({timespan:{ $in : timespan1},
+				createdAt : { $gte : start, $lt: end }},query_search).fetch();
+			var shift_2_data = Tasks.find({timespan:{ $in : timespan2},
+				createdAt : { $gte : start, $lt: end }},query_search).fetch();
 			Session.set('hasOperator',[false,null]);
 			// var data = Tasks.find({partnumber:partnumber,createdAt : { $gte : start, $lt: end }}).fetch();
 		}else{
 			Session.set('hasOperator',[true,operator]);
-			var operatorID = Operator.findOne({operatorName:operator}).operatorID;
+			var operatorID = Operator.findOne({operatorName:operator}).EENumber;
+			console.log(operatorID);
+			// data = Tasks.find({createdAt : { $gte : start, $lt: end }},query_search).fetch();
+			var All_shift_data = Tasks.find({operatorID:{ $in : [operatorID]},timespan:{ $in : timespan_merge},
+				createdAt : { $gte : start, $lt: end }},query_search).fetch();
+			var shift_1_data = Tasks.find({operatorID:{ $in : [operatorID]},timespan:{ $in : timespan1},
+				createdAt : { $gte : start, $lt: end }},query_search).fetch();
+			var shift_2_data = Tasks.find({operatorID:{ $in : [operatorID]},timespan:{ $in : timespan2},
+				createdAt : { $gte : start, $lt: end }},query_search).fetch();
 			//check whether user select the shift button
 			if(shifts1 && shifts2){
-				data = Tasks.find({operatorID:{ $in : [operatorID]},timespan:{ $in : timespan_merge},
+				dowload_data = Tasks.find({operatorID:{ $in : [operatorID]},timespan:{ $in : timespan_merge},
 					createdAt : { $gte : start, $lt: end }},query_search).fetch();
 			}else if(shifts1 && !shifts2){
-				data = Tasks.find({operatorID:{ $in : [operatorID]},timespan:{ $in : timespan1},
+				dowload_data = Tasks.find({operatorID:{ $in : [operatorID]},timespan:{ $in : timespan1},
 					createdAt : { $gte : start, $lt: end }},query_search).fetch();
 			}else if(!shifts1 && shifts2){
-				data = Tasks.find({operatorID:{ $in : [operatorID]},timespan:{ $in : timespan2},
+				dowload_data = Tasks.find({operatorID:{ $in : [operatorID]},timespan:{ $in : timespan2},
 					createdAt : { $gte : start, $lt: end }},query_search).fetch();
-			}else{
-				alert("please select the shifts!");
-				return false;
 			}
+			// else{
+			// 	alert("please select the shifts!");
+			// 	return false;
+			// }
 		}
-		if(data.length == 0){
+		if(All_shift_data.length == 0){
 			alert('No data in this interval');
 			return false;
 		}
 		// produce data
 		if(Session.get('toggle-Download')){
-			const revised_data = JSON.parse(JSON.stringify(data));
-			// var revised_data = data;
-			for (var i = revised_data.length - 1; i >= 0; i--) {
-				for (var j = 0; j < 3; j++) {
-					if(revised_data[i].operatorID[j] != "null"){
-						revised_data[i].operatorID[j] = Operator.findOne({EENumber:revised_data[i].operatorID[j]}).operatorName;
-					}
-				}
+			if (shifts1 == false && shifts2 == false){
+				alert("please select the shifts!");
+				return false;
+			}else{
+				download_data(dowload_data, startdate, enddate);
 			}
-			var CSVData = Papa.unparse(revised_data);
-			var reportName = "Report_" + startdate + "_to_" + enddate + ".csv";
-
-			// console.log(CSVData);
-			var blob = new Blob([CSVData], 
-	            {type: "text/csv;charset=utf-8"});
-				saveAs(blob, reportName);
+			
 			
 		}
 		//generate charts
@@ -406,210 +540,29 @@ Template.ManageTasks.events({
 			//calculate the date difference
 			const diffTime = Math.abs(end.getTime() - start.getTime());
 			const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
-			//collect data from the 2ed day to the penultimate day
-			var All_sum_eff = [];
-			var sum_Alltime = 0;
-			for (var i = 0; i < diffDays; i++) {
-				var eff = 0;
-				var eff_worktime = 0;
-				var eff_earnedtime = 0;
-				var changeover_time = 0;
-				var curDate = start.getDate();
-				var curDate_start = new Date(startdate).setHours(0,0,0,0);
-				var curDate_end = new Date(startdate).setHours(23,59,59,999);
-				curDate_start = new Date(curDate_start).setDate(curDate + i);
-				curDate_end = new Date(curDate_end).setDate(curDate + i);
-				curDate_start = new Date(curDate_start);
-				curDate_end = new Date(curDate_end);
-				//set the 1st day
-				if(i == 0){
-					curDate_start = start;
-				}
-				//set the last day
-				if(i == diffDays-1){
-					curDate_end = end;
-				}
-				for (var j = data.length - 1; j >= 0; j--) {
-					if(moment(data[j].createdAt).isBetween(moment(curDate_start), moment(curDate_end))) {
-						//scale the earnedtime value when the part is not available
-						if(data[j].plan == 0){
-							data[j].earnedtime = data[j].worktime;
-						}
-
-						eff_worktime += parseFloat(data[j].worktime);
-						eff_earnedtime += parseFloat(data[j].earnedtime);	
-
-					}
-				}
-
-				if(eff_worktime == 0){
-					All_sum_eff[i] = 0;
-				}else{
-					All_sum_eff[i] = eff_earnedtime/eff_worktime;
-					//math round at most 2 decimal places
-					All_sum_eff[i] = Math.round(All_sum_eff[i] * 100) / 100;
-				}
-
-			// 	//calculate summation of planned worktime (per day)
-			// 	var per_sum_Alltime = 0;
-			// 	var perday_timespan = new Set();
-			// 	for (var z = timespan_merge.length - 1; z >= 0; z--) {
-			// 		for (var j = data.length - 1; j >= 0; j--) {
-			// 			if(data[j].timespan == timespan_merge[z] && 
-			// 				moment(data[j].createdAt).isBetween(moment(curDate_start), moment(curDate_end))){
-			// 				if(!perday_timespan.has(timespan_merge[z])){
-			// 					per_sum_Alltime += parseFloat(timespan_worktime[z]);
-			// 					// console.log(per_sum_Alltime);
-			// 				}
-			// 				perday_timespan.add(timespan_merge[z]);
-			// 				// console.log(perday_timespan.size);
-							
-			// 			}
-			// 			// sum_Worktime += data[i].worktime;
-			// 			// sum_Earnedtime += data[i].earnedtime;
-			// 		}
-			// 	}
-			// sum_Alltime += per_sum_Alltime;
-
-				// console.log(curDate_start);
-				// console.log(curDate_end);
-				
-			}
-
-			var per_Actualtime = [];
-			var per_Earnedtime = [];
-			var lostMin = [];
-			var operator = new Set();
-			var operator_Actualtime = [];
-			var operator_Earnedtime = [];
-			var lostMin_per_operator = [];
-			//extract operator array
-			for (var i = data.length - 1; i >= 0; i--) {
-				for (var j = 0; j < data[0].operatorID.length; j++) {
-					if(data[i].operatorID[j] != "null" && !operator.has(data[i].operatorID[j]) ){
-						operator.add(data[i].operatorID[j]); 
-						
-					}
-				}
-			}
-			var operatorArray = Array.from(operator);
-			//get the full name of each opreator
-			var operatorFullName = [];
-			for (var i = operatorArray.length - 1; i >= 0; i--) {
-				if(operatorArray[i] != 'null'){
-					var opreatorObject =  Operator.findOne({EENumber:operatorArray[i]});
-					if(!opreatorObject){
-						alert("Something Wrong Happened, someone delete the operator!")
-						log_report_error.error('report error: ' + 'someone delete the operator' +
-			 ' | EE Number: ' + operatorArray[i], Meteor.user().username);
-					}else{
-						operatorFullName[i] = opreatorObject.operatorName;
-					}
-					
-				}
-			}
-			//sort the array
-			if(!Session.get('hasOperator')[0]){
-				//extract lost minutes per cell
-				for (var i = reasonCode.length - 1; i >= 0; i--) {
-					var temp_Actualtime = 0;
-					var temp_Earnedtime = 0;
-					for (var j = data.length - 1; j >= 0; j--) {
-						//collect the summation
-						if(data[j].reason == reasonCode[i]){
-							temp_Actualtime += parseFloat(data[j].worktime);
-							temp_Earnedtime += parseFloat(data[j].earnedtime);
-						}
-
-					}
-					per_Actualtime[i]=temp_Actualtime;
-					per_Earnedtime[i]=temp_Earnedtime;
-					lostMin[i] = Math.round(per_Actualtime[i]-per_Earnedtime[i]);
-				}
-				lostMin_with_index = sort_lostMin_indexes(lostMin,reasonCode);	
-			}else{
-				//extract lost minutes per cell
-				for (var i = reasonCode.length - 1; i >= 0; i--) {
-					var temp_Actualtime = 0;
-					var temp_Earnedtime = 0;
-					for (var j = data.length - 1; j >= 0; j--) {
-						//collect the summation
-						for (var z = 0; z < data[0].operatorID.length; z++) {
-							if(data[j].operatorID[z] == operatorID
-							 && data[j].reason == reasonCode[i]){
-								temp_Actualtime += parseFloat(data[j].worktime);
-								temp_Earnedtime += parseFloat(data[j].earnedtime);
-								
-							}
-						}
-
-					}
-					per_Actualtime[i]=temp_Actualtime;
-					per_Earnedtime[i]=temp_Earnedtime;
-					lostMin[i] = Math.round(per_Actualtime[i]-per_Earnedtime[i]);
-				}
-				lostMin_with_index = sort_lostMin_indexes(lostMin,reasonCode);
-			}
+			//calculate the total efficientcy trend
+			var All_sum_eff = calculate_total_eff(All_shift_data, diffDays, start , end, startdate);
+			var shift_1_sum_eff = calculate_total_eff(shift_1_data, diffDays, start , end, startdate);
+			var shift_2_sum_eff = calculate_total_eff(shift_2_data, diffDays, start , end, startdate);
+			//calculate the downtime reason per shift
+			var LostMin_shift_both = calculateLostMin_shift(All_shift_data);
+			var LostMin_shift_1 = calculateLostMin_shift(shift_1_data);
+			var LostMin_shift_2 = calculateLostMin_shift(shift_2_data);
 			//calculate the percentage
-			lostMin_percentage = calculate_percentage(lostMin_with_index[0]);
-			// console.log(lostMin_with_index);
-			reasonCode = lostMin_with_index[1];
-			//extract lost minutes per operator
-			for (var n = operatorArray.length - 1; n >= 0; n--) {
-				var temp_operator_Actualtime = [];
-				var temp_operator_Earnedtime = [];
-				var temp_lostMin_per_operator = [];
-				for (var m = reasonCode.length - 1; m >= 0; m--) {
-					var per_temp_operator_Actualtime = 0;
-					var per_temp_operator_Earnedtime = 0;
-					for (var i = data.length - 1; i >= 0; i--) {
-						for (var j = 0; j < data[0].operatorID.length; j++) {
-							if(data[i].operatorID[j] == operatorArray[n] && data[i].reason == reasonCode[m]){
-								per_temp_operator_Actualtime += parseFloat(data[i].worktime);
-								per_temp_operator_Earnedtime += parseFloat(data[i].earnedtime);
-								
-							}
-						}
-					}
-					temp_operator_Actualtime[m] = per_temp_operator_Actualtime;
-					temp_operator_Earnedtime[m] = per_temp_operator_Earnedtime;
-					temp_lostMin_per_operator[m] = Math.round(per_temp_operator_Actualtime - per_temp_operator_Earnedtime);
-				}
-
-				operator_Actualtime[n] = temp_operator_Actualtime;
-				operator_Earnedtime[n] = temp_operator_Earnedtime;
-				lostMin_per_operator[n] = temp_lostMin_per_operator;
-			}
-
-
-			// console.log(operatorFullName);
-			// console.log(operator_Actualtime);
-			// console.log(operator_Earnedtime);
-			// console.log(operator);
-			// console.log(All_sum_eff);
-
-			//calculate the summation of the worked time and the earned time
-			var sum_changeover = 0;
-			var sum_Actualtime = 0;
-			var sum_Earnedtime = 0;
-
-			for (var i = data.length - 1; i >= 0; i--) {
-				if(data[i].status != 'changeover'){
-					sum_Actualtime += parseFloat(data[i].worktime);
-					sum_Earnedtime += parseFloat(data[i].earnedtime);
-				}else{
-					sum_changeover += parseFloat(data[i].worktime);
-				}
-
-			}
-			overall_eff = sum_Earnedtime/sum_Actualtime;
+			var lostMin_percentage = calculate_percentage(LostMin_shift_both[0]);
+			//calculate the overall actual hour, eraned hour, changeover hour and efficiency
+			var datapad = calculate_overall_eff(All_shift_data, 'datapad');
+			
 				// console.log(sum_changeover);
 			// var sum_changeovertime = sum_Alltime-sum_Actualtime;
-			Session.set('datapad',[sum_Actualtime, sum_Earnedtime,sum_changeover,overall_eff]);
+			Session.set('datapad', datapad);
 			Session.set('dateRange',[moment(start).format("MMM Do YY"),moment(end).format("MMM Do YY")]);
 			Session.set('eff-trend',All_sum_eff);
-			Session.set('lostMin',lostMin_with_index);
-			Session.set('lostMin-per-operator',[operatorFullName,lostMin_per_operator]);
+			Session.set('eff-trend_shift_1',shift_1_sum_eff);
+			Session.set('eff-trend_shift_2',shift_2_sum_eff);
+			Session.set('lostMin',LostMin_shift_both);
+			Session.set('LostMin_shift_1',LostMin_shift_1);
+			Session.set('LostMin_shift_2',LostMin_shift_2);
 			Session.set('lostMin_percentage',lostMin_percentage);
 		}
 		return false;
@@ -639,16 +592,6 @@ Template.ManageTasks.helpers({
 	selectedpart:function(){
 		// console.log(this.partnumber);
 		return Session.get('partnumber') != null ? Session.get('partnumber'):'XXX';
-	},
-	shifts:function(){
-		if (Session.get('shifts1') && Session.get('shifts2')){
-			return 'Both';
-		}else if(Session.get('shifts1') && !Session.get('shifts2')){
-			return 'Shift 1 Only';
-		}else{
-			return 'Shift 2 Only';
-		}
-
 	},
 	date_range_1:function(){
 		return Session.get('dateRange')[0];
@@ -759,8 +702,49 @@ Template.ManageTasks.helpers({
 			return data;
 		}
 	},
+	isAllcell:function(){
+		let buildingnumber = Session.get('buildingnumber_part_maintenance');
+		if(buildingnumber == null || buildingnumber == 'All'){
+			return true;
+		}else{
+			return false;
+		}
+	},
+	cell_count_isodd: function(value){
+		console.log(['odd',value, value % 2 != 0])
+		return value % 2 != 0 ? true : false;
+	},
+	cell_count_iseven: function(value){
+		console.log(['even',value,value % 2 == 0])
+		return value % 2 == 0 ? true : false;
+	},
+	cells: function(){
+		let buildingnumber = Session.get('buildingnumber_part_maintenance');
+		return Cell.find({buildingnumber:buildingnumber}).fetch();
 
+	},
+	eff_per_cell:function(cellid){
+		let taskspercell = Tasks.find({cell: cellid}).fetch();
+		let eff_per_cell = calculate_overall_eff(taskspercell, 'eff');
+		return Number.isNaN(eff_per_cell) ? 0 : eff_per_cell;
+	},
 
+	actualhour_per_cell:function(cellid){
+		let taskspercell = Tasks.find({cell: cellid}).fetch();
+		let eff_per_cell = calculate_overall_eff(taskspercell, 'actualhour');
+		return eff_per_cell;
+	},
+	eff_per_building:function(buildingnumber){
+		let tasksperbuilding = Tasks.find({buildingnumber: buildingnumber}).fetch();
+		let eff_per_building = calculate_overall_eff(tasksperbuilding, 'eff');
+		return Number.isNaN(eff_per_building) ? 0 : eff_per_building;
+	},
+
+	actualhour_per_building:function(buildingnumber){
+		let tasksperbuilding = Tasks.find({buildingnumber: buildingnumber}).fetch();
+		let eff_per_building = calculate_overall_eff(tasksperbuilding, 'actualhour');
+		return eff_per_building;
+	},
 
 })
 
