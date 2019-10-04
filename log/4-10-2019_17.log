@@ -1,0 +1,5 @@
+[WARN] | 4:6 | 'operator add:  | EE Number: 11111' | username: "HR_test" | User Id: 5ugvJ8DvsMnsu3Kd6
+[WARN] | 4:22 | 'operator edit:  | EE Number: 11112' | username: "HR_test" | User Id: 5ugvJ8DvsMnsu3Kd6
+[WARN] | 4:29 | 'operator delete | backup:{"_id":"yaNcnxCKnHSYxpTh5","operatorName":"chenyu","EENumber":"11112","Department":"21 Tool Room","supervisorName":"Denate","employIndicator":"Direct Labor","initial":"CZ"}' | username: "HR_test" | User Id: 5ugvJ8DvsMnsu3Kd6
+[WARN] | 5:32 | 'operator delete | backup:{"_id":"yaNcnxCKnHSYxpTh5","operatorName":"chenyu","EENumber":"11112","Department":"21 Tool Room","supervisorName":"Denate","employIndicator":"Direct Labor","initial":"CZ"}' | username: "HR_test" | User Id: 5ugvJ8DvsMnsu3Kd6
+[WARN] | 6:4 | 'operator delete | backup:{"_id":"yaNcnxCKnHSYxpTh5","operatorName":"chenyu","EENumber":"11112","Department":"21 Tool Room","supervisorName":"Denate","employIndicator":"Direct Labor","initial":"CZ"}' | username: "HR_test" | User Id: 5ugvJ8DvsMnsu3Kd6
