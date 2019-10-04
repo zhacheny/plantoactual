@@ -1,12 +1,14 @@
 <template name="selectcell">
     <div class="styled-select">
-        <select class="change-cell">
+        <select class="change-cell" data-id="{{type}}">
             <option selected>Select</option>
-            {{#if selectcell selected}}
-                <option selected>{{selected}}</option>
-                <option disabled="true">---New Selection---</option>
+            {{#if selectcell selected type}}
+                {{#if $eq type "addtask"}}
+                    <option selected>{{selected}}</option>
+                    <option disabled="true">---New Selection---</option>
+                {{/if}}
             {{/if}}
-            {{#each cell}}
+            {{#each cell type}}
                 <option>{{mixedcellname}}</option>
             {{/each}}
         </select>

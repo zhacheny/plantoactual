@@ -3,9 +3,9 @@ import { Tasks, Partnumber, Cell } from '/lib/collections.js';
 // Tasks = new Mongo.Collection('task');
 
 Template.selectbuilding.onCreated(function(){
-	this.autorun(() => {
-		this.subscribe('cell');
-	})
+	// this.autorun(() => {
+	// 	this.subscribe('cell');
+	// })
 })
 
 Template.selectbuilding.helpers({
@@ -21,10 +21,6 @@ Template.selectbuilding.helpers({
 		// console.log(selected);
 		return selected != '' ? true:false;
 		// return false;
-	},
-	cell: function(){
-		// console.log(Tasks.find().fetch());
-		return Cell.find();
 	},
 	// partnumber: function(){
 	// 	// console.log(Tasks.find().fetch());

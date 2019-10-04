@@ -4,20 +4,25 @@ import { Tasks, Cell, Partnumber, Plan, Operator, EarnedTimePP,Anouncements,
 function getearnedtimesum(tasks_object){
 	let sum = 0;
 	for (var i = tasks_object.length - 1; i >= 0; i--) {
-		sum += tasks_object[i].earnedtime;
+		if(tasks_object[i].status != 'changeover'){
+			sum += parseFloat(tasks_object[i].earnedtime);
+		}
 	}
-	return sum /= 60;
+	return sum;
 }
 
 function gettotaleff(tasks_object){
 	let sum_earnetime = 0;
 	let sum_worktime = 0;
 	for (var i = tasks_object.length - 1; i >= 0; i--) {
-		sum_earnetime += tasks_object[i].earnedtime;
-		sum_worktime += tasks_object[i].worktime;
+		if(tasks_object[i].status != 'changeover'){
+			sum_earnetime += parseFloat(tasks_object[i].earnedtime);
+			sum_worktime += parseFloat(tasks_object[i].worktime);
+		}
+
 	}
-	console.log(sum_earnetime);
-	console.log(sum_worktime);
+	// console.log(sum_earnetime);
+	// console.log(sum_worktime);
 	let res = sum_earnetime / sum_worktime;
 	return res;
 }
@@ -40,12 +45,12 @@ Template.Heatmap.helpers({
 	total_earned_hours:function(){
 		let tasks_object = Tasks.find({}).fetch();
 		let res = getearnedtimesum(tasks_object)
-		return Math.floor(res*100)/100  + ' hours';
+		return Math.round(res/60* 100)/100 + ' hours';
 	},
 	total_efficiency:function(){
 		let tasks_object = Tasks.find({}).fetch();
 		let res = gettotaleff(tasks_object);
-		res = Math.floor(res*100)/100;
+		res = Math.round(res*100);
 		return res > 0 ? res + ' %': 0 + ' %';
 	},
 	isgrey:function(){
@@ -96,7 +101,11 @@ Template.Heatmap.helpers({
 
 })
 Template.Heatmap.rendered = function() {
-	this.subscribe('task',null,null,'4');
+	
 }
-Template.Heatmap.onCreated( () => {
+Template.Heatmap.onCreated(function(){
+
+	this.autorun(() => {
+		this.subscribe('task',null,null,'4');
+	})
 });

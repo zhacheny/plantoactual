@@ -10,7 +10,7 @@ function builtArea() {
         },
         
         title: {
-            text: 'Tendency of Efficiency',
+            text: 'Efficiency  Trend',
             style: {
               fontSize: 30 + 'px'
             }

@@ -923,7 +923,7 @@ Template.AddTasks.events({
 		var buildingnumber = Session.get('buildingnumber');
 		var cell = Session.get('cell');
 		//check if there no value set for multiple operator
-		var earnedtime = Session.get('earnedTimePPiecePOpe') == 0? worktime : Session.get('earnedTimePPiecePOpe') * actual;
+		var earnedtime = Session.get('earnedTimePPiecePOpe') == 0? worktime.substring(0,2) : Session.get('earnedTimePPiecePOpe') * actual;
 		console.log([Session.get('earnedTimePPiecePOpe'),actual,earnedtime])
     	var info = Session.get('taskIsComplete');
     	if(info != null){

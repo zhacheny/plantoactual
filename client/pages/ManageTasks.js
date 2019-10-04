@@ -24,7 +24,14 @@ function download_data(data, startdate, enddate){
 	for (var i = revised_data.length - 1; i >= 0; i--) {
 		for (var j = 0; j < 3; j++) {
 			if(revised_data[i].operatorID[j] != "null"){
-				revised_data[i].operatorID[j] = Operator.findOne({EENumber:revised_data[i].operatorID[j]}).operatorName;
+                var operatorObject = Operator.findOne({EENumber:revised_data[i].operatorID[j]});
+                if(!operatorObject){
+                    alert('The operator has been DELETE:' + revised_data[i].operatorID[j]);
+                    revised_data[i].operatorID[j] = revised_data[i].operatorID[j];
+                }else{
+                    revised_data[i].operatorID[j] = operatorObject.operatorName;
+                }
+				
 			}
 		}
 	}
@@ -90,9 +97,9 @@ function calculate_total_eff(data, diffDays, start, end, startdate){
 		for (var j = data.length - 1; j >= 0; j--) {
 			if(moment(data[j].createdAt).isBetween(moment(curDate_start), moment(curDate_end))) {
 				//scale the earnedtime value when the part is not available
-				if(data[j].plan == 0){
-					data[j].earnedtime = data[j].worktime;
-				}
+				// if(data[j].partnumber == 'Part Not Available'){
+				// 	data[j].earnedtime = data[j].worktime;
+				// }
 
 				eff_worktime += parseFloat(data[j].worktime);
 				eff_earnedtime += parseFloat(data[j].earnedtime);	
@@ -202,10 +209,9 @@ Tracker.autorun(function() {
 			     // console.log(2222); 
 			});
 		}else if(buildingnumber == null || buildingnumber == 'All'){
-			console.log(0);
 			Meteor.subscribe('task',start,end,null, function(){
 			     //Set the reactive session as true to indicate that the data have been loaded
-			     console.log(1);
+			     // console.log(1);
 			});
 		}
 
@@ -372,10 +378,22 @@ Template.ManageTasks.events({
 			var operatorinitial = ['null','null','null'];
 			var operatorFullName = ['null','null','null'];
 			for (var i = operatorID.length - 1; i >= 0; i--) {
-				if(operatorID[i] != 'null'){
-					operatorFullName[i] = Operator.findOne({EENumber:operatorID[i]}).operatorName;
-					operatorinitial[i] = Operator.findOne({EENumber:operatorID[i]}).initial;
-				}
+//				if(operatorID[i] != 'null'){
+//					operatorFullName[i] = Operator.findOne({EENumber:operatorID[i]}).operatorName;
+//					operatorinitial[i] = Operator.findOne({EENumber:operatorID[i]}).initial;
+//				}
+                if(operatorID[i] != 'null'){
+                    var operatorObject = Operator.findOne({EENumber:operatorID[i]});
+                    if(!operatorObject){
+                        alert('The operator has been DELETE:' + operatorID[i]);
+                        operatorFullName[i] = 'NO RECORDS';
+                        operatorinitial[i] = 'NO RECORDS';
+                    }else{
+                        operatorFullName[i] = operatorObject.operatorName;
+                        operatorinitial[i] = operatorObject.initial;
+                    }
+                }
+				
 			}
 			// console.log(operator);
 			Session.set('operatorarray',[operatorinitial,operatorID]);
@@ -392,7 +410,7 @@ Template.ManageTasks.events({
 	'click .label-searchID': function(event){
 		// console.log(1);
 		Session.set('toggle-search',1);
-		Meteor.subscribe('task',null,null,null);
+		// Meteor.subscribe('task',null,null,null);
 	},
 	'blur #picker-1': function (event, template) {
 	  // Get the selected start date
@@ -431,13 +449,13 @@ Template.ManageTasks.events({
 
 	'change .partnumberchange':function(evt){
 		var partnumber = $(evt.target).val();
-		Session.set('partnumber',partnumber);
+		Session.set('partnumber_report',partnumber);
 	},
 
 	'click .search':function(evt){
 		// evt.preventDefault();
 		var dowload_data = [];
-		var partnumber = Session.get('partnumber') != null ? Session.get('partnumber') : false;
+		var partnumber = Session.get('partnumber_report') != null ? Session.get('partnumber_report') : false;
 		var startdate = Session.get('startdate') != null ? Session.get('startdate') : false;
 		var enddate = Session.get('enddate') != null ? Session.get('enddate') : false;
 		var building = Session.get('buildingnumber_part_maintenance') != null ? Session.get('buildingnumber_part_maintenance') : false;
@@ -495,7 +513,7 @@ Template.ManageTasks.events({
 		}else{
 			Session.set('hasOperator',[true,operator]);
 			var operatorID = Operator.findOne({operatorName:operator}).EENumber;
-			console.log(operatorID);
+			// console.log(operatorID);
 			// data = Tasks.find({createdAt : { $gte : start, $lt: end }},query_search).fetch();
 			var All_shift_data = Tasks.find({operatorID:{ $in : [operatorID]},timespan:{ $in : timespan_merge},
 				createdAt : { $gte : start, $lt: end }},query_search).fetch();
@@ -537,6 +555,8 @@ Template.ManageTasks.events({
 		//generate charts
 		if(Session.get('toggle-Generate')){
 			//extract tendency attributes
+            //calculate the overall actual hour, eraned hour, changeover hour and efficiency
+			var datapad = calculate_overall_eff(All_shift_data, 'datapad');
 			//calculate the date difference
 			const diffTime = Math.abs(end.getTime() - start.getTime());
 			const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
@@ -550,8 +570,7 @@ Template.ManageTasks.events({
 			var LostMin_shift_2 = calculateLostMin_shift(shift_2_data);
 			//calculate the percentage
 			var lostMin_percentage = calculate_percentage(LostMin_shift_both[0]);
-			//calculate the overall actual hour, eraned hour, changeover hour and efficiency
-			var datapad = calculate_overall_eff(All_shift_data, 'datapad');
+			
 			
 				// console.log(sum_changeover);
 			// var sum_changeovertime = sum_Alltime-sum_Actualtime;
@@ -586,13 +605,13 @@ Template.ManageTasks.helpers({
 	selectedbuilding:function(){
 		return Session.get('buildingnumber_part_maintenance') != null ? Session.get('buildingnumber_part_maintenance'):'';
 	},
-	selectedcell:function(){
-		return Session.get('cell') != null ? Session.get('cell'):'';
-	},
-	selectedpart:function(){
-		// console.log(this.partnumber);
-		return Session.get('partnumber') != null ? Session.get('partnumber'):'XXX';
-	},
+	// selectedcell:function(){
+	// 	return Session.get('cell_report') != null ? Session.get('cell_report'):'';
+	// },
+	// selectedpart:function(){
+	// 	// console.log(this.partnumber);
+	// 	return Session.get('partnumber') != null ? Session.get('partnumber'):'XXX';
+	// },
 	date_range_1:function(){
 		return Session.get('dateRange')[0];
 	},
@@ -609,6 +628,7 @@ Template.ManageTasks.helpers({
 		return Math.round(Session.get('datapad')[2]/60* 100)/100;
 	},
 	overall_eff:function(){
+		console.log(Session.get('datapad')[3]);
 		return (Math.round(Session.get('datapad')[3] * 100)) + '%';
 	},
 	displayoperatorName: function(){
@@ -711,11 +731,11 @@ Template.ManageTasks.helpers({
 		}
 	},
 	cell_count_isodd: function(value){
-		console.log(['odd',value, value % 2 != 0])
+		// console.log(['odd',value, value % 2 != 0])
 		return value % 2 != 0 ? true : false;
 	},
 	cell_count_iseven: function(value){
-		console.log(['even',value,value % 2 == 0])
+		// console.log(['even',value,value % 2 == 0])
 		return value % 2 == 0 ? true : false;
 	},
 	cells: function(){

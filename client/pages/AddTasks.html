@@ -69,7 +69,7 @@
                     <h4>Cell:</h4>
                 </td>
                 <td style="width: 270px;">
-                    {{> selectcell selected=selectedcell}}
+                    {{> selectcell selected=selectedcell type="addtask"}}
                 </td>
                 <!-- <td><input type="text" id="nameinput" class="operatorname"></td> -->
                 <td>
@@ -144,9 +144,9 @@
                     <td>{{worktime}}</td>
 
                     {{#if isCurrent @index displayRow}}
-                        <td class ="partnumberchange" data-id="{{@index}}">{{> selectpart selected=selectedpart pre_selected=pre_selected isCurrent="true" documentid=documentid}}</td>
+                        <td class ="partnumberchange" data-id="{{@index}}">{{> selectpart selected=selectedpart pre_selected=pre_selected isCurrent="true" documentid=documentid type="addtask"}}</td>
                     {{else}}
-                        <td class ="partnumberchange" data-id="{{@index}}">{{> selectpart selected=selectedpart pre_selected=pre_selected isCurrent="false"}}</td>
+                        <td class ="partnumberchange" data-id="{{@index}}">{{> selectpart selected=selectedpart pre_selected=pre_selected isCurrent="false" type="addtask"}}</td>
                     {{/if}}
 
                     <td type="text">{{plantoactual}}</td>

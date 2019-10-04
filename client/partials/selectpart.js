@@ -78,10 +78,17 @@ Template.selectpart.helpers({
 		// console.log(Tasks.find().fetch());
 		return Tasks.find();
 	},
-	partnumber: function(){
+	partnumber: function(type){
 		// console.log(Tasks.find().fetch());
-		var selectbuilding =  Session.get('buildingnumber');
-		var selectcell = Session.get('cell');
+		console.log(type);
+		if(type != 'report'){
+			var selectbuilding =  Session.get('buildingnumber');
+			var selectcell = Session.get('cell');
+		}else{
+			var selectbuilding =  Session.get('buildingnumber_part_maintenance');
+			var selectcell = Session.get('cell_report');
+		}
+
 		Meteor.subscribe('partnumber',selectbuilding,selectcell);
 		return Partnumber.find({buildingnumber: selectbuilding,cell:selectcell}, { sort: { part: 1 }} );
 	},

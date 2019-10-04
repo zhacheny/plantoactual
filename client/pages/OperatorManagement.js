@@ -53,7 +53,7 @@ Template.OperatorManagement.events({
 	},
 	'click .Modal-delete-yes': function(){
 		console.log(this._id);
-		// Meteor.call('operatordelete',this._id);
+		Meteor.call('operatordelete',this._id);
 		Session.set('toggle-OperatorManagement-delete',null);
 		log_operator_delete.warn('operator delete' + ' | backup:' + 
 			 JSON.stringify(Operator.findOne({_id: this._id})) , Meteor.user().username);
