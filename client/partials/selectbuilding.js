@@ -1,4 +1,5 @@
 import { Tasks, Partnumber, Cell } from '/lib/collections.js';
+import { Cookies } from 'meteor/mrt:cookies';
 
 // Tasks = new Mongo.Collection('task');
 
@@ -36,7 +37,7 @@ Template.selectbuilding.events({
 		var type = $(evt.currentTarget).data('id');
 		// console.log(type);
 		if (type == "add_tasks"){
-			Session.set('buildingnumber', build);
+			Cookie.set('buildingnumber', build);
 		}else if(type == "dash_board"){
 			Session.set('buildingnumber_safety', build);
 		}else{

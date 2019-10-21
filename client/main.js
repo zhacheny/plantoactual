@@ -7,6 +7,7 @@ function getClientTime() {
         // var _time = (new Date).toTimeString();
         // var _time = (new Date);
         var _time = (new Date);
+        // _time.setHours(15);
         // console.log(_time);
         return _time;
 }
@@ -36,9 +37,15 @@ if (Meteor.isClient){
             Session.set("time", getClientTime());
 	    }, 1000);
 
-	    Session.set('operatorcount',0)
-	    var operatorinitial = [['null','null','null'],['null','null','null']];
-	    Session.set('operatorarray',operatorinitial);
+	    if(Cookie.get('operatorcount') == 'null'){
+			Cookie.set('operatorcount', 0);
+
+			var operatorinitial = [['null','null','null'],['null','null','null']];
+			Cookie.set('operatorarray',JSON.stringify(operatorinitial));
+	    }
+	    // Session.set('operatorcount',0)
+	    // var operatorinitial = [['null','null','null'],['null','null','null']];
+	    // Session.set('operatorarray',operatorinitial);
 	    Session.set('tempchangeoverid',"a");
 
      // console.log("Meteor.log.file.path", Meteor.log.file.path);

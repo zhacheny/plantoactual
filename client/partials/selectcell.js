@@ -1,5 +1,5 @@
 import { Tasks, Partnumber, Cell } from '/lib/collections.js';
-
+import { Cookies } from 'meteor/mrt:cookies';
 // Tasks = new Mongo.Collection('task');
 
 // Template.selectcell.onCreated(function(){
@@ -25,7 +25,7 @@ Template.selectcell.helpers({
 	cell: function(type){
 		// console.log(type == 'report');
 		if(type != 'report'){
-			var select = Session.get('buildingnumber');
+			var select = Cookie.get('buildingnumber');
 		}else{
 			var select = Session.get('buildingnumber_part_maintenance');
 		}
@@ -40,17 +40,18 @@ Template.selectcell.events({
 		var cell = $(evt.target).val();
 		var res_cell = cell.split('-');
 		var type = $(evt.currentTarget).data('id');
-		console.log(type);
 		if(type != 'report'){
 			if(res_cell.length>1){
-				Session.set('cell',cell.split('-')[1]);
+				Cookie.set('cell',cell.split('-')[1]);
+				// console.log(cell.split('-')[1]);
 				var cellobject = Cell.findOne({cellId:cell.split('-')[1]});
 			}else{
-				Session.set('cell',cell);
+				Cookie.set('cell',cell);
+				// console.log(cell);
 				var cellobject = Cell.findOne({cellId:cell});
 			}
 
-			Session.set('selectedcell', cellobject.cellname + '-' +  cellobject.cellId);
+			Cookie.set('selectedcell', cellobject.cellname + '-' +  cellobject.cellId);
 		}else{
 			if(res_cell.length>1){
 				Session.set('cell_report',cell.split('-')[1]);

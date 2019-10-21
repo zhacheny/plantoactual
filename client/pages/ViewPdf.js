@@ -7,12 +7,16 @@ var format = 'hh:mm:ss';
 //start from 12pm not 12:30pm
 var reststart1 = moment('12:30:00',format);
 var reststart2 = moment('13:30:00',format);
-var reststart3 = moment('21:30:00',format);
-var reststart4 = moment('22:30:00',format);
+var reststart3 = moment('19:30:00',format);
+var reststart4 = moment('20:30:00',format);
+var reststart5 = moment('21:30:00',format);
+var reststart6 = moment('22:30:00',format);
 var restend1 = moment('13:30:00',format);
 var restend2 = moment('14:30:00',format);
-var restend3 = moment('22:30:00',format);
-var restend4 = moment('23:30:00',format);
+var restend3 = moment('20:30:00',format);
+var restend4 = moment('21:30:00',format);
+var restend5 = moment('22:30:00',format);
+var restend6 = moment('23:30:00',format);
 var shift_1_start = moment('05:50:00',format);
 var shift_1_end = moment('14:50:00',format);
 var shift_2_start = moment('15:00:00',format);
@@ -69,11 +73,21 @@ Template.ViewPdf.helpers({
 	  				FlowRouter.go('/admin/addtasks');
 				}
 			}else if (timeformat.isBetween(reststart3, restend3)){
-				if(hour == 22 && min == 29 && sec == 54){
+				if(hour == 20 && min == 29 && sec == 54){
 					alert('time close!');
 	  				FlowRouter.go('/admin/addtasks');
 				}
 			}else if (timeformat.isBetween(reststart4, restend4)){
+				if(hour == 21 && min == 29 && sec == 54){
+					alert('time close!');
+	  				FlowRouter.go('/admin/addtasks');
+				}
+			}else if (timeformat.isBetween(reststart5, restend5)){
+				if(hour == 22 && min == 29 && sec == 54){
+					alert('time close!');
+	  				FlowRouter.go('/admin/addtasks');
+				}
+			}else if (timeformat.isBetween(reststart6, restend6)){
 				if(hour == 23 && min == 29 && sec == 54){
 					alert('time close!');
 	  				FlowRouter.go('/admin/addtasks');

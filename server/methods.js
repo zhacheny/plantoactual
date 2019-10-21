@@ -1,5 +1,5 @@
 import { Tasks, Cell, Partnumber, Changeover, Plan, Operator, EarnedTimePP,Anouncements,
-		Safetymessage, Department, Menu, Messages, SafetyReport } from '/lib/collections.js';
+		Safetymessage, Department, Menu, Messages, SafetyReport,Taskrecord } from '/lib/collections.js';
 import { check, Match } from 'meteor/check';
 import moment from 'moment';
 //run on your server
@@ -430,11 +430,66 @@ Meteor.methods({
 	        throw new Meteor.Error('bad', 'Rejected. This item already exists.');
 	      }
 	},
+	// client_server_record_add_id(cell, lastid, lastidcount){
+	// 	let exists = Taskrecord.findOne( { cell: cell } );
+	// 	if(exists){
+	// 		Taskrecord.update({cell: cell}, {
+	// 		      $set: { 
+	// 		      		lastidcount:lastidcount,
+	// 					lastid:lastid, },
+	// 		    });
+	// 	}
+	// },
+	// client_server_record_update(cell, today, tomorrow){
+	// 	let exists = Taskrecord.findOne( { cell: cell } );
+	// 	if( !exists ){
+	// 		return;
+	// 	}else{
+	// 		let exists_today = Taskrecord.findOne( {startime : {$gte: today, $lt: tomorrow}, 
+	// 				cell: cell});
+	// 		if ( !exists_today ) {
+	// 			console.log("111");
+	// 			Taskrecord.update({cell: cell}, {
+	// 		      $set: { 
+	// 		      		curtaskid: null,
+	// 					plannedworktime:plannedworktime,
+	// 					 },
+	// 		    });
+	// 		}else{
+	// 			console.log("222");
+	// 			return;
+	// 		}
+	// 	}
+
+	// },
+	client_server_record(curtaskid, startime, cell, plannedworktime){
+		let exists = Taskrecord.findOne( { cell: cell } );
+		if( !exists ){
+			Taskrecord.insert({
+					cell: cell,
+					curtaskid: curtaskid,
+					startime:startime,
+					plannedworktime:plannedworktime
+			});
+		}else{
+			if(curtaskid == null){
+				Taskrecord.update({cell: cell}, {
+			      $set: { 
+						startime:startime, },
+			    });
+			}else if( startime == null ){
+				Taskrecord.update({cell: cell}, {
+			      $set: { 
+			      		plannedworktime:plannedworktime,
+						curtaskid: curtaskid, },
+			    });
+			}
+
+		}
+
+	},
 	deletetask(Id){
 		Tasks.remove({_id: Id});
-	},
-	updatechangeover(curId) {
-		return;
 	},
 	checkIsnull() {
 		return;

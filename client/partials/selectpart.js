@@ -13,8 +13,9 @@ import { ClientTaskworktime } from '/client/main.js';
 function autofill_plannumber(id){
 	var indexofId = id.substring(0,1).charCodeAt(0);
 	// var curId = String.fromCharCode(indexofId+1);
-	var curId = String.fromCharCode(indexofId);
-
+	var curId = String.fromCharCode(indexofId-1);
+	// var curId = id;
+	// console.log('selectpart',curId);
     //automatically changed the plan number
 	var plantoactual_auto_generate = 0;
 	var partnumber = Session.get('partnumber');
@@ -23,14 +24,14 @@ function autofill_plannumber(id){
 	if (!ClientTaskworktime.findOne({id:curId})){
 		return;
 	}
-	var worktime = ClientTaskworktime.findOne({id:curId}).worktime.substring(0,2);
+	var worktime = ClientTaskworktime.findOne({id:curId}).worktime;
 	// console.log([worktime,curId]);
 	// console.log(ClientTaskworktime.findOne({id:curId}));
 	if (partnumber == 'Part Not Available'){
 		// Session.set('earnedTimePPiecePOpe',value);
 		Session.set('earnedTimePPiecePOpe',0);
 	}else{
-		var partnumber_Object = Partnumber.findOne({cell:Session.get('cell'), part:partnumber});
+		var partnumber_Object = Partnumber.findOne({cell:Cookie.get('cell'), part:partnumber});
 		if(!partnumber_Object){
 			console.log('object is null');
 			return;
@@ -39,17 +40,18 @@ function autofill_plannumber(id){
 		plantoactual_auto_generate = MinutesPP_one;
 		// var value = 1/MinutesPP_one;
 		if (operatorcount == 2){
-			plantoactual_auto_generate = Partnumber.findOne({cell:Session.get('cell'), part:partnumber}).MinutesPP_two;
+			plantoactual_auto_generate = Partnumber.findOne({cell:Cookie.get('cell'), part:partnumber}).MinutesPP_two;
 		}else if (operatorcount == 2){
-			plantoactual_auto_generate = Partnumber.findOne({cell:Session.get('cell'), part:partnumber}).MinutesPP_three;
+			plantoactual_auto_generate = Partnumber.findOne({cell:Cookie.get('cell'), part:partnumber}).MinutesPP_three;
 		}
 		plantoactual_auto_generate = plantoactual_auto_generate == '' ? 0 : worktime/plantoactual_auto_generate;
 		//returns the largest integer less than the value
 		plantoactual_auto_generate = Math.floor(plantoactual_auto_generate);
 		// value = Math.round( value * 10 ) / 10;
 	}
+
 	ClientTaskworktime.update({id:curId}, {
-		$set: { partnumber:partnumber, plantoactual: plantoactual_auto_generate},
+		$set: { partnumber:partnumber, plan: plantoactual_auto_generate},
 	});
 }
 Template.selectpart.helpers({
@@ -80,10 +82,9 @@ Template.selectpart.helpers({
 	},
 	partnumber: function(type){
 		// console.log(Tasks.find().fetch());
-		console.log(type);
 		if(type != 'report'){
-			var selectbuilding =  Session.get('buildingnumber');
-			var selectcell = Session.get('cell');
+			var selectbuilding =  Cookie.get('buildingnumber');
+			var selectcell = Cookie.get('cell');
 		}else{
 			var selectbuilding =  Session.get('buildingnumber_part_maintenance');
 			var selectcell = Session.get('cell_report');

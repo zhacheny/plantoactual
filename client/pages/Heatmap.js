@@ -104,7 +104,6 @@ Template.Heatmap.rendered = function() {
 	
 }
 Template.Heatmap.onCreated(function(){
-
 	this.autorun(() => {
 		this.subscribe('task',null,null,'4');
 	})

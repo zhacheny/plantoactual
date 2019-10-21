@@ -4,7 +4,7 @@ import moment from 'moment';
 //var timeSpan = ['6-7 am','7-8 am','8-9 am','9-10 am','10-11 am','11-12 am','12:30-13:30 pm','13:30-14:30 pm','14:30-15:30 pm'];
 var reasonCode = ['Meeting/Training','Machine Down','Quality Isssue','Safety','Waiting on Material','Write in'];
 var timespan1 = ['6:00-7:00 am','7:00-8:00 am','8:00-9:00 am','9:00-10:00 am','10:00-11:00 am','11:00-12:00 am','12:30-1:30 pm','1:30-2:30 pm'];
-var timespan2 = ['3:00-4:00 pm','4:00-5:00 pm', '5:00-6:00 pm', '6:00-7:00 pm','7:00-8:00 pm', '8:00-9:00 pm', '9:30-10:30 pm','10:30-11:30 pm'];
+var timespan2 = ['3:00-4:00 pm','4:00-5:00 pm', '5:00-6:00 pm', '6:00-7:00 pm','7:30-8:30 pm', '8:30-9:30 pm', '9:30-10:30 pm','10:30-11:30 pm'];
 var timespan_worktime = ['55','60','40','60','55','55','60','50','55','60','40','60','55','55','60','30'];
 var timespan_merge = timespan1.concat(timespan2);
 var data = "";
@@ -191,36 +191,33 @@ Template.ManageTasks.onCreated(function(){
 	// Meteor.setInterval(function() {
 	// 	time.set(new Date());
 	// }, 1000);
-});
+	this.autorun(() => {
+		let startdate = Session.get('startdate');
+		let enddate = Session.get('enddate');
+		let buildingnumber = Session.get('buildingnumber_part_maintenance');
+		let start = new Date(startdate);
+		let end = new Date(enddate);
+		// subscribehandler_1 = Meteor.subscribe('task',start,end,buildingnumber);
+		// subscribehandler_2 = Meteor.subscribe('task',start,end,null);
+		if ( startdate != null && enddate != null){
 
-Tracker.autorun(function() {
-	let startdate = Session.get('startdate');
-	let enddate = Session.get('enddate');
-	let buildingnumber = Session.get('buildingnumber_part_maintenance');
-	let start = new Date(startdate);
-	let end = new Date(enddate);
-
-	if ( startdate != null && enddate != null){
-
-		if(buildingnumber != null && buildingnumber != 'All'){
-			//subscribe data from the backend 
-			Meteor.subscribe('task',start,end,buildingnumber, function(){
-			     //Set the reactive session as true to indicate that the data have been loaded
-			     // console.log(2222); 
-			});
-		}else if(buildingnumber == null || buildingnumber == 'All'){
-			Meteor.subscribe('task',start,end,null, function(){
-			     //Set the reactive session as true to indicate that the data have been loaded
-			     // console.log(1);
-			});
+			if(buildingnumber != null && buildingnumber != 'All'){
+				//subscribe data from the backend 
+				this.subscribe('task',start,end,buildingnumber, function(){
+				     //Set the reactive session as true to indicate that the data have been loaded
+				     // console.log(2222); 
+				});
+			}else if(buildingnumber == null || buildingnumber == 'All'){
+				this.subscribe('task',start,end,null, function(){
+				     //Set the reactive session as true to indicate that the data have been loaded
+				     // console.log(1);
+				});
+			}
 		}
 
-
-		// return;
-	}
-
-
+	})
 });
+
 
 Template.ManageTasks.events({
 	'click .outline': function(events){
@@ -730,13 +727,25 @@ Template.ManageTasks.helpers({
 			return false;
 		}
 	},
-	cell_count_isodd: function(value){
+	cell_count_isodd: function(value, cellid){
 		// console.log(['odd',value, value % 2 != 0])
-		return value % 2 != 0 ? true : false;
+		let taskspercell = Tasks.find({cell: cellid}).fetch();
+		if(taskspercell.length != 0 && value % 2 != 0){
+			return true;
+		}else{
+			return false;
+		}
+		// return value % 2 != 0 ? true : false;
 	},
-	cell_count_iseven: function(value){
+	cell_count_iseven: function(value, cellid){
 		// console.log(['even',value,value % 2 == 0])
-		return value % 2 == 0 ? true : false;
+		let taskspercell = Tasks.find({cell: cellid}).fetch();
+		if(taskspercell.length != 0 && value % 2 == 0){
+			return true;
+		}else{
+			return false;
+		}
+		// return value % 2 == 0 ? true : false;
 	},
 	cells: function(){
 		let buildingnumber = Session.get('buildingnumber_part_maintenance');
@@ -746,24 +755,24 @@ Template.ManageTasks.helpers({
 	eff_per_cell:function(cellid){
 		let taskspercell = Tasks.find({cell: cellid}).fetch();
 		let eff_per_cell = calculate_overall_eff(taskspercell, 'eff');
-		return Number.isNaN(eff_per_cell) ? 0 : eff_per_cell;
+		return Number.isNaN(eff_per_cell) ? 0 + '%': Math.round(eff_per_cell*100) + '%';
 	},
 
 	actualhour_per_cell:function(cellid){
 		let taskspercell = Tasks.find({cell: cellid}).fetch();
-		let eff_per_cell = calculate_overall_eff(taskspercell, 'actualhour');
-		return eff_per_cell;
+		let actual_per_cell = calculate_overall_eff(taskspercell, 'actualhour');
+		return Math.round(actual_per_cell/60* 100)/100;
 	},
 	eff_per_building:function(buildingnumber){
 		let tasksperbuilding = Tasks.find({buildingnumber: buildingnumber}).fetch();
 		let eff_per_building = calculate_overall_eff(tasksperbuilding, 'eff');
-		return Number.isNaN(eff_per_building) ? 0 : eff_per_building;
+		return Number.isNaN(eff_per_building) ? 0 + '%': Math.round(eff_per_building*100) + '%';
 	},
 
 	actualhour_per_building:function(buildingnumber){
 		let tasksperbuilding = Tasks.find({buildingnumber: buildingnumber}).fetch();
-		let eff_per_building = calculate_overall_eff(tasksperbuilding, 'actualhour');
-		return eff_per_building;
+		let actual_per_building = calculate_overall_eff(tasksperbuilding, 'actualhour');
+		return Math.round(actual_per_building/60* 100)/100;
 	},
 
 })
