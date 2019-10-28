@@ -30,9 +30,18 @@ var myLogoutFunc = function(){
 
 var mySubmitFunc = function(){
 	// console.log(Meteor.user().profile.firstName);
-    login.info('log in', Meteor.user().username);
+	if(Meteor.user() != null){
+		login.info('log in', Meteor.user().username);
+	}
+    
 }
 
+// var myPreSubmitFunc = function(){
+
+// }
+// var myPostSubmitFunc = function(userId, info){
+// 	login.info('sign up', info.profile.username);
+// }
 AccountsTemplates.configure({
 	privacyUrl: 'privacy',
     termsUrl: 'terms-of-use',

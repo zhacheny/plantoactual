@@ -27,7 +27,7 @@ Template.selectcell.helpers({
 		if(type != 'report'){
 			var select = Cookie.get('buildingnumber');
 		}else{
-			var select = Session.get('buildingnumber_part_maintenance');
+			var select = Session.get('buildingnumber_manage_tasks');
 		}
 		
 		Meteor.subscribe('cell',select);

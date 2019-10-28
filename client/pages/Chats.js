@@ -62,7 +62,7 @@ Template.Chats.events({
     // const userName = Cookie.get("name");
     var userName = '';
 
-    var operatorIDarray = Session.get('operatorarray')[1];
+    var operatorIDarray = JSON.parse(Cookie.get('operatorarray'))[1];
     for (var i = operatorIDarray.length - 1; i >= 0; i--) {
       if(operatorIDarray[i] != "null"){
         userName = Operator.findOne({EENumber:operatorIDarray[i]}).operatorName;

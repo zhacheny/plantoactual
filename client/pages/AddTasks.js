@@ -25,11 +25,11 @@ var restend6 = moment('23:30:00',format);
 var shift_1_start = moment('05:50:00',format);
 var shift_1_start_1 = moment('05:49:57',format);
 var shift_1_start_2 = moment('05:49:59',format);
-var shift_1_end = moment('14:50:00',format);
+var shift_1_end = moment('14:59:56',format);
 var shift_2_start = moment('15:00:00',format);
 var shift_2_start_1 = moment('14:59:57',format);
 var shift_2_start_2 = moment('14:59:59',format);
-var shift_2_end = moment('23:50:00',format);
+var shift_2_end = moment('23:59:59',format);
 
 var timespan1 = ['6:00-7:00 am','7:00-8:00 am','8:00-9:00 am','9:00-10:00 am','10:00-11:00 am','11:00-12:00 am','12:30-1:30 pm','1:30-2:30 pm'];
 var timespan2 = ['3:00-4:00 pm','4:00-5:00 pm', '5:00-6:00 pm', '6:00-7:00 pm','7:30-8:30 pm', '8:30-9:30 pm', '9:30-10:30 pm','10:30-11:30 pm'];
@@ -191,10 +191,11 @@ function inserttaskAschangover(iscomplete,currentTime){
 	    
 	    var worktime = Session.get('Plannedworktime');
 		if (Session.get('test-mode-time') != null){
-			var changeoverDuration = Math.floor( (moment(currentTime-starttime).format('ss'))/60*worktime);
-			//changeoverCounter = Math.floor((changeoverCounter/60)*worktime);
+			// var changeoverDuration = Math.floor( (moment(currentTime-starttime).format('ss'))/60*worktime);
+			var changeoverDuration = Math.floor( moment(currentTime-starttime).format('ss'));
 	    }else{
-	    	var changeoverDuration = Math.floor( (moment(currentTime-starttime).format('mm'))/60*worktime);
+	    	// var changeoverDuration = Math.floor( (moment(currentTime-starttime).format('mm'))/60*worktime);
+	    	var changeoverDuration = Math.floor( moment(currentTime-starttime).format('mm'));
 	    	// console.log(currentTime);
 	    	// console.log(starttime);
 	    }
@@ -206,6 +207,7 @@ function inserttaskAschangover(iscomplete,currentTime){
 	var id = tempobject.id;
 	var timespan = tempobject.timespan;
 	var partnumber = tempobject.partnumber;
+	var flagged = tempobject.flagged;
 	var plan = 0;
 	var actual = 0;
 	var reason = null;
@@ -217,7 +219,7 @@ function inserttaskAschangover(iscomplete,currentTime){
 	var operatorIDarray = JSON.parse(Cookie.get('operatorarray'))[1];
 
 	Meteor.call('inserttask', id, timespan, partnumber, changeoverDuration, plan, actual, reason,
-    		 status,currentTime,comment,operatorIDarray,earnedtime,buildingnumber, cell);
+    		 status,currentTime,comment,operatorIDarray,earnedtime,buildingnumber, cell,flagged);
 
 	// return [id, timespan, partnumber, worktime, plantoactual, actual, reason,
 	//  status,createdAt,comment,operatorIDarray,earnedtime,buildingnumber, cell];
@@ -248,11 +250,11 @@ Template.AddTasks.onCreated(function(){
 		//sperate time by two shifts
 		if(timeformat.isBetween(shift_1_start, shift_1_end)){
 			today.setHours(5,59,59,0);
-			tomorrow.setHours(14,59,58,999);
+			tomorrow.setHours(14,50,50,0);
 			cur_timespan = timespan1;
 		}else if(timeformat.isBetween(shift_2_start, shift_2_end)){
 			today.setHours(14,59,59,999);
-			tomorrow.setHours(23,49,59,999);
+			tomorrow.setHours(23,50,50,0);
 			cur_timespan = timespan2;
 		}
 		
@@ -272,7 +274,7 @@ Tracker.autorun(function() {
 	if(operator_array_firstrun){
 		return;
 	}
-	var operatorinitial = [['null','null','null'],['null','null','null']];
+	var operatorinitial = [['null','null','null','null'],['null','null','null','null']];
 	Cookie.set('operatorarray',JSON.stringify(operatorinitial));
 	Cookie.set('operatorcount', 0);
 
@@ -322,6 +324,9 @@ Tracker.autorun(function() {
 });
 
 Template.AddTasks.helpers({
+	isflagged_color:function(){
+		return this.flagged == false ? 'black' : 'white';
+	},
 	//send global value to selection template
 	selectedbuilding:function(){
 		return Cookie.get('buildingnumber') != null ? Cookie.get('buildingnumber'):'';
@@ -352,7 +357,9 @@ Template.AddTasks.helpers({
 	displayoperatorthree: function(){
 		return JSON.parse(Cookie.get('operatorarray'))[0][2] != 'null' ? true : false;
 	},
-
+	displayoperatorfour: function(){
+		return JSON.parse(Cookie.get('operatorarray'))[0][3] != 'null' ? true : false;
+	},
 	operatorone: function(){
 		if (JSON.parse(Cookie.get('operatorarray')) == null){
 			return 'null';
@@ -376,6 +383,15 @@ Template.AddTasks.helpers({
 			return 'null';
 		}else if(JSON.parse(Cookie.get('operatorarray'))[0][2] != null){
 			return JSON.parse(Cookie.get('operatorarray'))[0][2];
+		}else {
+			return 'null';
+		}
+	}, 
+	operatorfour: function(){
+		if (JSON.parse(Cookie.get('operatorarray')) == null){
+			return 'null';
+		}else if(JSON.parse(Cookie.get('operatorarray'))[0][3] != null){
+			return JSON.parse(Cookie.get('operatorarray'))[0][3];
 		}else {
 			return 'null';
 		}
@@ -468,7 +484,11 @@ Template.AddTasks.helpers({
 	isgrey:function(a,b){
 		if(a<b && this.actual == 0){
 			return 'background: #EEE';
-		}else{
+		}
+		else if(this.flagged == true){
+			return 'background: #68696D';
+		}
+		else{
 			return '';
 		}
 	},
@@ -884,7 +904,10 @@ Template.AddTasks.events({
 			alert('please type in a valid name to continue!');
 			return;
 		}
-		if (operatorcount > 2){
+		if (operatorcount > 2 && Cookie.get('cell') != '5462'){
+			alert('can not add more operators!!');
+			return;
+		}else if (operatorcount > 3){
 			alert('can not add more operators!!');
 			return;
 		}
@@ -1172,7 +1195,7 @@ Template.AddTasks.events({
 		var id = tempobject.id;
 		var timespan = tempobject.timespan;
 		var partnumber = tempobject.partnumber;
-
+		var flagged = tempobject.flagged;
 		var worktime = tempobject.worktime;
 		var plan = tempobject.plan;
 		var actual = tempobject.actual;
@@ -1232,7 +1255,7 @@ Template.AddTasks.events({
 			// console.log('count',newid );
     		//insert the task from server side
     		Meteor.call('inserttask', id, timespan, partnumber, worktime, plan, actual, reason,
-    		 status,currentTime,comment,operatorIDarray,earnedtime,buildingnumber, cell);
+    		 status,currentTime,comment,operatorIDarray,earnedtime,buildingnumber, cell, flagged);
     		Session.set('submited', 'yes');
     		Session.set('togglecomp', {id:id, timespan:timespan, partnumber:partnumber });
 
@@ -1244,7 +1267,7 @@ Template.AddTasks.events({
 			ClientTaskworktime.remove({id:info[1].id})
 			ClientTaskworktime.insert(
 				{ id: newid, timespan: timespan, worktime: worktime, plan:'0', actual:'0',
-				 reason: 'XXX' ,status:null, partnumber: partnumber,comment:comment, earnedtime:'0'
+				 reason: 'XXX' ,status:null, partnumber: partnumber,comment:comment, earnedtime:'0',flagged:flagged
 				})
 
 
@@ -1252,7 +1275,7 @@ Template.AddTasks.events({
     		// console.log(info[1].id);
 			ClientTaskworktime.remove({id:Session.get('togglecomp').id})
     		Meteor.call('inserttask', id, timespan, partnumber, worktime, plan, actual,
-    		 reason, status,currentTime,comment,operatorIDarray,earnedtime,buildingnumber, cell);
+    		 reason, status,currentTime,comment,operatorIDarray,earnedtime,buildingnumber, cell, flagged);
     		Session.set('submited', 'yes');
     		alert("submited!");
     	}
@@ -1309,9 +1332,12 @@ Template.AddTasks.events({
 		}else if (id == 2){
 			operatorinitial[1] = 'null';
 			operatorIDarray[1] = 'null';
-		}else{
+		}else if(id == 3){
 			operatorinitial[2] = 'null';
 			operatorIDarray[2] = 'null';
+		}else{
+			operatorinitial[3] = 'null';
+			operatorIDarray[3] = 'null';
 		}
 		Cookie.set('operatorcount',operatorcount);
 		Cookie.set('operatorarray',JSON.stringify([operatorinitial,operatorIDarray]));
@@ -1319,6 +1345,32 @@ Template.AddTasks.events({
 	'click .search-edit':(event)=>{
 		// console.log(this);
 		return;
-	}
+	},
+	'click .toggle-flagged':function(events){
+ 	  	// var is_checked = $(event.target).is(":checked");
+ 	  	let is_checked = true;
+ 	  	if(this.flagged){
+ 	  		is_checked = false;
+ 	  	}else{
+ 	  		is_checked = true;
+ 	  	}
+	  // Session.set('shifts1',is_checked);
+	  	let id = this._id;
+		// console.log(this, is_checked);
+		Meteor.call( 'update_task_flag', id, is_checked, ( error, response ) => {
+          if ( error ) {
+            // console.log( error.reason );
+            // throw new Meteor.Error('bad', 'stuff happened');
+            Bert.alert( error.reason, 'danger', 'growl-top-right' );
+          } else {
+          	if(!is_checked){
+          		$(events.target).css({"color":"black"});
+          	}else{
+          		$(events.target).css({"color":"white"});
+          	}
+            Bert.alert( 'flag issued!', 'success', 'growl-top-right' );
+          }
+        });
+	},
 });
 

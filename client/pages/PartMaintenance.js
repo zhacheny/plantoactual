@@ -234,7 +234,7 @@ Template.PartMaintenance.events({
             Bert.alert( error.reason, 'danger', 'growl-top-right' );
           } else {
           	log_cell_edit.warn('cell add: ' + ' | Cell Id: ' 
-				+ cellId, Meteor.user().username);
+				+ cellid, Meteor.user().username);
             Bert.alert( 'new cell added!', 'success', 'growl-top-right' );
           }
         });

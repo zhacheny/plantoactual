@@ -2,7 +2,6 @@
         <!-- for operator-->
         <!-- <h1>Not Authorized</h1> -->
             <!-- <button class="settesttime">testtime</button> -->
-    {{#if Template.subscriptionsReady}}
     {{> clock}}
     <div class="{{changeover}}">
         <div class="changover-popup">
@@ -41,13 +40,14 @@
                         <td>{{recordedcomment}}</td>
                         <td>
                             <!-- <input id="commentsinput" style="width: 15vw;" type="comment" class="inputreports"> -->
-                            <textarea id="commentsinput" class="inputreports" name="Text1" cols="40" rows="3"></textarea>
+                            <textarea style="width: 80%;" id="commentsinput" class="inputreports" name="Text1" cols="40" rows="3"></textarea>
                         </td>
                         <td><div name="Ignore Select" id="popupselect" style="background:rgba(099,099,099,.2);" class="outline"></div> </td>
                         <td><button class="toggle-submit">Submit</button></td>
                     </tr>
                 </thead>
             </table>
+            <br>
             <h3>What went Wrong?</h3>
             {{> gowrongcheck}}
 
@@ -109,13 +109,22 @@
                     </div>
                 {{/if}}
                 </td>
+                <td>
+                {{#if displayoperatorfour}}
+                    <div style="width: 5vw;" data-id="4" class="tagsname" id="nametag_four">
+                        <ul>
+                        <li><a><span>{{operatorfour}}</span><i class="fa fa-close"></i></a></li>
+                        </ul>
+                    </div>
+                {{/if}}
+                </td>
 <!--                 <td>
                     <button class="toggle-Test-mode">TestMode</button>  
                 </td> -->
             </tr>
         </thead>
     </table>
-
+    {{#if Template.subscriptionsReady}}
     <table class="{{addtasks}}">
         <thead>
             <tr>
@@ -129,7 +138,7 @@
                 <th>Reason</th>
                 <th>Comment</th>
                 <th>
-                    <button class="toggle-Test-mode">TestMode</button>
+                    <!-- <button class="toggle-Test-mode">TestMode</button> -->
                 </th>
 
             </tr>
@@ -168,23 +177,27 @@
                         {{#if isNoprod @index displayRow}}
                             <td>No Production</td>
                         {{else}}
+                            {{#if $eq @index displayRow}}
+                                <td>
+                                    <!-- <input id="inputcomment2" style="width: 15vw;" type="comment" class="inputcomments"> -->
+                                    <textarea style="width: 90%;" class="inputcomments" name="Text1" cols="40" rows="3"></textarea>
+                                </td>
+                            {{else}}
+                                <td>{{comment}}</td>
+                            {{/if}}
+                        {{/if}}
                         {{#if $eq @index displayRow}}
+                        <!-- {{#if displaybutton @index displayRow}} -->
+                            {{gettaskdata}}
                             <td>
-                                <!-- <input id="inputcomment2" style="width: 15vw;" type="comment" class="inputcomments"> -->
-                                <textarea class="inputcomments" name="Text1" cols="40" rows="3"></textarea>
+                                <button class="toggle-jobComplete">Job Complete</button>
                             </td>
                         {{else}}
-                            <td>{{comment}}</td>
-                        {{/if}}
-                    {{/if}}
-                        {{#if $eq @index displayRow}}
-                    <!-- {{#if displaybutton @index displayRow}} -->
-                        {{gettaskdata}}
-                        <td>
-                            <button class="toggle-jobComplete">Job Complete</button>
-                        </td>
-                        {{else}}
-                            <td>  </td>
+                            <td>
+                                <!-- <input type="checkbox" id="{{@index}}" class="toggle-flagged">
+                                <label for="{{@index}}"></label> -->
+                                <a style="font-size: 30px; color:{{isflagged_color}}" href=""><i class="fa fa-flag toggle-flagged"></i></a>
+                            </td>
                         {{/if}}
                     </tr> 
                 {{/if}}

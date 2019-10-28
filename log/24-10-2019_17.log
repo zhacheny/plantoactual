@@ -1,0 +1,16 @@
+[WARN] | 4:11 | 'report edit:  | Operator ID Array: 00131,00188,null | documentID: undefined' | username: "HR_test" | User Id: 5ugvJ8DvsMnsu3Kd6
+[WARN] | 4:16 | 'report edit:  | Operator ID Array: 00131,00188,null | documentID: undefined' | username: "HR_test" | User Id: 5ugvJ8DvsMnsu3Kd6
+[WARN] | 4:34 | 'report edit:  | Operator ID Array: 00131,null,null | documentID: undefined' | username: "HR_test" | User Id: 5ugvJ8DvsMnsu3Kd6
+[WARN] | 6:41 | 'report edit:  | Actual Number: 22 | documentID: jdBDWG88RTibbx4hH' | username: "HR_test" | User Id: 5ugvJ8DvsMnsu3Kd6
+[WARN] | 6:41 | 'report edit:  | Status: undefined | documentID: jdBDWG88RTibbx4hH' | username: "HR_test" | User Id: 5ugvJ8DvsMnsu3Kd6
+[WARN] | 6:41 | 'report edit:  | Operator ID Array: 00131,null,null | documentID: jdBDWG88RTibbx4hH' | username: "HR_test" | User Id: 5ugvJ8DvsMnsu3Kd6
+[WARN] | 6:45 | 'report edit:  | Actual Number: 23 | documentID: jdBDWG88RTibbx4hH' | username: "HR_test" | User Id: 5ugvJ8DvsMnsu3Kd6
+[WARN] | 6:45 | 'report edit:  | Status: undefined | documentID: jdBDWG88RTibbx4hH' | username: "HR_test" | User Id: 5ugvJ8DvsMnsu3Kd6
+[WARN] | 6:45 | 'report edit:  | Operator ID Array: 00131,null,null | documentID: jdBDWG88RTibbx4hH' | username: "HR_test" | User Id: 5ugvJ8DvsMnsu3Kd6
+[WARN] | 6:52 | 'report edit:  | Actual Number: 23 | documentID: jdBDWG88RTibbx4hH' | username: "HR_test" | User Id: 5ugvJ8DvsMnsu3Kd6
+[WARN] | 6:52 | 'report edit:  | Status: undefined | documentID: jdBDWG88RTibbx4hH' | username: "HR_test" | User Id: 5ugvJ8DvsMnsu3Kd6
+[WARN] | 6:52 | 'report edit:  | Operator ID Array: 00131,00155,null | documentID: jdBDWG88RTibbx4hH' | username: "HR_test" | User Id: 5ugvJ8DvsMnsu3Kd6
+[WARN] | 6:56 | 'report edit:  | Actual Number: 23 | documentID: jdBDWG88RTibbx4hH' | username: "HR_test" | User Id: 5ugvJ8DvsMnsu3Kd6
+[WARN] | 6:56 | 'report edit:  | Status: undefined | documentID: jdBDWG88RTibbx4hH' | username: "HR_test" | User Id: 5ugvJ8DvsMnsu3Kd6
+[WARN] | 6:56 | 'report edit:  | Operator ID Array: 00131,null,null | documentID: jdBDWG88RTibbx4hH' | username: "HR_test" | User Id: 5ugvJ8DvsMnsu3Kd6
+[WARN] | 10:8 | 'report delete | backup:{"_id":"jdBDWG88RTibbx4hH","id":"e","timespan":"10:00-11:00 am","partnumber":"25DTP-A","worktime":38,"plan":23,"actual":"23","reason":"","status":null,"comment":"test","createdAt":"2019-10-24T14:42:16.833Z","operatorID":["00131","null","null"],"earnedtime":37.949999999999996,"buildingnumber":"4A","cell":"6327","flagged":true}' | username: "HR_test" | User Id: 5ugvJ8DvsMnsu3Kd6

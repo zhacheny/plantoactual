@@ -311,7 +311,7 @@ button {
 }
 
 table {
-    font-size: 0.8em;
+    font-size: 1vw;
     width: 100%;
     position: relative;
     transition: all 0.4s cubic-bezier(0.68, -0.65, 0.265, 1.20);
@@ -343,10 +343,10 @@ table {
         transform: translate3d(0, 80px, 0);
     }
     &.add-tasks-expand {
-        transform: translate3d(0, 130px, 0);
+        transform: translate3d(0, 80px, 0);
     }
     &.toggle-changeover {
-        transform: translate3d(0, 100px, 0);
+        transform: translate3d(0, 80px, 0);
     }
  /*   thead1{
         position: relative;
@@ -362,6 +362,10 @@ table {
         }
     }
 */
+}@media screen and (min-width: 1200px) {
+    table {
+    font-size: 14px;
+    }
 }
 
 
@@ -437,7 +441,7 @@ table {
     padding: 20px;
     opacity: 1;
     //display: inline-block;
-    max-height:520px;
+    max-height:545px;
 }
 
 //select box addded by chenyu
@@ -735,7 +739,7 @@ a {
     i {
         border-radius: 4px;
         cursor: pointer;
-        font-size: 44px;
+        font-size: 3.5vw;
         margin: 0px 20px;
         padding: 20px 25px;
         transition: all 400ms ease-in-out;
@@ -754,11 +758,19 @@ a {
         }
 
 
+    }@media screen and (min-width: 1200px) {
+      i {
+         font-size: 44px;
+      }
     }
     i1 {
         font-family: 'Open Sans', sans-serif;
         display: block;
-        font-size: 15px;
+        font-size: 1.5vw;
+    }@media screen and (min-width: 1200px) {
+      i1 {
+         font-size: 15px;
+      }
     }
 }
 
@@ -860,7 +872,7 @@ a {
     padding: 20px;
     //overflow: hidden;
     height:540px;
-    transition: max-height 0.7s ease-in; 
+    //transition: max-height 0.7s ease-in; 
     //transition: all 0.4s cubic-bezier(0.68, -0.65, 0.265, 1.20);
     @include card(2);
 
@@ -881,6 +893,10 @@ a {
     padding: 20px;
     max-height:250px;
 }
+.toggle-searchFlagged .search-shrink{
+    padding: 20px;
+    max-height:320px;
+}
 .toggle-GenerateChart .search-shrink{
     display:none;
     opacity: 0;
@@ -900,7 +916,20 @@ a {
 .toggle-searchpage .findEntry{
     opacity: 1;
 }
-
+.searchFlagged{
+    opacity:0;
+}
+.toggle-searchFlagged .searchFlagged{
+    opacity: 1;
+}
+.toggle-searchFlagged .dateRange{
+    display:none;
+    opacity: 0;
+}
+.toggle-searchFlagged .findEntry{
+    display:none;
+    opacity: 0;
+}
 //input box added by Chenyu
 
 .group:after {
@@ -967,7 +996,7 @@ input[type=checkbox]:checked + label:before {
 }
 
 .search-nav li {
-    width: 49%;
+    width: 32%;
     text-align: center;
     letter-spacing: 1px;
     display: inline-block;

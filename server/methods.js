@@ -525,10 +525,21 @@ Meteor.methods({
 	      $set: { actual: actualInput,
 	      		  reason:reasonInput,
 	      		  comment:commentInput,
-	      		  operator:operatorarray,
+	      		  operatorID:operatorarray,
 	      		  status:status,
 	      		},
 	    });
+	},
+	update_task_flag(id, flagged) {
+		let exists = Tasks.findOne({_id:id})
+		if( !exists ){
+			throw new Meteor.Error('bad', 'Rejected. Document not found!');
+		}else{
+		    Tasks.update(id, {
+		      $set: { flagged:flagged,
+		      		},
+		    });
+		}
 	},
 	// inserttask_2(response) {
 	// 	let id = response[0];
@@ -566,7 +577,7 @@ Meteor.methods({
 	// 	    });
 	// },
 	inserttask(id, timespan, partnumber, worktime, plantoactual, actual, reason,
-		 status,createdAt,comment,operatorID,earnedtime,buildingnumber, cell) {
+		 status,createdAt,comment,operatorID,earnedtime,buildingnumber, cell,flagged) {
 		Tasks.insert({
 			id: id,
 		      timespan: timespan,
@@ -582,6 +593,7 @@ Meteor.methods({
 		      earnedtime:earnedtime,
 		      buildingnumber:buildingnumber,
 		      cell: cell,
+		      flagged,flagged,
 		      // owner: Meteor.userId(),
 		      // username: Meteor.user().username,
 		    });

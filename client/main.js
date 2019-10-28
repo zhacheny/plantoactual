@@ -27,7 +27,7 @@ if (Meteor.isClient){
 	    // });
 	    // The correct way
 	    //set time 
-	    var test_mode_flag = false;
+	    let test_mode_flag = false;
 	    // setInterval(function () {
 	    //     Meteor.call("getClientTime", function (error, result) {
 	    //         Session.set("time", result);
@@ -40,7 +40,7 @@ if (Meteor.isClient){
 	    if(Cookie.get('operatorcount') == 'null'){
 			Cookie.set('operatorcount', 0);
 
-			var operatorinitial = [['null','null','null'],['null','null','null']];
+			let operatorinitial = [['null','null','null','null'],['null','null','null','null']];
 			Cookie.set('operatorarray',JSON.stringify(operatorinitial));
 	    }
 	    // Session.set('operatorcount',0)

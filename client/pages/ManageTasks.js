@@ -18,6 +18,24 @@ this.log_report_error = new Logger();
 (new LoggerFile(this.log_report_error)).enable();
 // (new LoggerFile(this.log_report_add)).enable();
 
+function checkIsnull(operatorinitial,initial,operatorcount,operatorID,operatorIDarray){
+	for (i = 0; i < operatorinitial.length; i++){
+		if(operatorIDarray[i] == operatorID){
+			alert('duplicate operator signed!');
+			return;
+		}
+		if(operatorinitial[i] == 'null'){
+			operatorinitial[i] = initial;
+			operatorIDarray[i] = operatorID;
+			Session.set('operatorarray',[operatorinitial,operatorIDarray]);
+			operatorcount++;
+			Session.set('operatorcount',operatorcount);
+			alert('operator added!');
+			return;
+		}
+	}
+}
+
 function download_data(data, startdate, enddate){
 	const revised_data = JSON.parse(JSON.stringify(data));
 	// var revised_data = data;
@@ -144,7 +162,7 @@ function calculateLostMin_shift(data){
 }
 
 function renderPicker(){
-	$('#picker-1, #picker-2').datetimepicker({
+	$('#picker-1, #picker-2, #picker-3, #picker-4').datetimepicker({
 		 // timepicker:false,
 		 defaultTime:'12:00'
 	});
@@ -187,14 +205,25 @@ Template.ManageTasks.rendered = function() {
 Template.ManageTasks.onCreated(function(){
 	Session.set('toggle-Download',false);
 	Session.set('toggle-Generate',false);
-	Session.set('operator', null);
+	Session.set('operatorcount',0);
+	// Session.set('operator', null);
 	// Meteor.setInterval(function() {
 	// 	time.set(new Date());
 	// }, 1000);
 	this.autorun(() => {
-		let startdate = Session.get('startdate');
-		let enddate = Session.get('enddate');
-		let buildingnumber = Session.get('buildingnumber_part_maintenance');
+		let startdate = 0;
+		let enddate = 0;
+		let buildingnumber = 0;
+		if(Session.get('toggle-search') != null && Session.get('toggle-search')== 2){
+			startdate = Session.get('startdate_flaggeddata');
+			enddate = Session.get('enddate_flaggeddata');
+			buildingnumber = Session.get('buildingnumber_manage_tasks_flaggeddata');
+		}else{
+			startdate = Session.get('startdate');
+			enddate = Session.get('enddate');
+			buildingnumber = Session.get('buildingnumber_manage_tasks');
+		}
+
 		let start = new Date(startdate);
 		let end = new Date(enddate);
 		// subscribehandler_1 = Meteor.subscribe('task',start,end,buildingnumber);
@@ -278,7 +307,7 @@ Template.ManageTasks.events({
 		var operatorname = Session.get('operator');
 		var initial = Operator.findOne({operatorName:operatorname}).initial;
 		var operatorID = Operator.findOne({operatorName:operatorname}).EENumber;
-		Meteor.call('checkIsnull',operatorinitial,initial,operatorcount,operatorID,operatorIDarray);
+		checkIsnull(operatorinitial,initial,operatorcount,operatorID,operatorIDarray);
 		return;
 	},
 	'click .back': ()=> {
@@ -314,6 +343,39 @@ Template.ManageTasks.events({
 		alert('Edit Successfully!');
 		return false;
 	},
+	'click .Modal-flagged-submit': ()=> {
+		var id = Session.get('flagged_id');
+		var actualInput = Session.get('updateactual') != null ? Session.get('updateactual') : 
+		document.getElementById("actualInput").placeholder;
+		var reasonInput = Session.get('updatereason') != null ? Session.get('updatereason') :
+		document.getElementById("reasonInput").placeholder;
+		var commentInput = Session.get('updatecomment') != null ? Session.get('updatecomment') :
+		document.getElementById("commentsInput").placeholder;
+		var operatorIDarray = Session.get('operatorarray')[1];
+		var status = Session.get('statusInput');
+		let is_checked = Session.get('checkedbox_flagged');
+		// console.log([id,actualInput, reasonInput, commentInput]);
+		Meteor.call('updateAll', id, actualInput, reasonInput,
+			commentInput,operatorIDarray,status);
+		Meteor.call('update_task_flag', id, is_checked);
+		//add log edit file
+		if (Session.get('updateactual') != null ) {
+			log_report_edit.warn('report edit: ' + ' | Actual Number: ' 
+			+ actualInput + ' | documentID: ' + id, Meteor.user().username);
+			log_report_edit.warn('report edit: ' + ' | Status: ' 
+			+ status + ' | documentID: ' + id, Meteor.user().username);
+		}
+		if (Session.get('updatereason') != null ) {log_report_edit.warn('report edit: ' + ' | Reason: ' 
+			+ reasonInput + ' | documentID: ' + id, Meteor.user().username);}
+		if (Session.get('updatecomment') != null ) {log_report_edit.warn('report edit: ' + ' | Comment: ' 
+			+ commentInput + ' | documentID: ' + id, Meteor.user().username);}
+		if (is_checked != null ) {log_report_edit.warn('report edit: ' + ' | Change flagged status to: ' 
+			+ is_checked + ' | documentID: ' + id, Meteor.user().username);}
+		log_report_edit.warn('report edit: ' + ' | Operator ID Array: ' 
+			+ operatorIDarray + ' | documentID: ' + id, Meteor.user().username);
+		alert('Edit Successfully!');
+		return false;
+	},
 	'keyup .actualInput': (event)=> {
 		var value = $(event.target).val();
 		Session.set('updateactual',value);
@@ -343,7 +405,35 @@ Template.ManageTasks.events({
 		// alert('Deleted!');
 		return;
 	},
-	
+	'click .search-flagged-edit': function(event){
+		Session.set('toggle-search-flagged-edit','open');
+		Session.set('flagged_id',this._id);
+		var operatorID = this.operatorID;
+		var operatorinitial = ['null','null','null','null'];
+		var operatorFullName = ['null','null','null','null'];
+		for (var i = operatorID.length - 1; i >= 0; i--) {
+//				if(operatorID[i] != 'null'){
+//					operatorFullName[i] = Operator.findOne({EENumber:operatorID[i]}).operatorName;
+//					operatorinitial[i] = Operator.findOne({EENumber:operatorID[i]}).initial;
+//				}
+            if(operatorID[i] != 'null'){
+                var operatorObject = Operator.findOne({EENumber:operatorID[i]});
+                if(!operatorObject){
+                    alert('The operator has been DELETE:' + operatorID[i]);
+                    operatorFullName[i] = 'NO RECORDS';
+                    operatorinitial[i] = 'NO RECORDS';
+                }else{
+                    operatorFullName[i] = operatorObject.operatorName;
+                    operatorinitial[i] = operatorObject.initial;
+                }
+            }
+			
+		}
+		// console.log(operator);
+		Session.set('operatorarray',[operatorinitial,operatorID]);
+		// alert('Deleted!');
+		return;
+	},
 	'click .Modal-yes': function(event){
 		var id = Session.get('inputID');
 		Meteor.call('deletetask', id);
@@ -355,11 +445,28 @@ Template.ManageTasks.events({
 	},
 	'click .Modal-cancel': function(event){
 		Session.set('toggle-search-delete','');
+		Session.set('toggle-search-flagged-delete','');
 		Session.set('toggle-search-edit','');
+		Session.set('toggle-search-flagged-edit','');
 		return;
 	},
+	'click .Modal-flagged-yes': function(event){
+		var id = Session.get('flagged_id');
+		Meteor.call('deletetask', id);
+		log_report_delete.warn('report delete' + ' | backup:' + 
+			 JSON.stringify(Tasks.findOne({_id: id})) , Meteor.user().username);
+		Session.set('toggle-search-flagged-delete','');
+		alert('Deleted!');
+		return;
+	},
+
 	'click .search-delete': function(event){
 		Session.set('toggle-search-delete','open');
+		return;
+	},
+	'click .search-flagged-delete': function(event){
+		Session.set('toggle-search-flagged-delete','open');
+		Session.set('flagged_id',this._id);
 		return;
 	},
 	'keypress input.inputID': function(event){
@@ -372,8 +479,8 @@ Template.ManageTasks.events({
 				return false;
 			}
 			var operatorID = opreatorObject.operatorID;
-			var operatorinitial = ['null','null','null'];
-			var operatorFullName = ['null','null','null'];
+			var operatorinitial = ['null','null','null','null'];
+			var operatorFullName = ['null','null','null','null'];
 			for (var i = operatorID.length - 1; i >= 0; i--) {
 //				if(operatorID[i] != 'null'){
 //					operatorFullName[i] = Operator.findOne({EENumber:operatorID[i]}).operatorName;
@@ -394,7 +501,7 @@ Template.ManageTasks.events({
 			}
 			// console.log(operator);
 			Session.set('operatorarray',[operatorinitial,operatorID]);
-			Session.set('operatorFullName',operatorFullName);
+			// Session.set('operatorFullName',operatorFullName);
 			return false;
     	}
 		return false;
@@ -409,6 +516,11 @@ Template.ManageTasks.events({
 		Session.set('toggle-search',1);
 		// Meteor.subscribe('task',null,null,null);
 	},
+	'click .label-searchFlagged': function(event){
+		// console.log(1);
+		Session.set('toggle-search',2);
+		// Meteor.subscribe('task',null,null,null);
+	},
 	'blur #picker-1': function (event, template) {
 	  // Get the selected start date
 	  var picked_date = $(event.target).val(); 
@@ -418,6 +530,16 @@ Template.ManageTasks.events({
 	  // Get the selected start date
 	  var picked_date = $(event.target).val(); 
 	  Session.set('enddate',picked_date);
+	},
+	'blur #picker-3': function (event, template) {
+	  // Get the selected start date
+	  var picked_date = $(event.target).val(); 
+	  Session.set('startdate_flaggeddata',picked_date);
+	},
+	'blur #picker-4': function (event, template) {
+	  // Get the selected start date
+	  var picked_date = $(event.target).val(); 
+	  Session.set('enddate_flaggeddata',picked_date);
 	},
 
 	'change #checkbox1': function(event){
@@ -443,12 +565,30 @@ Template.ManageTasks.events({
 	  var building = Session.get('buildingnumber_part_maintenance') != null ? Session.get('buildingnumber_part_maintenance') : false;
 	  Session.set('toggle-Generate',is_checked);
 	},
-
+	'change #checkbox_flagged':function(event){
+		let is_checked = $(event.target).is(":checked");
+		Session.set('checkedbox_flagged',is_checked);
+		let input = document.getElementById('label_checkbox_flagged').innerHTML = is_checked;
+		// console.log(document.getElementById('label_checkbox_flagged').innerHTML,'fortest');
+	},
 	'change .partnumberchange':function(evt){
 		var partnumber = $(evt.target).val();
 		Session.set('partnumber_report',partnumber);
 	},
+	'click .search_flaggeddata':function(){
+		let buildingnumber = Session.get('buildingnumber_manage_tasks_flaggeddata');
+		let startdate = Session.get('startdate_flaggeddata');
+		let enddate = Session.get('enddate_flaggeddata');
 
+		let flaggeddataObject = Tasks.find({createdAt : {$gte: startdate, $lt: enddate}, buildingnumber:buildingnumber}).fetch();
+		if( !flaggeddataObject ){
+			alert('No record find!');
+		}else{
+			// console.log(flaggeddataObject);
+			Session.set('tasks_flaggeddata', [buildingnumber,startdate,enddate]);
+		}
+		return false;
+	},
 	'click .search':function(evt){
 		// evt.preventDefault();
 		var dowload_data = [];
@@ -599,9 +739,13 @@ Template.ManageTasks.events({
 
 })
 Template.ManageTasks.helpers({
-	selectedbuilding:function(){
-		return Session.get('buildingnumber_part_maintenance') != null ? Session.get('buildingnumber_part_maintenance'):'';
+	checkbox_flagged_ischecked:function(){
+		return this.flagged == true ? true : false;
+		
 	},
+	// selectedbuilding:function(){
+	// 	return Session.get('buildingnumber_part_maintenance') != null ? Session.get('buildingnumber_part_maintenance'):'';
+	// },
 	// selectedcell:function(){
 	// 	return Session.get('cell_report') != null ? Session.get('cell_report'):'';
 	// },
@@ -628,9 +772,9 @@ Template.ManageTasks.helpers({
 		console.log(Session.get('datapad')[3]);
 		return (Math.round(Session.get('datapad')[3] * 100)) + '%';
 	},
-	displayoperatorName: function(){
-		return Session.get('operatorFullName');
-	},
+	// displayoperatorName: function(){
+	// 	return Session.get('operatorFullName');
+	// },
 	displayoperatorone: function(){
 		return Session.get('operatorarray')[0][0] != 'null' ? true : false;
 	},
@@ -640,7 +784,9 @@ Template.ManageTasks.helpers({
 	displayoperatorthree: function(){
 		return Session.get('operatorarray')[0][2] != 'null' ? true : false;
 	},
-
+	displayoperatorfour: function(){
+		return Session.get('operatorarray')[0][3] != 'null' ? true : false;
+	},
 	operatorone: function(){
 		if (Session.get('operatorarray') == null){
 			return 'null';
@@ -668,6 +814,15 @@ Template.ManageTasks.helpers({
 			return 'null';
 		}
 	}, 
+	operatorfour: function(){
+		if (Session.get('operatorarray') == null){
+			return 'null';
+		}else if(Session.get('operatorarray')[0][3] != null){
+			return Session.get('operatorarray')[0][3];
+		}else {
+			return 'null';
+		}
+	}, 
 	isred: function(){
 		if(this.status == 'red'){
 			return true;
@@ -686,12 +841,14 @@ Template.ManageTasks.helpers({
 		// if(Session.get('lostMin') != null){
 		// 	return "toggle-GenerateChart";
 		// }
-		if(Session.get('toggle-search') == null){
+		if(Session.get('toggle-search') == null || Session.get('toggle-search') == 0){
 			return false;
 		}else{
 			if(Session.get('toggle-search') == 1){
 				return "toggle-searchpage";
-			}		
+			}else if(Session.get('toggle-search') == 2){
+				return "toggle-searchFlagged";
+			}	
 		}
 		
 	},
@@ -702,7 +859,7 @@ Template.ManageTasks.helpers({
 		return Session.get('toggle-search') == 0 ? true: false;
 	},
 	displaytable: function(){
-		if(Session.get('toggle-search') == 0){
+		if(Session.get('toggle-search') == 0 || Session.get('toggle-search') == 2){
 			return false;
 		}else{
 			if(Session.get('toggle-search') == 1 && Session.get('inputID') != null){
@@ -710,12 +867,46 @@ Template.ManageTasks.helpers({
 			}
 		}
 	},
+	displaytable_flaggeddata: function(){
+		if(Session.get('toggle-search') == 0 || Session.get('toggle-search') == 1){
+			return false;
+		}else{
+			if(Session.get('toggle-search') == 2 && Session.get('tasks_flaggeddata') != null){
+				return true;
+			}
+		}
+	},
+	tasks_flaggeddata: function(){
+		if (Session.get('toggle-search') == 0 || Session.get('toggle-search') == 1){
+			return false;
+		}else{
+			let info = Session.get('tasks_flaggeddata');
+			let buildingnumber = info[0] != null ? info[0] : 'All';
+			let startdate = info[1];
+			let enddate = info[2];
+			let start = new Date(startdate);
+			let end = new Date(enddate);
+			let data = buildingnumber != 'All' ? Tasks.find({createdAt : {$gte: start, $lt: end}, buildingnumber:buildingnumber, flagged:true}).fetch()
+			 : Tasks.find({createdAt : {$gte: start, $lt: end}, flagged:true}).fetch()
+			return data;
+		}
+	},
+	tasks_flaggeddata_selected: function(){
+		if (Session.get('toggle-search') == 0 || Session.get('toggle-search') == 1){
+			return false;
+		}else{
+			let id = Session.get('flagged_id');
+			let data = Tasks.find({_id:id}).fetch();
+			console.log(data);
+			return data;
+		}
+	},
 	tasks: function(){
-		if (Session.get('toggle-search') == 0){
+		if (Session.get('toggle-search') == 0 || Session.get('toggle-search') == 2){
 			return false;
 		}else{
 			var id = Session.get('inputID');
-			data = Tasks.find({_id: id}).fetch();
+			let data = Tasks.find({_id: id}).fetch();
 			return data;
 		}
 	},
