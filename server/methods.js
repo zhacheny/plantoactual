@@ -1,5 +1,5 @@
 import { Tasks, Cell, Partnumber, Changeover, Plan, Operator, EarnedTimePP,Anouncements,
-		Safetymessage, Department, Menu, Messages, SafetyReport,Taskrecord } from '/lib/collections.js';
+		Safetymessage, Department, Menu, Messages, SafetyReport,Taskrecord, OperatorSignedList } from '/lib/collections.js';
 import { check, Match } from 'meteor/check';
 import moment from 'moment';
 //run on your server
@@ -430,38 +430,6 @@ Meteor.methods({
 	        throw new Meteor.Error('bad', 'Rejected. This item already exists.');
 	      }
 	},
-	// client_server_record_add_id(cell, lastid, lastidcount){
-	// 	let exists = Taskrecord.findOne( { cell: cell } );
-	// 	if(exists){
-	// 		Taskrecord.update({cell: cell}, {
-	// 		      $set: { 
-	// 		      		lastidcount:lastidcount,
-	// 					lastid:lastid, },
-	// 		    });
-	// 	}
-	// },
-	// client_server_record_update(cell, today, tomorrow){
-	// 	let exists = Taskrecord.findOne( { cell: cell } );
-	// 	if( !exists ){
-	// 		return;
-	// 	}else{
-	// 		let exists_today = Taskrecord.findOne( {startime : {$gte: today, $lt: tomorrow}, 
-	// 				cell: cell});
-	// 		if ( !exists_today ) {
-	// 			console.log("111");
-	// 			Taskrecord.update({cell: cell}, {
-	// 		      $set: { 
-	// 		      		curtaskid: null,
-	// 					plannedworktime:plannedworktime,
-	// 					 },
-	// 		    });
-	// 		}else{
-	// 			console.log("222");
-	// 			return;
-	// 		}
-	// 	}
-
-	// },
 	client_server_record(curtaskid, startime, cell, plannedworktime){
 		let exists = Taskrecord.findOne( { cell: cell } );
 		if( !exists ){
@@ -531,6 +499,9 @@ Meteor.methods({
 	    });
 	},
 	update_task_flag(id, flagged) {
+		if(flagged == null){
+			throw new Meteor.Error('bad', 'Rejected. flagged is undefined!');
+		}
 		let exists = Tasks.findOne({_id:id})
 		if( !exists ){
 			throw new Meteor.Error('bad', 'Rejected. Document not found!');
@@ -541,41 +512,58 @@ Meteor.methods({
 		    });
 		}
 	},
-	// inserttask_2(response) {
-	// 	let id = response[0];
-	// 	let timespan = response[1];
-	// 	let partnumber = response[2];
-	// 	let worktime = response[3];
-	// 	let plantoactual = response[4];
-	// 	let actual = response[5];
-	// 	let reason = response[6];
-	// 	let status = response[7];
-	// 	let createdAt = response[8];
-	// 	let comment= response[9];
-	// 	let operatorID = response[10];
-	// 	let earnedtime = response[11];
-	// 	let buildingnumber = response[12];
-	// 	let cell =response[13];
-	// 	console.log(111);
-	// 	Tasks.insert({
-	// 		id: id,
-	// 	      timespan: timespan,
-	// 	      partnumber:partnumber,
-	// 	      worktime:worktime,
-	// 	      plan:plantoactual,
-	// 	      actual:actual,
-	// 	      reason:reason,
-	// 	      status:status,
-	// 	      comment:comment,
-	// 	      createdAt: createdAt,
-	// 	      operatorID:operatorID,
-	// 	      earnedtime:earnedtime,
-	// 	      buildingnumber:buildingnumber,
-	// 	      cell: cell,
-	// 	      // owner: Meteor.userId(),
-	// 	      // username: Meteor.user().username,
-	// 	    });
-	// },
+	operator_Signout_All(operatorIDarray){
+		let exists = OperatorSignedList.find({}).fetch();
+		if( exists.length == 0){
+			throw new Meteor.Error('bad', 'Rejected. OperatorSignedList-collection is empty!');
+		}else{
+			for (var i = operatorIDarray.length - 1; i >= 0; i--) {
+				// console.log(operatorIDarray[i]);
+				if( operatorIDarray[i] != 'null' ){
+					let operator_isSigned = OperatorSignedList.findOne({ operatorID:operatorIDarray[i] });
+					if( !operator_isSigned ){
+						throw new Meteor.Error('bad', 'Rejected. Record not found');
+					}else{
+						OperatorSignedList.remove({operatorID: operatorIDarray[i]});
+					}
+				}
+			}
+		}
+	},
+	operator_Signout(operatorID){
+		let operator_isSigned = OperatorSignedList.findOne({ operatorID:operatorID });
+		if( !operator_isSigned ){
+			throw new Meteor.Error('bad', 'Rejected. Record not found');
+		}else{
+			OperatorSignedList.remove({operatorID: operatorID});
+		}
+	},
+	operator_isSigned(operatorID, createdAt, cell){
+		let exists = OperatorSignedList.find({}).fetch();
+		if( exists.length == 0){
+			if(operatorID != null){
+				OperatorSignedList.insert({
+					operatorID:operatorID,
+					createdAt:createdAt,
+					cell:cell,
+				});
+			}
+
+		}else{
+			if(operatorID != null){
+				let operator_isSigned = OperatorSignedList.findOne({ operatorID:operatorID });
+				if(operator_isSigned){
+					throw new Meteor.Error('bad', 'Rejected. You have already signed in at ' + operator_isSigned.cell + ' please sign out!');
+				}else{
+					OperatorSignedList.insert({
+						operatorID:operatorID,
+						createdAt:createdAt,
+						cell:cell,
+					});
+				}
+			}
+		}
+	},
 	inserttask(id, timespan, partnumber, worktime, plantoactual, actual, reason,
 		 status,createdAt,comment,operatorID,earnedtime,buildingnumber, cell,flagged) {
 		Tasks.insert({
@@ -611,31 +599,5 @@ Meteor.methods({
 		return;
 	},
 
-	// 'tasks.insert'(text) {
- //    check(text, String);
- 
- //    //Check if user is logged in
- //    if (! Meteor.userId) {
- //      throw new Meteor.Error('not-authorized');
- //    }
- 
- //    Taksks.insert({
- //      text,
- //      createdAt: new Date(),
- //      owner: Meteor.userId(),
- //      username: Meteor.user().username,
- //    });
- //  },
-
- //  	'tasks.remove'(task){
- //  		check(task._id, String);
- //  		// console.log(note.owner);
- //  		// console.log(Meteor.userId());
- //  		if(task.owner !== Meteor.userId()){
- //  			throw new Meteor.Error('not-authorized');
- //  		}
-
- //  		Taksks.remove(task._id);
- //  	},
 
 })

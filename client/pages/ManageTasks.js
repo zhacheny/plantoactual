@@ -340,6 +340,7 @@ Template.ManageTasks.events({
 			+ commentInput + ' | documentID: ' + id, Meteor.user().username);}
 		log_report_edit.warn('report edit: ' + ' | Operator ID Array: ' 
 			+ operatorIDarray + ' | documentID: ' + id, Meteor.user().username);
+		Session.set('toggle-search-edit', '')
 		alert('Edit Successfully!');
 		return false;
 	},
@@ -357,7 +358,15 @@ Template.ManageTasks.events({
 		// console.log([id,actualInput, reasonInput, commentInput]);
 		Meteor.call('updateAll', id, actualInput, reasonInput,
 			commentInput,operatorIDarray,status);
-		Meteor.call('update_task_flag', id, is_checked);
+		Meteor.call( 'update_task_flag', id, is_checked, ( error, response ) => {
+          if ( error ) {
+            // console.log( error.reason );
+            // throw new Meteor.Error('bad', 'stuff happened');
+            Bert.alert( error.reason, 'danger', 'growl-top-right' );
+          } else {
+            Bert.alert( 'flag issued!', 'success', 'growl-top-right' );
+          }
+        });
 		//add log edit file
 		if (Session.get('updateactual') != null ) {
 			log_report_edit.warn('report edit: ' + ' | Actual Number: ' 
@@ -373,6 +382,7 @@ Template.ManageTasks.events({
 			+ is_checked + ' | documentID: ' + id, Meteor.user().username);}
 		log_report_edit.warn('report edit: ' + ' | Operator ID Array: ' 
 			+ operatorIDarray + ' | documentID: ' + id, Meteor.user().username);
+		Session.set('toggle-search-flagged-edit', '');
 		alert('Edit Successfully!');
 		return false;
 	},
@@ -639,11 +649,11 @@ Template.ManageTasks.events({
 			}
 
 			// data = Tasks.find({createdAt : { $gte : start, $lt: end }},query_search).fetch();
-			var All_shift_data = Tasks.find({timespan:{ $in : timespan_merge},
+			var All_shift_data = Tasks.find({flagged:false,timespan:{ $in : timespan_merge},
 				createdAt : { $gte : start, $lt: end }},query_search).fetch();
-			var shift_1_data = Tasks.find({timespan:{ $in : timespan1},
+			var shift_1_data = Tasks.find({flagged:false,timespan:{ $in : timespan1},
 				createdAt : { $gte : start, $lt: end }},query_search).fetch();
-			var shift_2_data = Tasks.find({timespan:{ $in : timespan2},
+			var shift_2_data = Tasks.find({flagged:false,timespan:{ $in : timespan2},
 				createdAt : { $gte : start, $lt: end }},query_search).fetch();
 			Session.set('hasOperator',[false,null]);
 			// var data = Tasks.find({partnumber:partnumber,createdAt : { $gte : start, $lt: end }}).fetch();
@@ -652,11 +662,11 @@ Template.ManageTasks.events({
 			var operatorID = Operator.findOne({operatorName:operator}).EENumber;
 			// console.log(operatorID);
 			// data = Tasks.find({createdAt : { $gte : start, $lt: end }},query_search).fetch();
-			var All_shift_data = Tasks.find({operatorID:{ $in : [operatorID]},timespan:{ $in : timespan_merge},
+			var All_shift_data = Tasks.find({flagged:false, operatorID:{ $in : [operatorID]},timespan:{ $in : timespan_merge},
 				createdAt : { $gte : start, $lt: end }},query_search).fetch();
-			var shift_1_data = Tasks.find({operatorID:{ $in : [operatorID]},timespan:{ $in : timespan1},
+			var shift_1_data = Tasks.find({flagged:false,operatorID:{ $in : [operatorID]},timespan:{ $in : timespan1},
 				createdAt : { $gte : start, $lt: end }},query_search).fetch();
-			var shift_2_data = Tasks.find({operatorID:{ $in : [operatorID]},timespan:{ $in : timespan2},
+			var shift_2_data = Tasks.find({flagged:false,operatorID:{ $in : [operatorID]},timespan:{ $in : timespan2},
 				createdAt : { $gte : start, $lt: end }},query_search).fetch();
 			//check whether user select the shift button
 			if(shifts1 && shifts2){
@@ -967,17 +977,3 @@ Template.ManageTasks.helpers({
 	},
 
 })
-
-
-// var condition = Session.get('searchCondition');
-// // console.log(Tasks.find().fetch());
-// var starttime = condition[1][0];
-// var endtime = condition[1][1];
-// var start = new Date(starttime);
-// var end = new Date(endtime);
-// // console.log(endtime);
-// // console.log(starttime-endtime);
-// var buliding = condition[1][2];
-// var cell = condition[1][3];
-// var partnumber = condition[1][4]
-// var operator = condition[1][6];

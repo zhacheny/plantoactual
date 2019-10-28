@@ -1,5 +1,5 @@
-import { Tasks, Cell, Partnumber, Plan, Operator, EarnedTimePP,Anouncements,
-		Safetymessage, Department, Menu,Taskrecord } from '/lib/collections.js';
+import { Tasks, Cell, Partnumber, Plan, Operator, EarnedTimePP, Anouncements,
+		Safetymessage, Department, Menu, Taskrecord, OperatorSignedList } from '/lib/collections.js';
 import moment from 'moment';
 import { Cookies } from 'meteor/mrt:cookies';
 import { ClientTaskworktime } from '/client/main.js';
@@ -41,8 +41,6 @@ var countsum = 0;
 var haverun = false;
 var displayindex = 0;
 var getlastedtasksum_hasruned = false;
-var operator_array_firstrun = true;
-var server_taskcountsum_firstrun = true;
 var server_taskrecord_firstrun = true;
 
 function updatechangeover(isfinish,currentTime) {
@@ -231,7 +229,7 @@ Template.AddTasks.onCreated(function(){
 	window.name = "parent";
 
 	document.title = 'HxH Tracking System';
-	// console.log(Cookie.get('operatorarray'));
+	// console.log(JSON.parse(Cookie.get('operatorarray'))[1]);
 	let today = new Date();
 	let tomorrow = new Date();
 	let status = 'changeover';
@@ -240,7 +238,9 @@ Template.AddTasks.onCreated(function(){
 	//initialize the task record per day
 	// Meteor.call('client_server_record_update', Cookie.get('cell'), today, tomorrow);
 	// console.log([today,tomorrow]);
-
+	this.autorun(() => {
+		this.subscribe('operatorsignedlist');
+	})
 	this.autorun(() => {
 		today = new Date();
 		tomorrow = new Date();
@@ -266,28 +266,15 @@ Template.AddTasks.onCreated(function(){
 });
 
 
+
 Tracker.autorun(function() {
-	let cell = Cookie.get('cell');
-	//prevent the autorun method run when the page oncreated.
+	const cell = Cookie.get('cell');
 	Meteor.subscribe('taskrecord', Cookie.get('cell'), function(){
 	});
-	if(operator_array_firstrun){
-		return;
-	}
-	var operatorinitial = [['null','null','null','null'],['null','null','null','null']];
-	Cookie.set('operatorarray',JSON.stringify(operatorinitial));
-	Cookie.set('operatorcount', 0);
-
-});
-
-Tracker.autorun(function() {
-	let cell = Cookie.get('cell');
-	
 	Session.set('addtaskcountsum_server',0);
 	getlastedtasksum_hasruned = false;
 	Meteor.call('initializeClientTaskworktime',new Date,false);
 	//change the flag when the page is already created
-	server_taskcountsum_firstrun = true;
 	operator_array_firstrun = false;
 });
 
@@ -826,7 +813,7 @@ Template.AddTasks.helpers({
   		// console.log('cur_timespan_count0',cur_timespan_count , per_timespan_count);
   		Session.set('all_pre_worktime',all_pre_worktime);
   		count = cur_timespan_count == 0? count:cur_timespan_count;
-  		console.log('count_server',count);
+  		// console.log('count_server',count);
   		Session.set('cur_timespan_count',cur_timespan_count);
   		Session.set('sumchangeoverDuration_server',changeover_duration);
   		Session.set('addtaskcountsum_server',cur_timespan_count + per_timespan_count);
@@ -901,14 +888,14 @@ Template.AddTasks.events({
 	'click .add-operator': function(){
 		var operatorcount = Cookie.get('operatorcount');
 		if (Session.get('operator') == null){
-			alert('please type in a valid name to continue!');
+			Bert.alert('please type in a valid name to continue!', 'danger', 'growl-top-right');
 			return;
 		}
 		if (operatorcount > 2 && Cookie.get('cell') != '5462'){
-			alert('can not add more operators!!');
+			Bert.alert('can not add more operators!!', 'danger', 'growl-top-right');
 			return;
 		}else if (operatorcount > 3){
-			alert('can not add more operators!!');
+			Bert.alert('can not add more operators!!', 'danger', 'growl-top-right');
 			return;
 		}
 		var operatorinitial = JSON.parse(Cookie.get('operatorarray'))[0];
@@ -916,7 +903,17 @@ Template.AddTasks.events({
 		var operatorname = Session.get('operator');
 		var initial = Operator.findOne({operatorName:operatorname}).initial;
 		var operatorID = Operator.findOne({operatorName:operatorname}).EENumber;
-		Meteor.call('checkIsnull',operatorinitial,initial,operatorcount,operatorID,operatorIDarray);
+
+		Meteor.call( 'operator_isSigned', operatorID, Session.get('time'), Cookie.get('cell'), ( error, response ) => {
+          if ( error ) {
+            // console.log( error.reason );
+            // throw new Meteor.Error('bad', 'stuff happened');
+            alert( error.reason);
+          } else {
+            Meteor.call('checkIsnull',operatorinitial,initial,operatorcount,operatorID,operatorIDarray);
+          }
+        });
+		// Meteor.call('checkIsnull',operatorinitial,initial,operatorcount,operatorID,operatorIDarray);
 		return;
 	},
 	'click .toggle-Test-mode': function(){
@@ -1327,24 +1324,48 @@ Template.AddTasks.events({
 		var operatorinitial = JSON.parse(Cookie.get('operatorarray'))[0];
 		var operatorIDarray = JSON.parse(Cookie.get('operatorarray'))[1];
 		if(id == 1){
+			Meteor.call( 'operator_Signout', operatorIDarray[0], ( error, response ) => {
+	          if ( error ) {
+	            Bert.alert(error.reason, 'danger', 'growl-top-right');
+	          }else{
+	          	Bert.alert('signed out!', 'success', 'growl-top-right' );
+	          }
+	        });
 			operatorinitial[0] = 'null';
 			operatorIDarray[0] = 'null';
 		}else if (id == 2){
-			operatorinitial[1] = 'null';
+			Meteor.call( 'operator_Signout', operatorIDarray[1], ( error, response ) => {
+	          if ( error ) {
+	            Bert.alert(error.reason, 'danger', 'growl-top-right');
+	          }else{
+	          	Bert.alert('signed out!', 'success', 'growl-top-right' );
+	          }
+	        });
+	        operatorinitial[1] = 'null';
 			operatorIDarray[1] = 'null';
 		}else if(id == 3){
+			Meteor.call( 'operator_Signout', operatorIDarray[2], ( error, response ) => {
+	          if ( error ) {
+	            Bert.alert(error.reason, 'danger', 'growl-top-right');
+	          }else{
+	          	Bert.alert('signed out!', 'success', 'growl-top-right' );
+	          }
+	        });
 			operatorinitial[2] = 'null';
 			operatorIDarray[2] = 'null';
 		}else{
-			operatorinitial[3] = 'null';
+			Meteor.call( 'operator_Signout', operatorIDarray[3], ( error, response ) => {
+	          if ( error ) {
+	            Bert.alert(error.reason, 'danger', 'growl-top-right');
+	          }else{
+	          	Bert.alert('signed out!', 'success', 'growl-top-right' );
+	          }
+	        });
+	        operatorinitial[3] = 'null';
 			operatorIDarray[3] = 'null';
 		}
 		Cookie.set('operatorcount',operatorcount);
 		Cookie.set('operatorarray',JSON.stringify([operatorinitial,operatorIDarray]));
-	},
-	'click .search-edit':(event)=>{
-		// console.log(this);
-		return;
 	},
 	'click .toggle-flagged':function(events){
  	  	// var is_checked = $(event.target).is(":checked");

@@ -1,5 +1,5 @@
 import { Tasks, Partnumber, Taskworktime, Cell, Plan, Operator, EarnedTimePP,Anouncements,
-		Safetymessage, Department, Menu, Messages, Taskrecord } from '/lib/collections.js';
+		Safetymessage, Department, Menu, Messages, Taskrecord, OperatorSignedList } from '/lib/collections.js';
 //publish all user
 Meteor.publish('allUsers', function(){
 	//security
@@ -17,6 +17,11 @@ Meteor.publish('Supervisor', function(){
 	}
 });
 
+//
+Meteor.publish('operatorsignedlist', function(){
+
+	return OperatorSignedList.find({});
+});
 
 //publish menu
 Meteor.publish('menu', function(){

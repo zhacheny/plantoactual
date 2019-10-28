@@ -52,6 +52,18 @@ Template.selectcell.events({
 			}
 
 			Cookie.set('selectedcell', cellobject.cellname + '-' +  cellobject.cellId);
+			//remove all signed in operators
+			Meteor.call( 'operator_Signout_All', JSON.parse(Cookie.get('operatorarray'))[1], ( error, response ) => {
+				console.log('operator_Signout_All',);
+		      if ( error ) {
+		        Bert.alert( error.reason, 'danger', 'growl-top-right' );
+		      } else {
+		        Bert.alert( 'All Operator has been signed out!', 'success', 'growl-top-right' );
+				var operatorinitial = [['null','null','null','null'],['null','null','null','null']];
+				Cookie.set('operatorarray',JSON.stringify(operatorinitial));
+				Cookie.set('operatorcount', 0);
+		      }
+		    });
 		}else{
 			if(res_cell.length>1){
 				Session.set('cell_report',cell.split('-')[1]);

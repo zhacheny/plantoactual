@@ -82,7 +82,7 @@ Meteor.methods({
 	checkIsnull(operatorinitial,initial,operatorcount,operatorID,operatorIDarray){
 		for (i = 0; i < operatorinitial.length; i++){
 			if(operatorIDarray[i] == operatorID){
-				alert('duplicate operator signed!');
+				Bert.alert('duplicate operator signed!', 'danger', 'growl-top-right');
 				return;
 			}
 			if(operatorinitial[i] == 'null'){
@@ -91,7 +91,7 @@ Meteor.methods({
 				Cookie.set('operatorarray',JSON.stringify([operatorinitial,operatorIDarray]));
 				operatorcount++;
 				Cookie.set('operatorcount',operatorcount);
-				alert('operator added!');
+				Bert.alert('operator added!', 'success', 'growl-top-right' );
 				return;
 			}
 		}
@@ -145,11 +145,7 @@ Meteor.methods({
 		  $set: { reason: Session.get('reason') },
 		});
 		Session.set('togglecomp',ClientTaskworktime.findOne({id:id}));
-		},
+	},
 
-		tagslogic(){
-
-			  
-		},
 	
 })

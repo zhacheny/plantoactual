@@ -11,11 +11,12 @@ import { ClientTaskworktime } from '/client/main.js';
 // 	})
 // })
 function autofill_plannumber(id){
+	
 	var indexofId = id.substring(0,1).charCodeAt(0);
 	// var curId = String.fromCharCode(indexofId+1);
-	var curId = String.fromCharCode(indexofId-1);
+	var curId = String.fromCharCode(indexofId);
 	// var curId = id;
-	// console.log('selectpart',curId);
+	console.log('selectpart',curId);
     //automatically changed the plan number
 	var plantoactual_auto_generate = 0;
 	var partnumber = Session.get('partnumber');
@@ -60,7 +61,7 @@ Template.selectpart.helpers({
 	},
 	pre_selectedcheck:function(pre_selected,isCurrent,documentid){
 		if (pre_selected != null && isCurrent == 'true'){
-			// console.log(documentid);
+			console.log('pre_selectedcheck' , documentid);
 			autofill_plannumber(documentid);
 			return true;
 		}else{
