@@ -668,7 +668,7 @@ table {
 }
 
 #block1 {
- display: inline-block;
+    display: inline-block;
     margin: 10px 10px;
     float:left;
     h1 {
@@ -677,7 +677,7 @@ table {
     }@media screen and (min-width: 1200px) {
         h1 {
         font-size: 60px;
-  }
+    }
 }
 
 }
@@ -723,6 +723,20 @@ table {
   }
 }
 
+#block_button
+{
+    float:left;
+    margin: 15px 15px;
+    //background-color: #F5F5F5;
+    padding: 20px;
+    width: 15%;
+    text-align:center;
+    font-size:1.5vw;
+}@media screen and (min-width: 1200px) {
+  #block_button {
+     font-size: 1em;
+  }
+}
 //icon row added by Chenyu
 
 
@@ -891,7 +905,7 @@ a {
 
 .toggle-searchpage .search-shrink{
     padding: 20px;
-    max-height:250px;
+    max-height:200px;
 }
 .toggle-searchFlagged .search-shrink{
     padding: 20px;

@@ -1,0 +1,20 @@
+<template name="Cellrectangle">
+	{{#if clicked}}
+		{{#if isgrey cell table}}
+			<divgrey style="{{add_on_outline cell table}}" class="animated tada celllabel" data-flag="{{flag}}" data-cell="{{cell}}" data-table="{{table}}">
+				{{flag}} {{cell}} {{table}}
+			</divgrey>
+		{{else}}
+			{{#if conditional cell table}}
+				<divConditional style="{{add_on_outline cell table}}" class="animated tada celllabel" data-flag="{{flag}}" data-cell="{{cell}}" data-table="{{table}}">
+					{{flag}} {{cell}} {{table}}
+				</divConditional>
+			{{else}}
+				<divnotConditional style="{{add_on_outline cell table}}" class="animated tada celllabel" data-flag="{{flag}}" data-cell="{{cell}}" data-table="{{table}}">
+					{{flag}} {{cell}} {{table}}
+				</divnotConditional>
+			{{/if}}
+		{{/if}}
+
+	{{/if}}
+</template>

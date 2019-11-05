@@ -1,0 +1,9 @@
+[ERROR] | 0:57 | 'cell add:  | failed in Rejected. This cell already exists.' | username: "HR_test" | User Id: 5ugvJ8DvsMnsu3Kd6
+[WARN] | 2:10 | 'cell add:  | Cell Id: 6327' | username: "HR_test" | User Id: 5ugvJ8DvsMnsu3Kd6
+[WARN] | 12:38 | 'cell delete | backup:undefined' | username: "HR_test" | User Id: 5ugvJ8DvsMnsu3Kd6
+[WARN] | 13:52 | 'cell delete | backup:undefined' | username: "HR_test" | User Id: 5ugvJ8DvsMnsu3Kd6
+[WARN] | 14:16 | 'cell delete | backup:undefined' | username: "HR_test" | User Id: 5ugvJ8DvsMnsu3Kd6
+[WARN] | 16:47 | 'cell delete | backup:undefined' | username: "HR_test" | User Id: 5ugvJ8DvsMnsu3Kd6
+[WARN] | 17:23 | 'cell delete | backup:{"_id":"R9TvTLQ2B2qhijK4Q","buildingnumber":"4A","cellname":null,"cellId":"6327","celltable":"1"}' | username: "HR_test" | User Id: 5ugvJ8DvsMnsu3Kd6
+[WARN] | 17:37 | 'cell add:  | Cell Id: 6327' | username: "HR_test" | User Id: 5ugvJ8DvsMnsu3Kd6
+[WARN] | 22:5 | 'cell add:  | Cell Id: 6327' | username: "HR_test" | User Id: 5ugvJ8DvsMnsu3Kd6

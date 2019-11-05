@@ -135,6 +135,10 @@
 			                    <label>Cell Name</label>
 			                    <input class="add-cell-name" type="text-2">
 			                </div>
+			                <div class="right">
+			                    <label>Add Table(optional)</label>
+			                    <input class="add-cell-table" type="text-2">
+			                </div>
 		                </div>
 		                <hr>
 		                <div class="group">
@@ -262,6 +266,7 @@
 		                <td>Cell Id</td>
 		                <td>Cell Name</td>
 		                <td>Display Name</td>
+		                <td>Table Name(if have)</td>
 		                <td></td>
 		                <td></td>
 
@@ -274,6 +279,7 @@
 		                <td>{{cellId}}</td>
 		                <td>{{cellname}}</td>
 		                <td>{{cellname}}-{{cellId}}</td>
+		                <td>{{celltable}}</td>
 		                <td style="width: 50px"><button class="maintenance-cell-edit">Edit</button></td>
 		                <td style="width: 50px"><button class="maintenance-cell-delete" >Delete</button></td>
 		                
@@ -299,7 +305,6 @@
 		<div class="delete-popup-cell-modal {{$.Session.get 'toggle-maintenance-cell-delete'}}">
 	        <!-- <i class="fa fa-close close-popup"></i> -->
 	        <h3>Are you sure you want to delete this document?</h3>
-	        {{#each cells}}
 	        <div class="group"> 
 	            <div class="left">
 	                <button class="Modal-delete-cell-yes">Yes!</button>
@@ -308,7 +313,6 @@
 	                <button class="Modal-cancel">Cancel</button>
 	            </div>
 	        </div>
-	        {{/each}}
 	    </div>
 	    <div class="edit-popup-modal {{$.Session.get 'toggle-maintenance-cell-edit'}}">
 	    	<table class="table">
@@ -318,11 +322,11 @@
 		                <td>Cell Id</td>
 		                <td>Cell Name</td>
 		                <td>Display Name</td>
-
+						<td>Table Name</td>
 		            </tr>
 		        </thead>
 		        <tbody>
-		            {{#each cells}}
+		        	{{#each selectedcells}}
 		            <tr>
 		                <td>
 	                		<input type="text-2" style = "width: 60px" class="cell-buildingnumber-edit" id="reasonInput"  placeholder="{{buildingnumber}}">
@@ -335,6 +339,9 @@
 		                </td>
 		                <td>
 	                		{{cellname}}-{{cellId}}
+		                </td>
+		                <td>
+	                		<input type="text-2" style = "width: 100px" class="cell-celltable-edit" id="reasonInput"  placeholder="{{celltable}}">
 		                </td>
 		                
 		            </tr>

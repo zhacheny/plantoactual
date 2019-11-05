@@ -7,6 +7,9 @@ import { ClientTaskworktime } from '/client/main.js';
 // var time = new ReactiveVar(new Date());
 var format = 'hh:mm:ss';
 var index = ['a','b','c','d','e','f','g','h','i'];
+var worktime_span_1 = ['55','60','40','60','55','55','60','50'];
+var worktime_span_2 = ['55','60','40','60','60','60','60','50'];
+var worktime_span = [];
 //start from 12pm not 12:30pm
 var reststart1 = moment('12:30:00',format);
 var reststart2 = moment('13:30:00',format);
@@ -22,12 +25,12 @@ var restend4 = moment('21:30:00',format);
 var restend5 = moment('22:30:00',format);
 var restend6 = moment('23:30:00',format);
 // var restend7 = moment('24:30:00',format);
-var shift_1_start = moment('05:50:00',format);
-var shift_1_start_1 = moment('05:49:57',format);
-var shift_1_start_2 = moment('05:49:59',format);
-var shift_1_end = moment('14:59:56',format);
+var shift_1_start = moment('05:59:00',format);
+var shift_1_start_1 = moment('05:59:58',format);
+var shift_1_start_2 = moment('05:59:59',format);
+var shift_1_end = moment('14:59:59',format);
 var shift_2_start = moment('15:00:00',format);
-var shift_2_start_1 = moment('14:59:57',format);
+var shift_2_start_1 = moment('14:59:58',format);
 var shift_2_start_2 = moment('14:59:59',format);
 var shift_2_end = moment('23:59:59',format);
 
@@ -48,6 +51,7 @@ function updatechangeover(isfinish,currentTime) {
 	// var lastobject = ClientTaskworktime.findOne({id:curId});
 	//get the change over time
     let starttime = Session.get('changeover-starttime');
+    let base_worktime = worktime_span[absolute_displayindex];
     //calcule the time over according to the mode toggle
     if (Session.get('test-mode-time') != null){
 		var changeoverDuration = moment(currentTime-starttime).format('ss');
@@ -61,7 +65,7 @@ function updatechangeover(isfinish,currentTime) {
 
     var curId = Session.get('tempchangeoverid') + count;
     // console.log(changeoverDuration);
-    console.log('count3',count);
+    // console.log('count3',count);
     var lastwortime = ClientTaskworktime.findOne({id:curId}).worktime;
     var partnumber = ClientTaskworktime.findOne({id:curId}).partnumber;
     var operatorcount = Session.get('operatorcount');
@@ -80,7 +84,7 @@ function updatechangeover(isfinish,currentTime) {
 		Session.set('earnedTimePPiecePOpe',0);
 	}else{
 		var MinutesPP_one = Partnumber.findOne({cell:Cookie.get('cell'), part:partnumber}).MinutesPP_one;
-		plantoactual_auto_generate = MinutesPP_one;
+		plantoactual_auto_generate = (MinutesPP_one == '0' || MinutesPP_one == '0.0') ? 11.1:MinutesPP_one;
 		// var value = 1/MinutesPP_one;
 		if (operatorcount == 2){
 			plantoactual_auto_generate = Partnumber.findOne({cell:Cookie.get('cell'), part:partnumber}).MinutesPP_two;
@@ -93,7 +97,8 @@ function updatechangeover(isfinish,currentTime) {
 		// value = Math.round( value * 10 ) / 10;
 	}
 	Session.set('pretime', currentTime);
-	Meteor.call('client_server_record',null, Session.get('time'),Cookie.get('cell'),null, null);
+	Meteor.call('client_server_record', absolute_displayindex, Session.get('time'),Cookie.get('cell'), 
+		base_worktime, Cookie.get('celltable'));
 	ClientTaskworktime.update({id:curId}, {
 		$set: { worktime: worktime,
 		 plan: plantoactual_auto_generate},
@@ -201,7 +206,7 @@ function inserttaskAschangover(iscomplete,currentTime){
 	    // Session.set('sumchangeoverDuration', pre_sumchangeoverDuration + changeoverDuration);
 	    Session.set('sumchangeoverDuration', changeoverDuration);
 	}
-	console.log('inserttaskAschangover', currentTime, starttime, changeoverDuration)
+	// console.log('inserttaskAschangover', currentTime, starttime, changeoverDuration)
 	var id = tempobject.id;
 	var timespan = tempobject.timespan;
 	var partnumber = tempobject.partnumber;
@@ -215,9 +220,9 @@ function inserttaskAschangover(iscomplete,currentTime){
 	var cell = Cookie.get('cell');
 	var earnedtime = 0;
 	var operatorIDarray = JSON.parse(Cookie.get('operatorarray'))[1];
-
+	let celltable = Cookie.get('celltable');
 	Meteor.call('inserttask', id, timespan, partnumber, changeoverDuration, plan, actual, reason,
-    		 status,currentTime,comment,operatorIDarray,earnedtime,buildingnumber, cell,flagged);
+    		 status,currentTime,comment,operatorIDarray,earnedtime,buildingnumber, cell,flagged, celltable);
 
 	// return [id, timespan, partnumber, worktime, plantoactual, actual, reason,
 	//  status,createdAt,comment,operatorIDarray,earnedtime,buildingnumber, cell];
@@ -227,8 +232,19 @@ function inserttaskAschangover(iscomplete,currentTime){
 Template.AddTasks.onCreated(function(){
 	Session.set('addtaskcountsum',0);
 	window.name = "parent";
-
+	// Template.instance().initializing = new ReactiveVar( false );
+	let currentTime = Session.get('time');
+	let timeformat = moment(currentTime,format);
 	document.title = 'HxH Tracking System';
+	//sperate time by two shifts
+	if(timeformat.isBetween(shift_1_start, shift_1_end)){
+		cur_timespan = timespan1;
+		worktime_span = worktime_span_1;
+	}else if(timeformat.isBetween(shift_2_start, shift_2_end)){
+		cur_timespan = timespan2;
+		worktime_span = worktime_span_2;
+	}
+	
 	// console.log(JSON.parse(Cookie.get('operatorarray'))[1]);
 	let today = new Date();
 	let tomorrow = new Date();
@@ -239,23 +255,24 @@ Template.AddTasks.onCreated(function(){
 	// Meteor.call('client_server_record_update', Cookie.get('cell'), today, tomorrow);
 	// console.log([today,tomorrow]);
 	this.autorun(() => {
-		this.subscribe('operatorsignedlist');
+		let cell = Cookie.get('cell');
+		// Template.instance().initializing.set( false );
+		this.subscribe('taskrecord',cell);
 	})
+
 	this.autorun(() => {
 		today = new Date();
 		tomorrow = new Date();
-		let currentTime = Session.get('time');
-		let timeformat = moment(currentTime,format);
+		currentTime = Session.get('time');
+		timeformat = moment(currentTime,format);
 		let buildingnumber = Cookie.get('buildingnumber');
 		//sperate time by two shifts
 		if(timeformat.isBetween(shift_1_start, shift_1_end)){
 			today.setHours(5,59,59,0);
-			tomorrow.setHours(14,50,50,0);
-			cur_timespan = timespan1;
+			tomorrow.setHours(14,59,58,999);
 		}else if(timeformat.isBetween(shift_2_start, shift_2_end)){
 			today.setHours(14,59,59,999);
-			tomorrow.setHours(23,50,50,0);
-			cur_timespan = timespan2;
+			tomorrow.setHours(23,59,59,999);
 		}
 		
 		this.subscribe('task',today,tomorrow,buildingnumber, function(){
@@ -269,8 +286,8 @@ Template.AddTasks.onCreated(function(){
 
 Tracker.autorun(function() {
 	const cell = Cookie.get('cell');
-	Meteor.subscribe('taskrecord', Cookie.get('cell'), function(){
-	});
+	// Meteor.subscribe('taskrecord', Cookie.get('cell'), function(){
+	// });
 	Session.set('addtaskcountsum_server',0);
 	getlastedtasksum_hasruned = false;
 	Meteor.call('initializeClientTaskworktime',new Date,false);
@@ -286,14 +303,14 @@ Tracker.autorun(function() {
 	Meteor.call('errortype',wrongtype);
 
 });
-Tracker.autorun(function() {
-	if (Session.get('togglecomp')==null){
-		return;
-	}
-	var wrongtype = Session.get('wrongtype');
-	Meteor.call('errortype',wrongtype);
+// Tracker.autorun(function() {
+// 	if (Session.get('togglecomp')==null){
+// 		return;
+// 	}
+// 	var wrongtype = Session.get('wrongtype');
+// 	Meteor.call('errortype',wrongtype);
 
-});
+// });
 
 Tracker.autorun(function() {
 	//change the status of the when time goes
@@ -495,13 +512,37 @@ Template.AddTasks.helpers({
 		var min = moment(timeformat).format('mm');
 		var sec = moment(timeformat).format('ss');
 		if(timeformat.isBetween(shift_1_start_1, shift_1_start_2)){
+			//remove all signed in operators
+			Meteor.call( 'operator_Signout_All', JSON.parse(Cookie.get('operatorarray'))[1], ( error, response ) => {
+				console.log('operator_Signout_All',);
+		      if ( error ) {
+		        Bert.alert( error.reason, 'danger', 'growl-top-right' );
+		      } else {
+		        Bert.alert( 'All Operator has been signed out!', 'success', 'growl-top-right' );
+				var operatorinitial = [['null','null','null','null'],['null','null','null','null']];
+				Cookie.set('operatorarray',JSON.stringify(operatorinitial));
+				Cookie.set('operatorcount', 0);
+		      }
+		    });
 			document.location.reload(true);
-			alert('shift 1 start!');
+			// alert('shift 1 start!');
 		}else if (timeformat.isBetween(shift_2_start_1, shift_2_start_2)) {
 				// Meteor.call('initializeClientTaskworktime',moment('7:29:59',format),false);
 				// console.log(111);
+				//remove all signed in operators
+			Meteor.call( 'operator_Signout_All', JSON.parse(Cookie.get('operatorarray'))[1], ( error, response ) => {
+				console.log('operator_Signout_All',);
+		      if ( error ) {
+		        Bert.alert( error.reason, 'danger', 'growl-top-right' );
+		      } else {
+		        Bert.alert( 'All Operator has been signed out!', 'success', 'growl-top-right' );
+				var operatorinitial = [['null','null','null','null'],['null','null','null','null']];
+				Cookie.set('operatorarray',JSON.stringify(operatorinitial));
+				Cookie.set('operatorcount', 0);
+		      }
+		    });
 			document.location.reload(true);
-			alert('shift 2 start!');
+			// alert('shift 2 start!');
 		}
 
 
@@ -772,8 +813,11 @@ Template.AddTasks.helpers({
 		}
 	},
 	getlastedtasksum:function(){
+		let celltable = Cookie.get('celltable');
 		let clienttask = ClientTaskworktime.find().fetch();
-  		let servertask = Tasks.find({cell:Cookie.get('cell')}, { sort: { id: 1 }}).fetch();
+  		let servertask = celltable == null ? Tasks.find({cell:Cookie.get('cell')}, { sort: { id: 1 }}).fetch()
+		: Tasks.find({celltable: celltable, cell:Cookie.get('cell')}, { sort: { id: 1 }}).fetch();
+
 		let last_server_index = absolute_displayindex;
 		let per_timespan_count = 0;
 		let cur_timespan_count = 0;
@@ -787,7 +831,7 @@ Template.AddTasks.helpers({
 		let all_pre_worktime = 0;
   		for (var j = servertask.length - 1; j >= 0; j--) {
   			//sum the task form server side per time span
-  			// console.log('cur_timespan_count0',servertask[j].id);
+  			// console.log('cur_timespan_count0',servertask[j]);
 
 			if(servertask[j].id.substring(0,1) == index[last_server_index]){
   				// console.log('server_baseid',servertask[j].id);
@@ -820,8 +864,10 @@ Template.AddTasks.helpers({
   		return;
 	},
   	mixedtask:function(){
+  		let celltable = Cookie.get('celltable');
   		let clienttask = ClientTaskworktime.find().fetch();
-  		let servertask = Tasks.find({cell:Cookie.get('cell'),status:{ $ne: 'changeover'}}, { sort: { id: 1 }}).fetch();
+  		let servertask = celltable == null ? Tasks.find({cell:Cookie.get('cell'),status:{ $ne: 'changeover'}}, { sort: { id: 1 }}).fetch()
+		: Tasks.find({celltable: celltable, cell:Cookie.get('cell'),status:{ $ne: 'changeover'}}, { sort: { id: 1 }}).fetch();
 		let last_server_index = absolute_displayindex;	
   		if(servertask.length == 0){
   			return ClientTaskworktime.find();
@@ -848,7 +894,7 @@ Template.AddTasks.helpers({
 							//check whether thre task record is needed
 							
 							if(Taskrecord_object && server_taskrecord_firstrun){
-								Meteor.call('client_server_record',absolute_displayindex, null,Cookie.get('cell'), clienttask[i].worktime,null);
+								Meteor.call('client_server_record',absolute_displayindex, null,Cookie.get('cell'), clienttask[i].worktime, Cookie.get('celltable'));
 								
 							}
 							break;
@@ -866,6 +912,10 @@ Template.AddTasks.helpers({
   		return _.sortBy(mixeddoc, function(mixeddoc) {return mixeddoc.id;});
   		// return mixeddoc;
   	},
+  	// initializing() {
+  	// 	console.log(Template.instance().initializing.get());
+	  //   return Template.instance().initializing.get();
+	  // }
 });
 
 Template.AddTasks.events({
@@ -981,7 +1031,7 @@ Template.AddTasks.events({
 			Session.set('earnedTimePPiecePOpe',value);
 		}else{
 			var MinutesPP_one = Partnumber.findOne({cell:Cookie.get('cell'), part:partnumber}).MinutesPP_one;
-			value = MinutesPP_one == '0' ? 11.1 : MinutesPP_one;
+			value = (MinutesPP_one == '0' || MinutesPP_one == '0.0') ? 11.1 : MinutesPP_one;
 			// var value = 1/MinutesPP_one;
 			if (operatorcount == 2){
 				value = Partnumber.findOne({cell:Cookie.get('cell'), part:partnumber}).MinutesPP_two;
@@ -1062,18 +1112,24 @@ Template.AddTasks.events({
 	'click .toggle-jobComplete': function(){
 		Session.set('changeover-starttime',Session.get('time'));
 		let cur_taks_index = absolute_displayindex;
-		let Taskrecord_object = Taskrecord.findOne({cell:Cookie.get('cell')});
+		let Taskrecord_object =  Taskrecord.findOne({cell:Cookie.get('cell')});
+		if( Cookie.get('celltable') != 'null'){
+			Taskrecord_object =  Taskrecord.findOne({cell:Cookie.get('cell'), celltable:Cookie.get('celltable')});
+		}
 		let sumchangeoverDuration = 0;
-		if(Taskrecord_object && server_taskrecord_firstrun && cur_taks_index == Taskrecord_object.curtaskid){
+		// console.log('toggle-jobComplete',Taskrecord_object);
+		// console.log('toggle-jobComplete',cur_taks_index);
+		// console.log('toggle-jobComplete',Taskrecord_object.curtaskid);
+		if(Taskrecord_object && server_taskrecord_firstrun && cur_taks_index == Taskrecord_object.curtaskid 
+			){
 			// starttime = Taskrecord_object.startime;
 			// Session.set('changeover-starttime',Taskrecord_object.startime);
-			// console.log('toggle-jobComplete',0);
 			Session.set('Plannedworktime',Taskrecord_object.plannedworktime);
 			Session.set('pretime', Taskrecord_object.startime);
 			sumchangeoverDuration =  Session.get('sumchangeoverDuration_server') != null ? Session.get('sumchangeoverDuration_server'):0;
 			server_taskrecord_firstrun = false;
 		}else{
-			console.log('toggle-jobComplete',1);
+			// console.log('toggle-jobComplete',1);
 			//get the currnet planned worktime
 			if(this.id.length == 1){
 				Session.set('Plannedworktime',this.worktime);
@@ -1136,7 +1192,7 @@ Template.AddTasks.events({
 		 //get the earnedtime per piece
 		if (partnumber != 'Part Not Available'){
 			let MinutesPP_one = Partnumber.findOne({cell:Cookie.get('cell'), part:partnumber}).MinutesPP_one;
-			var plannumber = MinutesPP_one == '0' ? 11.1 : MinutesPP_one;
+			var plannumber = (MinutesPP_one == '0' || MinutesPP_one == '0.0') ? 11.1 : MinutesPP_one;
 				// let MinutesPP_one = (partnumber == 'Part Not Available') ? 
 			// '0': Partnumber.findOne({cell:Session.get('cell'), part:partnumber}).MinutesPP_one;
 			var operatorcount = Cookie.get('operatorcount');
@@ -1199,6 +1255,7 @@ Template.AddTasks.events({
 		var comment = tempobject.comment;
 		var buildingnumber = Cookie.get('buildingnumber');
 		var cell = Cookie.get('cell');
+		let celltable = Cookie.get('celltable');
 		//check if there no value set for multiple operator
 		var earnedtime = Session.get('earnedTimePPiecePOpe') == 0? worktime : Session.get('earnedTimePPiecePOpe') * actual;
 		console.log([Session.get('earnedTimePPiecePOpe'),actual,earnedtime])
@@ -1252,7 +1309,7 @@ Template.AddTasks.events({
 			// console.log('count',newid );
     		//insert the task from server side
     		Meteor.call('inserttask', id, timespan, partnumber, worktime, plan, actual, reason,
-    		 status,currentTime,comment,operatorIDarray,earnedtime,buildingnumber, cell, flagged);
+    		 status,currentTime,comment,operatorIDarray,earnedtime,buildingnumber, cell, flagged, celltable);
     		Session.set('submited', 'yes');
     		Session.set('togglecomp', {id:id, timespan:timespan, partnumber:partnumber });
 
@@ -1272,7 +1329,7 @@ Template.AddTasks.events({
     		// console.log(info[1].id);
 			ClientTaskworktime.remove({id:Session.get('togglecomp').id})
     		Meteor.call('inserttask', id, timespan, partnumber, worktime, plan, actual,
-    		 reason, status,currentTime,comment,operatorIDarray,earnedtime,buildingnumber, cell, flagged);
+    		 reason, status,currentTime,comment,operatorIDarray,earnedtime,buildingnumber, cell, flagged, celltable);
     		Session.set('submited', 'yes');
     		alert("submited!");
     	}

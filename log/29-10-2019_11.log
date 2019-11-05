@@ -1,0 +1,5 @@
+[INFO] | 29:28 | 'log out' | username: "HR_test" | User Id: 5ugvJ8DvsMnsu3Kd6
+[INFO] | 31:38 | 'log in' | username: "HR_test" | User Id: 5ugvJ8DvsMnsu3Kd6
+[WARN] | 50:8 | 'report edit:  | Operator ID Array: 00155,00131,00730,00722 | documentID: hLmkrDQoDgcCLphkL' | username: "HR_test" | User Id: 5ugvJ8DvsMnsu3Kd6
+[WARN] | 50:25 | 'report edit:  | Operator ID Array: 00155,00131,null,00722 | documentID: hLmkrDQoDgcCLphkL' | username: "HR_test" | User Id: 5ugvJ8DvsMnsu3Kd6
+[WARN] | 50:39 | 'report edit:  | Operator ID Array: 00155,00131,00518,00722 | documentID: hLmkrDQoDgcCLphkL' | username: "HR_test" | User Id: 5ugvJ8DvsMnsu3Kd6

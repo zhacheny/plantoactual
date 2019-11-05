@@ -115,5 +115,5 @@ Meteor.publish("messages", function() {
 
 Meteor.publish('taskrecord', function(cell){
 
-	return Taskrecord.find({cell:cell});
+	return cell == 'All' ? Taskrecord.find({}) : Taskrecord.find({cell:cell});
 });

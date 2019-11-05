@@ -121,7 +121,7 @@
             </tr>
         </thead>
     </table>
-    {{#if Template.subscriptionsReady}}
+
     <table class="{{addtasks}}">
         <thead>
             <tr>
@@ -140,6 +140,7 @@
 
             </tr>
         </thead>
+        {{#if Template.subscriptionsReady}}
         <tbody>
             {{getlastedtasksum}}
             {{#each mixedtask}}
@@ -201,8 +202,11 @@
             {{/each}}
            
         </tbody>
+        {{else}}
+            {{> loader}}
+        {{/if}}
     </table>
-    {{/if}}
+    
 </template>
 
 

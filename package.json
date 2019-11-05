@@ -12,18 +12,18 @@
   },
   "repository": {
     "type": "git",
-    //"url": "git+https://github.com/leveluptuts/Blaze-Base.git"
+    "url": "git+https://github.com/zhacheny/plantoactual.git"
   },
   "author": "Chenyu",
   "license": "ISC",
-  // "bugs": {
-  //   "url": "https://github.com/leveluptuts/Blaze-Base/issues"
-  // },
+  "bugs": {
+    "url": "https://github.com/zhacheny/plantoactual/issues"
+  },
   "meteor": {
     "mainModule": {
       "client": "client/main.js",
       "server": "server/main.js"
     },
-  //"homepage": "https://github.com/leveluptuts/Blaze-Base#readme"
+  "homepage": "https://github.com/zhacheny/plantoactual#readme"
   },
 }

@@ -40,7 +40,7 @@ function download_data(data, startdate, enddate){
 	const revised_data = JSON.parse(JSON.stringify(data));
 	// var revised_data = data;
 	for (var i = revised_data.length - 1; i >= 0; i--) {
-		for (var j = 0; j < 3; j++) {
+		for (var j = 0; j < revised_data[0].operatorID.length; j++) {
 			if(revised_data[i].operatorID[j] != "null"){
                 var operatorObject = Operator.findOne({EENumber:revised_data[i].operatorID[j]});
                 if(!operatorObject){
@@ -285,8 +285,11 @@ Template.ManageTasks.events({
 		}else if (id == 2){
 			operatorinitial[1] = 'null';
 			operatorIDarray[1] = 'null';
-		}else{
+		}else if (id == 3){
 			operatorinitial[2] = 'null';
+			operatorIDarray[2] = 'null';
+		}else{
+			operatorinitial[3] = 'null';
 			operatorIDarray[2] = 'null';
 		}
 		Session.set('operatorcount',operatorcount);
@@ -298,7 +301,7 @@ Template.ManageTasks.events({
 			alert('please type in a valid name to continue!');
 			return;
 		}
-		if (operatorcount > 2){
+		if (operatorcount > 3){
 			alert('can not add more operators!!');
 			return;
 		}
@@ -354,7 +357,8 @@ Template.ManageTasks.events({
 		document.getElementById("commentsInput").placeholder;
 		var operatorIDarray = Session.get('operatorarray')[1];
 		var status = Session.get('statusInput');
-		let is_checked = Session.get('checkedbox_flagged');
+		let is_checked = Session.get('checkedbox_flagged') != null ? Session.get('checkedbox_flagged') :
+		true;
 		// console.log([id,actualInput, reasonInput, commentInput]);
 		Meteor.call('updateAll', id, actualInput, reasonInput,
 			commentInput,operatorIDarray,status);

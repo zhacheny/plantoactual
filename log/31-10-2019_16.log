@@ -1,0 +1,4 @@
+[WARN] | 51:43 | 'cell delete | backup:{"_id":"mE9JWGgJmRgzBmRQt","buildingnumber":"4A","cellname":null,"cellId":"6327","celltable":"1"}' | username: "HR_test" | User Id: 5ugvJ8DvsMnsu3Kd6
+[WARN] | 51:52 | 'cell delete | backup:{"_id":"binXnvtx7xZPcNHjN","buildingnumber":"4A","cellname":null,"cellId":"6327","celltable":"2"}' | username: "HR_test" | User Id: 5ugvJ8DvsMnsu3Kd6
+[WARN] | 52:5 | 'cell add:  | Cell Id: 6327' | username: "HR_test" | User Id: 5ugvJ8DvsMnsu3Kd6
+[WARN] | 54:46 | 'cell add:  | Cell Id: 6327' | username: "HR_test" | User Id: 5ugvJ8DvsMnsu3Kd6

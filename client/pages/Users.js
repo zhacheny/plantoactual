@@ -32,7 +32,7 @@ Template.Users.helpers({
 	},
 	currentEdit: function(){
 		let user = Session.get('currentUser');
-		return user._id === this._id;
+		return user != null ? user._id === this._id : false;
 	},
 })
 

@@ -16,7 +16,7 @@ function autofill_plannumber(id){
 	// var curId = String.fromCharCode(indexofId+1);
 	var curId = String.fromCharCode(indexofId);
 	// var curId = id;
-	console.log('selectpart',curId);
+	// console.log('selectpart',curId);
     //automatically changed the plan number
 	var plantoactual_auto_generate = 0;
 	var partnumber = Session.get('partnumber');
@@ -61,7 +61,7 @@ Template.selectpart.helpers({
 	},
 	pre_selectedcheck:function(pre_selected,isCurrent,documentid){
 		if (pre_selected != null && isCurrent == 'true'){
-			console.log('pre_selectedcheck' , documentid);
+			// console.log('pre_selectedcheck' , documentid);
 			autofill_plannumber(documentid);
 			return true;
 		}else{
@@ -87,10 +87,10 @@ Template.selectpart.helpers({
 			var selectbuilding =  Cookie.get('buildingnumber');
 			var selectcell = Cookie.get('cell');
 		}else{
-			var selectbuilding =  Session.get('buildingnumber_part_maintenance');
+			var selectbuilding =  Session.get('buildingnumber_manage_tasks');
 			var selectcell = Session.get('cell_report');
 		}
-
+		// console.log(selectbuilding, selectcell);
 		Meteor.subscribe('partnumber',selectbuilding,selectcell);
 		return Partnumber.find({buildingnumber: selectbuilding,cell:selectcell}, { sort: { part: 1 }} );
 	},

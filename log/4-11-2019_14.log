@@ -1,0 +1,3 @@
+[WARN] | 12:5 | 'operator add:  | EE Number: 4348' | username: "HR_test" | User Id: 5ugvJ8DvsMnsu3Kd6
+[WARN] | 12:20 | 'operator delete | backup:{"_id":"PehoZdceBgtdggZHf","operatorName":"Cruz, Giselle","EENumber":"4348","Department":"22 Shipping","supervisorName":"Husky","employIndicator":"Direct Labor","initial":"CG"}' | username: "HR_test" | User Id: 5ugvJ8DvsMnsu3Kd6
+[WARN] | 12:27 | 'operator add:  | EE Number: 04348' | username: "HR_test" | User Id: 5ugvJ8DvsMnsu3Kd6

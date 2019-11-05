@@ -41,11 +41,11 @@ Template.PartMaintenance.events({
 
 	},
 	'click .Modal-delete-cell-yes': function(){
-		console.log(this._id);
-		Meteor.call('celldelete',this._id);
+		let id = Session.get('toggle-maintenance-cell-delete-id');
+		Meteor.call('celldelete', id);
 		Session.set('toggle-maintenance-cell-delete','');
 		log_cell_delete.warn('cell delete' + ' | backup:' + 
-			 JSON.stringify(Cell.findOne({_id: this._id})) , Meteor.user().username);
+			 JSON.stringify(Cell.findOne({_id: id})) , Meteor.user().username);
 		alert('Deleted!');
 		return false;
 
@@ -156,12 +156,13 @@ Template.PartMaintenance.events({
 	},
 	'click .maintenance-cell-edit': function(event){
 		Session.set('toggle-maintenance-cell-edit','open');
-
+		Session.set('toggle-maintenance-cell-edit-id',this._id);
 		// alert('Deleted!');
 		return;
 	},
 	'click .maintenance-cell-delete': function(event){
-		Session.set('toggle-maintenance-cell-delete','open');
+		Session.set('toggle-maintenance-cell-delete-id', this._id);
+		Session.set('toggle-maintenance-cell-delete', 'open');
 		return;
 	},
 	'click .maintenance-delete': function(event){
@@ -170,11 +171,13 @@ Template.PartMaintenance.events({
 	},
 	'click .maintenance-edit-cell-submit': function(){
 		let buildingnumber = Session.get('cell-buildingnumber-edit');
+		let _id = Session.get('toggle-maintenance-cell-edit-id');
+		let celltable = Session.get('cell-table-edit');
 		let cellId = Session.get('cell-cellId-edit') == null ? 
 			Session.get('inputCell_id'): Session.get('cell-cellId-edit');
 		let cellname = Session.get('cell-cellname-edit');
 
-        Meteor.call( 'updatecell', buildingnumber, cellId, cellname, ( error, response ) => {
+        Meteor.call( 'updatecell', buildingnumber, _id, cellname, celltable, cellId, ( error, response ) => {
           if ( error ) {
             // console.log( error.reason );
             // throw new Meteor.Error('bad', 'stuff happened');
@@ -182,11 +185,15 @@ Template.PartMaintenance.events({
 				+ error.reason, Meteor.user().username);
             Bert.alert( error.reason, 'danger', 'growl-top-right' );
           } else {
-          	log_cell_edit.warn('cell add: ' + ' | Cell Id: ' 
-				+ cellId, Meteor.user().username);
+          	log_cell_edit.warn('cell add: ' + ' | Cell: ' 
+				+ _id + celltable, Meteor.user().username);
             Bert.alert( 'cell updated!', 'success', 'growl-top-right' );
           }
         });
+        Session.set('cell-buildingnumber-edit', null);
+        Session.set('cell-table-edit', null);
+        Session.set('cell-cellname-edit', null);
+        Session.set('cell-cellId-edit', null);
 	},
 	'click .maintenance-edit-submit': function(events){
 		let MinutesPP_one = Session.get('MinutesPP_one-edit');
@@ -223,9 +230,11 @@ Template.PartMaintenance.events({
 	'click .add_cell_submit': function(){
 		let buildingnumber = Session.get('add-cell-building-number');
 		let cellid = Session.get('add-cell-id');
-		let cellname = Session.get('add-cell-name');
+		let cellname = Session.get('add-cell-name') == null ? '':Session.get('add-cell-name');
+		let celltable = Session.get('add-cell-table');
+		celltable = celltable == '' ? null:celltable;
 
-        Meteor.call( 'insertcell', buildingnumber, cellid, cellname, ( error, response ) => {
+        Meteor.call( 'insertcell', buildingnumber, cellid, cellname, celltable, ( error, response ) => {
           if ( error ) {
             // console.log( error.reason );
             // throw new Meteor.Error('bad', 'stuff happened');
@@ -253,6 +262,11 @@ Template.PartMaintenance.events({
 	'keyup .add-cell-name': function(event){
 		let value = $(event.target).val();
 		Session.set('add-cell-name',value);
+		return;
+	},
+	'keyup .add-cell-table': function(event){
+		let value = $(event.target).val();
+		Session.set('add-cell-table',value);
 		return;
 	},
 	'keyup .MinutesPP_one': function(event){
@@ -317,7 +331,11 @@ Template.PartMaintenance.events({
 		Session.set('cell-cellname-edit',value);
 		return;
 	},
-
+	'keyup .cell-celltable-edit': function(event){
+		let value = $(event.target).val();
+		Session.set('cell-table-edit',value);
+		return;
+	},
 	//for part edit
 	'keyup .XMLname-edit': function(event){
 		let value = $(event.target).val();
@@ -565,8 +583,18 @@ Template.PartMaintenance.helpers({
 			return false;
 		}else{
 			let cellId = Session.get('inputCell_id');
-
 			let data = Cell.find({cellId:cellId}).fetch();
+
+			return data;
+		}
+	},
+	selectedcells: function(){
+		if (Session.get('toggle-maintenance') == 0 || Session.get('toggle-maintenance') == 2){
+			return false;
+		}else{
+			// let cellId = Session.get('inputCell_id');
+			let _id = Session.get('toggle-maintenance-cell-edit-id');
+			let data = Cell.find({_id:_id}).fetch();
 
 			return data;
 		}

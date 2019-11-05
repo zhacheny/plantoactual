@@ -220,10 +220,11 @@ Meteor.methods({
 					employIndicator:employIndicator,
 					initial:initial,
 				    });
-	      } else {
-	        // Session.set('part-insert-error','Rejected. This item already exists.');
-	        throw new Meteor.Error('bad', 'Rejected. This Operator already exists.');
-	      }
+	      } 
+	      // else {
+	      //   // Session.set('part-insert-error','Rejected. This item already exists.');
+	      //   throw new Meteor.Error('bad', 'Rejected. This Operator already exists.');
+	      // }
 	    }
 	  },
 	parseUpdate_cell(data, cell){
@@ -357,10 +358,11 @@ Meteor.methods({
 				      // owner: Meteor.userId(),
 				      // username: Meteor.user().username,
 				    });
-	      } else {
-	        // Session.set('part-insert-error','Rejected. This item already exists.');
-	        throw new Meteor.Error('bad', 'Rejected. This cell already exists.');
-	      }
+	      } 
+	      // else {
+	      //   // Session.set('part-insert-error','Rejected. This item already exists.');
+	      //   throw new Meteor.Error('bad', 'Rejected. This cell already exists.');
+	      // }
 	    }
 	  },
 	operatordelete(Id){
@@ -372,29 +374,88 @@ Meteor.methods({
 	celldelete(Id){
 		Cell.remove({_id: Id});
 	},
-	insertcell(buildingnumber, cellId, cellname){
+	insertcell(buildingnumber, cellId, cellname, celltable){
 		let exists_cell = Cell.findOne( { cellId: cellId } );
 		if ( !exists_cell ) {
-			Cell.insert({
-				buildingnumber:buildingnumber,
-				cellname:cellname,
-				cellId: cellId
-			});
+			if(celltable == null){
+				Cell.insert({
+					buildingnumber:buildingnumber,
+					cellname:cellname,
+					cellId: cellId
+				});
+			}else{
+				Cell.insert({
+					buildingnumber:buildingnumber,
+					cellname:cellname,
+					cellId: cellId,
+					celltable:celltable
+				});
+			}
+			
 		}else{
-			throw new Meteor.Error('bad', 'Rejected. This cell already exists.');
+			if(celltable == null){
+				throw new Meteor.Error('bad', 'Rejected. This cell already exists.');
+			}else{
+				Cell.insert({
+					buildingnumber:buildingnumber,
+					cellname:cellname,
+					cellId: cellId,
+					celltable:celltable
+				});
+			}	
 		}
 	},
-	updatecell(buildingnumber, cellId, cellname){
-		let exists_cell = Cell.findOne( { cellId: cellId } );
+	updatecell(buildingnumber, _id, cellname, celltable, cellId){
+		let exists_cell = Cell.findOne( { _id: _id } );
 		if ( !exists_cell ) {
 			throw new Meteor.Error('bad', 'Rejected. This cell NOT exists.');
 		}else{
-		    Cell.update({cellId:cellId}, {
-		      $set: { 
-		      		buildingnumber:buildingnumber,
-					cellname:cellname,
-		       },
-		    });
+			if(celltable != null){
+
+				Cell.update({_id: _id}, {
+			      $set: { 
+			      		celltable:celltable,
+			       },
+			    });
+			}
+			if(buildingnumber != null){
+				Cell.update({_id: _id}, {
+			      $set: { 
+			      		buildingnumber:buildingnumber,
+			       },
+			    });
+			}
+			if(cellname != null){
+				Cell.update({_id: _id}, {
+			      $set: { 
+			      		cellname:cellname,
+			       },
+			    });
+			}
+			if(cellId != null){
+				Cell.update({_id: _id}, {
+			      $set: { 
+			      		cellId: cellId,
+			       },
+			    });
+			}
+			// if(celltable == null){
+			// 	Cell.update({_id: _id}, {
+			//       $set: { 
+			//       		buildingnumber:buildingnumber,
+			// 			cellname:cellname,
+			//        },
+			//     });
+			// }else{
+			// 	Cell.update({_id: _id}, {
+			//       $set: { 
+			//       		buildingnumber:buildingnumber,
+			// 			cellname:cellname,
+			// 			celltable:celltable,
+			//        },
+			//     });
+			// }
+		    
 		}
 	},
 	insertpartnumber(part,cell,XMLname,ProductCode,MinutesPP_one,
@@ -430,30 +491,102 @@ Meteor.methods({
 	        throw new Meteor.Error('bad', 'Rejected. This item already exists.');
 	      }
 	},
-	client_server_record(curtaskid, startime, cell, plannedworktime){
-		let exists = Taskrecord.findOne( { cell: cell } );
-		if( !exists ){
-			Taskrecord.insert({
-					cell: cell,
-					curtaskid: curtaskid,
-					startime:startime,
-					plannedworktime:plannedworktime
-			});
+	client_server_record_addflag(flag, cell, celltable){
+		if(celltable != 'null'){
+			Taskrecord.update({ cell: cell, celltable:celltable }, {
+		      $set: { 
+					addon_flag:flag },
+		    });
 		}else{
-			if(curtaskid == null){
-				Taskrecord.update({cell: cell}, {
-			      $set: { 
-						startime:startime, },
-			    });
-			}else if( startime == null ){
-				Taskrecord.update({cell: cell}, {
-			      $set: { 
-			      		plannedworktime:plannedworktime,
-						curtaskid: curtaskid, },
-			    });
-			}
-
+			Taskrecord.update({ cell: cell }, {
+		      $set: { 
+					addon_flag:flag },
+		    });
 		}
+
+	},
+	client_server_record(curtaskid, startime, cell, plannedworktime, celltable){
+		let exists = Taskrecord.findOne( { cell: cell } );
+		if(celltable != 'null'){
+			exists = Taskrecord.findOne( { cell: cell, celltable:celltable } );
+			if( !exists ){
+				if(curtaskid == null){
+
+					Taskrecord.insert({
+							cell: cell,
+							startime:startime,
+							celltable:celltable,
+					});
+				}else{
+
+					Taskrecord.insert({
+							cell: cell,
+							curtaskid: curtaskid,
+							startime:startime,
+							plannedworktime:plannedworktime,
+							celltable:celltable,
+					});
+				}
+
+			}else{
+				if(curtaskid != null){
+					Taskrecord.update({ cell: cell, celltable:celltable }, {
+				      $set: { 
+							curtaskid:curtaskid,
+							 },
+				    });
+				}
+				if( startime != null ){
+					Taskrecord.update({ cell: cell, celltable:celltable }, {
+				      $set: { 
+							startime: startime,
+							 },
+				    });
+				}
+				if( plannedworktime != null ){
+					Taskrecord.update({ cell: cell, celltable:celltable }, {
+				      $set: { 
+				      		plannedworktime:plannedworktime,
+							 },
+				    });
+				}
+
+			}
+		}else {
+			if( !exists ){
+				Taskrecord.insert({
+						cell: cell,
+						curtaskid: curtaskid,
+						startime:startime,
+						plannedworktime:plannedworktime,
+				});
+			}else{
+				// console.log(curtaskid, startime, plannedworktime);
+				if(curtaskid != null){
+					Taskrecord.update({ cell: cell }, {
+				      $set: { 
+							curtaskid:curtaskid,
+							 },
+				    });
+				}
+				if( startime != null ){
+					Taskrecord.update({ cell: cell }, {
+				      $set: { 
+							startime: startime,
+							 },
+				    });
+				}
+				if( plannedworktime != null ){
+					Taskrecord.update({ cell: cell }, {
+				      $set: { 
+				      		plannedworktime:plannedworktime,
+							 },
+				    });
+				}
+
+			}
+		}
+
 
 	},
 	deletetask(Id){
@@ -565,7 +698,7 @@ Meteor.methods({
 		}
 	},
 	inserttask(id, timespan, partnumber, worktime, plantoactual, actual, reason,
-		 status,createdAt,comment,operatorID,earnedtime,buildingnumber, cell,flagged) {
+		 status,createdAt,comment,operatorID,earnedtime,buildingnumber, cell,flagged,celltable) {
 		Tasks.insert({
 			id: id,
 		      timespan: timespan,
@@ -582,6 +715,7 @@ Meteor.methods({
 		      buildingnumber:buildingnumber,
 		      cell: cell,
 		      flagged,flagged,
+		      celltable:celltable,
 		      // owner: Meteor.userId(),
 		      // username: Meteor.user().username,
 		    });

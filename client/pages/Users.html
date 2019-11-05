@@ -11,37 +11,41 @@
     			<th>Admin</th>
                 <th>Role</th>
     		</tr>
-    	{{#each users}}
-    		<tr>
-    			<td class="user_id">{{_id}}</td>
-                <td>{{username}}</td>
-    			<td>{{userEmail}}</td>
-	    		<td>{{profile.firstName}}</td>
-    			<td>{{dateFormat}}</td>
-    			{{#if isAdmin '==' 'admin'}}
-    			<td>{{isAdmin}}</td>
-                <td>{{roles}}</td>
-    			{{else}}
-    				{{#if isOperator '==' 'operator'}}
-    				<td>{{isOperator}}</td>
-    				{{/if}}
-    			{{/if}}
-					{{#if currentEdit}}
-	    				<div class="user-edit">
-	    					<i class="fa fa-close close-edit-mode"></i>
-	    					<h3>Edit User</h3>
-	    					{{#if isAdmin '==' 'admin'}}
-	    					<button class="toggle-admin">Remove Admin</button>
-	    					{{else}}
-	    					<button class="toggle-admin">Make Admin</button>
-	<!-- 	    					{{#if isOperator '==' 'operator'}}
-								<button class="toggle-changerole">Make Admin</button>
-								{{/if}} -->
-	    					{{/if}}
-	    				</div>
-					{{/if}}
-    		</tr>
-    	{{/each}}
+        {{#if Template.subscriptionsReady}}
+        	{{#each users}}
+        		<tr>
+        			<td class="user_id">{{_id}}</td>
+                    <td>{{username}}</td>
+        			<td>{{userEmail}}</td>
+    	    		<td>{{profile.firstName}}</td>
+        			<td>{{dateFormat}}</td>
+        			{{#if isAdmin '==' 'admin'}}
+        			<td>{{isAdmin}}</td>
+                    <td>{{roles}}</td>
+        			{{else}}
+        				{{#if isOperator '==' 'operator'}}
+        				<td>{{isOperator}}</td>
+        				{{/if}}
+        			{{/if}}
+    					{{#if currentEdit}}
+    	    				<div class="user-edit">
+    	    					<i class="fa fa-close close-edit-mode"></i>
+    	    					<h3>Edit User</h3>
+    	    					{{#if isAdmin '==' 'admin'}}
+    	    					<button class="toggle-admin">Remove Admin</button>
+    	    					{{else}}
+    	    					<button class="toggle-admin">Make Admin</button>
+    	<!-- 	    					{{#if isOperator '==' 'operator'}}
+    								<button class="toggle-changerole">Make Admin</button>
+    								{{/if}} -->
+    	    					{{/if}}
+    	    				</div>
+    					{{/if}}
+        		</tr>
+        	{{/each}}
+        {{else}}
+            {{> loader}}
+        {{/if}}
     	</table>
 
 	{{else}}
