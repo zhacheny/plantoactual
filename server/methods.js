@@ -358,7 +358,22 @@ Meteor.methods({
 				      // owner: Meteor.userId(),
 				      // username: Meteor.user().username,
 				    });
-	      } 
+	      } else{
+				Partnumber.update({ part:part }, {
+			      $set: { 
+					      cell:cell,
+					      buildingnumber:buildingnumber,
+					      XMLname:XMLname,
+					      ProductCode:ProductCode,
+					      MinutesPP_one:MinutesPP_one,
+					      MinutesPP_two:MinutesPP_two,
+					      MinutesPP_three:MinutesPP_three,
+					      PiecesPH_one:PiecesPH_one,
+					      PiecesPH_two:PiecesPH_two,
+					      PiecesPH_three:PiecesPH_three,
+					    },
+			    });
+	      }
 	      // else {
 	      //   // Session.set('part-insert-error','Rejected. This item already exists.');
 	      //   throw new Meteor.Error('bad', 'Rejected. This cell already exists.');
@@ -491,17 +506,32 @@ Meteor.methods({
 	        throw new Meteor.Error('bad', 'Rejected. This item already exists.');
 	      }
 	},
-	client_server_record_addflag(flag, cell, celltable){
+	client_server_record_addflag(type,flag, cell, celltable){
 		if(celltable != 'null'){
-			Taskrecord.update({ cell: cell, celltable:celltable }, {
-		      $set: { 
-					addon_flag:flag },
-		    });
+			if(type == 'supervisor'){
+				Taskrecord.update({ cell: cell, celltable:celltable }, {
+			      $set: { 
+						addon_flag_supervisor:flag },
+			    });
+			}else{
+				Taskrecord.update({ cell: cell, celltable:celltable }, {
+			      $set: { 
+						addon_flag_quality:flag },
+			    });
+			}
+			
 		}else{
-			Taskrecord.update({ cell: cell }, {
-		      $set: { 
-					addon_flag:flag },
-		    });
+			if(type == 'supervisor'){
+				Taskrecord.update({ cell: cell }, {
+			      $set: { 
+						addon_flag_supervisor:flag },
+			    });
+			}else{
+				Taskrecord.update({ cell: cell }, {
+			      $set: { 
+						addon_flag_quality:flag },
+			    });
+			}
 		}
 
 	},

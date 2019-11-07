@@ -1,0 +1,2 @@
+[WARN] | 2:50 | 'cell add:  | Cell Id: 5464' | username: "HR_test" | User Id: 5ugvJ8DvsMnsu3Kd6
+[WARN] | 2:55 | 'cell delete | backup:{"_id":"MzCAi9oH3hZAxKuCg","buildingnumber":"2","cellname":"111","cellId":"5464","celltable":"table 2"}' | username: "HR_test" | User Id: 5ugvJ8DvsMnsu3Kd6

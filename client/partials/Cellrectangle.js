@@ -33,7 +33,7 @@ Template.Cellrectangle.events({
 		// let value = $(evt.currentTarget).context.innerHTML;
 		let cell = $(events.currentTarget).data('cell');
 		let table = $(events.currentTarget).data('table');
-		console.log(cell, table);
+		// console.log(cell, table);
 		Session.set('notclicked',false);
 		Session.set('clickedcell',cell.toString());
 		Session.set('clickedcell-table',table);
@@ -50,14 +50,23 @@ Template.Cellrectangle.helpers({
 		return;
 	}
 
-	let flag = object.addon_flag;
-	if( flag != null){
-		return flag == true ? 'border: 4px solid black' : null;
+	let flag_supervisor = object.addon_flag_supervisor;
+	let flag_quality = object.addon_flag_quality;
+	let res = '';
+	if( flag_supervisor != null){
+		res = flag_supervisor == true ? 'border: 4px solid black;' : '';
 	}else{
-		return;
+		res = ''; 
 	}
-
+	if( flag_quality != null){
+		res = flag_quality == true ? res + 'outline: 5px dotted black;' : res + '';
+	}else{
+		res = res + ''; 
+	}
+	console.log(res);
+	return res;
 	},
+	
 	total_earned_hours:function(){
 		let tasks_object = Tasks.find({}).fetch();
 		let res = getearnedtimesum(tasks_object)

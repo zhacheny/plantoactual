@@ -26,11 +26,11 @@ var restend5 = moment('22:30:00',format);
 var restend6 = moment('23:30:00',format);
 // var restend7 = moment('24:30:00',format);
 var shift_1_start = moment('05:59:00',format);
-var shift_1_start_1 = moment('05:59:58',format);
+var shift_1_start_1 = moment('05:59:57',format);
 var shift_1_start_2 = moment('05:59:59',format);
 var shift_1_end = moment('14:59:59',format);
 var shift_2_start = moment('15:00:00',format);
-var shift_2_start_1 = moment('14:59:58',format);
+var shift_2_start_1 = moment('14:59:57',format);
 var shift_2_start_2 = moment('14:59:59',format);
 var shift_2_end = moment('23:59:59',format);
 
@@ -104,6 +104,7 @@ function updatechangeover(isfinish,currentTime) {
 		 plan: plantoactual_auto_generate},
 	});
 }
+
 function displayrow_algo(currentTime){
 	// var currentTime = time.get();
 		// var currentTime = Session.get('time');
@@ -231,6 +232,7 @@ function inserttaskAschangover(iscomplete,currentTime){
 
 Template.AddTasks.onCreated(function(){
 	Session.set('addtaskcountsum',0);
+	Session.set('addtaskcountsum_server',0);
 	window.name = "parent";
 	// Template.instance().initializing = new ReactiveVar( false );
 	let currentTime = Session.get('time');
@@ -528,10 +530,10 @@ Template.AddTasks.helpers({
 			// alert('shift 1 start!');
 		}else if (timeformat.isBetween(shift_2_start_1, shift_2_start_2)) {
 				// Meteor.call('initializeClientTaskworktime',moment('7:29:59',format),false);
-				// console.log(111);
+				console.log('operator_Signout_All',111);
 				//remove all signed in operators
 			Meteor.call( 'operator_Signout_All', JSON.parse(Cookie.get('operatorarray'))[1], ( error, response ) => {
-				console.log('operator_Signout_All',);
+				console.log('operator_Signout_All',222);
 		      if ( error ) {
 		        Bert.alert( error.reason, 'danger', 'growl-top-right' );
 		      } else {
@@ -815,7 +817,7 @@ Template.AddTasks.helpers({
 	getlastedtasksum:function(){
 		let celltable = Cookie.get('celltable');
 		let clienttask = ClientTaskworktime.find().fetch();
-  		let servertask = celltable == null ? Tasks.find({cell:Cookie.get('cell')}, { sort: { id: 1 }}).fetch()
+  		let servertask = celltable == 'null' ? Tasks.find({cell:Cookie.get('cell')}, { sort: { id: 1 }}).fetch()
 		: Tasks.find({celltable: celltable, cell:Cookie.get('cell')}, { sort: { id: 1 }}).fetch();
 
 		let last_server_index = absolute_displayindex;
@@ -866,7 +868,7 @@ Template.AddTasks.helpers({
   	mixedtask:function(){
   		let celltable = Cookie.get('celltable');
   		let clienttask = ClientTaskworktime.find().fetch();
-  		let servertask = celltable == null ? Tasks.find({cell:Cookie.get('cell'),status:{ $ne: 'changeover'}}, { sort: { id: 1 }}).fetch()
+  		let servertask = celltable == 'null' ? Tasks.find({cell:Cookie.get('cell'),status:{ $ne: 'changeover'}}, { sort: { id: 1 }}).fetch()
 		: Tasks.find({celltable: celltable, cell:Cookie.get('cell'),status:{ $ne: 'changeover'}}, { sort: { id: 1 }}).fetch();
 		let last_server_index = absolute_displayindex;	
   		if(servertask.length == 0){
