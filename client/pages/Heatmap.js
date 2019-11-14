@@ -7,9 +7,14 @@ function getearnedtimesum(tasks_object){
 	let sum = 0;
 	for (var i = tasks_object.length - 1; i >= 0; i--) {
 		if(tasks_object[i].status != 'changeover'){
-			sum += parseFloat(tasks_object[i].earnedtime);
+			let earnedtime = tasks_object[i].earnedtime;
+			if(earnedtime != null){
+				sum += parseFloat(tasks_object[i].earnedtime);
+			}
+			
 		}
 	}
+	// console.log(sum);
 	return sum;
 }
 
@@ -18,8 +23,11 @@ function gettotaleff(tasks_object){
 	let sum_worktime = 0;
 	for (var i = tasks_object.length - 1; i >= 0; i--) {
 		if(tasks_object[i].status != 'changeover'){
-			sum_earnetime += parseFloat(tasks_object[i].earnedtime);
-			sum_worktime += parseFloat(tasks_object[i].worktime);
+			let earnedtime = tasks_object[i].earnedtime;
+			if(earnedtime != null){
+				sum_earnetime += parseFloat(tasks_object[i].earnedtime);
+				sum_worktime += parseFloat(tasks_object[i].worktime);
+			}
 		}
 
 	}
@@ -162,7 +170,7 @@ Template.Heatmap.onCreated(function(){
 	tomorrow.setHours(23,59,5,999)
 	// console.log(today, tomorrow);
 	this.autorun(() => {
-		let building = Session.get('building');
+		let building = Session.get('building') == null ? '2':Session.get('building');
 		this.subscribe('task',today,tomorrow,building);
 	})
 });

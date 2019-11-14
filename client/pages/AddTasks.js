@@ -30,8 +30,10 @@ var shift_1_start_1 = moment('05:59:57',format);
 var shift_1_start_2 = moment('05:59:59',format);
 var shift_1_end = moment('14:59:59',format);
 var shift_2_start = moment('15:00:00',format);
-var shift_2_start_1 = moment('14:59:57',format);
+var shift_2_start_1 = moment('14:59:56',format);
 var shift_2_start_2 = moment('14:59:59',format);
+// var shift_2_start_1 = moment('16:11:56',format);
+// var shift_2_start_2 = moment('16:11:59',format);
 var shift_2_end = moment('23:59:59',format);
 
 var timespan1 = ['6:00-7:00 am','7:00-8:00 am','8:00-9:00 am','9:00-10:00 am','10:00-11:00 am','11:00-12:00 am','12:30-1:30 pm','1:30-2:30 pm'];
@@ -46,6 +48,38 @@ var displayindex = 0;
 var getlastedtasksum_hasruned = false;
 var server_taskrecord_firstrun = true;
 
+function partnumber_change(partnumber, object){
+		Session.set('partnumber',partnumber);
+		var operatorcount = Cookie.get('operatorcount');
+		// console.log(partnumber);
+		// var value = Plan.findOne({worktime:this.worktime,partnumber:partnumber}).value;
+		var value = 0;
+		if (partnumber == 'Part Not Available'){
+			Session.set('earnedTimePPiecePOpe',value);
+		}else{
+			var MinutesPP_one = Partnumber.findOne({cell:Cookie.get('cell'), part:partnumber}).MinutesPP_one;
+			value = (MinutesPP_one == '0' || MinutesPP_one == '0.0') ? 11.1 : MinutesPP_one;
+			// var value = 1/MinutesPP_one;
+			if (operatorcount == 2){
+				value = Partnumber.findOne({cell:Cookie.get('cell'), part:partnumber}).MinutesPP_two;
+			}else if(operatorcount == 3){
+				value = Partnumber.findOne({cell:Cookie.get('cell'), part:partnumber}).MinutesPP_three;
+			}
+			Session.set('earnedTimePPiecePOpe',value);
+			value = value == ''? 0: object.worktime/value;
+			//returns the largest integer less than the value
+			value = Math.floor(value);
+			// value = Math.round( value * 10 ) / 10;
+		}
+		
+		
+		console.log('plan #', value);
+		Session.set('plannumber_value',value);
+		//for client
+	    ClientTaskworktime.update(object._id, {
+	      $set: { plan: value, partnumber: partnumber },
+	    });
+}
 function updatechangeover(isfinish,currentTime) {
 
 	// var lastobject = ClientTaskworktime.findOne({id:curId});
@@ -184,11 +218,11 @@ function displayrow_algo(currentTime){
 
 function inserttaskAschangover(iscomplete,currentTime){
 	var tempobject = Session.get('togglecomp');
-	console.log('count3',count);
+	// console.log('count3',count);
 	if(iscomplete){
 		var curId = Session.get('tempchangeoverid') + count;
 		var changeoverDuration = ClientTaskworktime.findOne({id:curId}).worktime;
-		console.log(changeoverDuration);
+		console.log('changeoverDuration', changeoverDuration);
 	}else{
 		var starttime = Session.get('changeover-starttime');
 
@@ -229,10 +263,14 @@ function inserttaskAschangover(iscomplete,currentTime){
 	//  status,createdAt,comment,operatorIDarray,earnedtime,buildingnumber, cell];
 
 }
+// Tracker.afterFlush(function () {
+//   var $someItem = $('add-task');
+
+//   $(window).scrollTop($someItem.offset().top);
+// });
 
 Template.AddTasks.onCreated(function(){
 	Session.set('addtaskcountsum',0);
-	Session.set('addtaskcountsum_server',0);
 	window.name = "parent";
 	// Template.instance().initializing = new ReactiveVar( false );
 	let currentTime = Session.get('time');
@@ -412,7 +450,8 @@ Template.AddTasks.helpers({
 		return Session.get('togglecomp') != null ? Session.get('togglecomp').partnumber:'';
 	},
 	recordedplantoactual: function(){
-		return Session.get('togglecomp') != null ? Session.get('togglecomp').plan:'';
+		return Session.get('plannumber_value');
+		// return Session.get('togglecomp') != null ? Session.get('togglecomp').plan:'';
 	},
 	recordedactual: function(){
 		return Session.get('togglecomp') != null ? Session.get('togglecomp').actual:'';
@@ -449,6 +488,9 @@ Template.AddTasks.helpers({
 	admin: function(){
 		return Roles.userIsInRole(Meteor.userId(), 'admin');
 	},
+	hideHint: function() {
+    	return Session.get("hideHint_addtask") == null ? true : Session.get("hideHint_addtask"); 
+  	},
 	pre_task:function(){
 		let cellId = Cookie.get('cell');
 		let pre_task_object = Tasks.find({cell:cellId}).fetch();
@@ -502,7 +544,6 @@ Template.AddTasks.helpers({
 	gettaskdata: function(){
 		// var currentTime = time.get();
 		var currentTime = Session.get('time');
-
 		// var hour = moment(currentTime).format('HH');
 		// var min = moment(currentTime).format('mm');
 		// var sec = moment(timeformat).format('ss');
@@ -524,9 +565,12 @@ Template.AddTasks.helpers({
 				var operatorinitial = [['null','null','null','null'],['null','null','null','null']];
 				Cookie.set('operatorarray',JSON.stringify(operatorinitial));
 				Cookie.set('operatorcount', 0);
+				Session.set('addtaskcountsum_server',0);
+				document.location.reload(true);
 		      }
 		    });
-			document.location.reload(true);
+		    
+			
 			// alert('shift 1 start!');
 		}else if (timeformat.isBetween(shift_2_start_1, shift_2_start_2)) {
 				// Meteor.call('initializeClientTaskworktime',moment('7:29:59',format),false);
@@ -541,9 +585,11 @@ Template.AddTasks.helpers({
 				var operatorinitial = [['null','null','null','null'],['null','null','null','null']];
 				Cookie.set('operatorarray',JSON.stringify(operatorinitial));
 				Cookie.set('operatorcount', 0);
+				Session.set('addtaskcountsum_server',0);
+				document.location.reload(true);
 		      }
 		    });
-			document.location.reload(true);
+		    
 			// alert('shift 2 start!');
 		}
 
@@ -552,7 +598,7 @@ Template.AddTasks.helpers({
 
 			var timearray = Session.get('test-mode-time');``
 			if (min == parseInt(timearray[1]) && sec == 59){
-				 document.title = '[New Message]';
+				document.title = '[New Message]';
 
 				if(haverun){
 					return;
@@ -569,6 +615,7 @@ Template.AddTasks.helpers({
 				Session.set('changeover-showup',false);
 				Session.set('pretime',null);
 				Session.set('sumchangeoverDuration',null);
+				$(window).scrollTop(0);
 				haverun = true;
 			}else if (min ==parseInt(timearray[1])+1 && sec == 59){
 				document.title = '[New Message]';
@@ -586,6 +633,7 @@ Template.AddTasks.helpers({
 				Session.set('changeover-showup',false);
 				Session.set('pretime',null);
 				Session.set('sumchangeoverDuration',null);
+				$(window).scrollTop(0);
 				haverun = true;
 			}else if (min == parseInt(timearray[1])+2 && sec == 59){
 				document.title = '[New Message]';
@@ -603,6 +651,7 @@ Template.AddTasks.helpers({
 				Session.set('changeover-showup',false);
 				Session.set('pretime',null);
 				Session.set('sumchangeoverDuration',null);
+				$(window).scrollTop(0);
 				haverun = true;
 			}
 		}else{
@@ -622,6 +671,7 @@ Template.AddTasks.helpers({
 					Session.set('changeover-showup',false);
 					Session.set('pretime',null);
 					Session.set('sumchangeoverDuration',null);
+					$(window).scrollTop(0);
 					haverun = true;
 				}
 			} else if (timeformat.isBetween(reststart2, restend2)){
@@ -640,6 +690,7 @@ Template.AddTasks.helpers({
 					Session.set('changeover-showup',false);
 					Session.set('pretime',null);
 					Session.set('sumchangeoverDuration',null);
+					$(window).scrollTop(0);
 					haverun = true;
 				}
 			}else if (timeformat.isBetween(reststart3, restend3)){
@@ -658,6 +709,7 @@ Template.AddTasks.helpers({
 					Session.set('changeover-showup',false);
 					Session.set('pretime',null);
 					Session.set('sumchangeoverDuration',null);
+					$(window).scrollTop(0);
 					haverun = true;
 				}
 			}else if (timeformat.isBetween(reststart4, restend4)){
@@ -676,6 +728,7 @@ Template.AddTasks.helpers({
 					Session.set('changeover-showup',false);
 					Session.set('pretime',null);
 					Session.set('sumchangeoverDuration',null);
+					$(window).scrollTop(0);
 					haverun = true;
 				}
 			}else if (timeformat.isBetween(reststart5, restend5)){
@@ -694,6 +747,7 @@ Template.AddTasks.helpers({
 					Session.set('changeover-showup',false);
 					Session.set('pretime',null);
 					Session.set('sumchangeoverDuration',null);
+					$(window).scrollTop(0);
 					haverun = true;
 				}
 			}else if (timeformat.isBetween(reststart6, restend6)){
@@ -713,6 +767,7 @@ Template.AddTasks.helpers({
 					Session.set('changeover-showup',false);
 					Session.set('pretime',null);
 					Session.set('sumchangeoverDuration',null);
+					$(window).scrollTop(0);
 					haverun = true;
 				}
 			}else{
@@ -732,6 +787,7 @@ Template.AddTasks.helpers({
 					Session.set('changeover-showup',false);
 					Session.set('pretime',null);
 					Session.set('sumchangeoverDuration',null);
+					$(window).scrollTop(0);
 					haverun = true;
 				}else if(hour >= 15 && hour < 21 && min == 59 && sec == 59){
 					document.title = '[New Message]';
@@ -749,6 +805,7 @@ Template.AddTasks.helpers({
 					Session.set('changeover-showup',false);
 					Session.set('pretime',null);
 					Session.set('sumchangeoverDuration',null);
+					$(window).scrollTop(0);
 					haverun = true;
 				}
 
@@ -763,17 +820,6 @@ Template.AddTasks.helpers({
 			return false;
 		}
 	},
-	// isDisabled: function(index){
-	// 	var taskfinished = Session.get('taskfinished');
-	// 	// taskfinished = 0;
-	// 	if(index >= taskfinished){
-	// 		return true;
-	// 	}
-	// 	return false;
-	// },
-	// displaydisabled: function(){
-	// 	return 
-	// },
 
 	displayRow: function() {
 		var currentTime = Session.get('time');
@@ -1023,36 +1069,14 @@ Template.AddTasks.events({
 
 	},
 	'change .partnumberchange':function(evt){
-		var partnumber = $(evt.target).val();
-		Session.set('partnumber',partnumber);
-		var operatorcount = Cookie.get('operatorcount');
-		// console.log(partnumber);
-		// var value = Plan.findOne({worktime:this.worktime,partnumber:partnumber}).value;
-		var value = 0;
-		if (partnumber == 'Part Not Available'){
-			Session.set('earnedTimePPiecePOpe',value);
+		let partnumber = $(evt.target).val();
+		let flag = $(evt.currentTarget).data('id');
+		if( flag == 'pop-box'){
+			partnumber_change(partnumber, Session.get('togglecomp'));
 		}else{
-			var MinutesPP_one = Partnumber.findOne({cell:Cookie.get('cell'), part:partnumber}).MinutesPP_one;
-			value = (MinutesPP_one == '0' || MinutesPP_one == '0.0') ? 11.1 : MinutesPP_one;
-			// var value = 1/MinutesPP_one;
-			if (operatorcount == 2){
-				value = Partnumber.findOne({cell:Cookie.get('cell'), part:partnumber}).MinutesPP_two;
-			}else if(operatorcount == 3){
-				value = Partnumber.findOne({cell:Cookie.get('cell'), part:partnumber}).MinutesPP_three;
-			}
-			Session.set('earnedTimePPiecePOpe',value);
-			value = value == ''? 0: this.worktime/value;
-			//returns the largest integer less than the value
-			value = Math.floor(value);
-			// value = Math.round( value * 10 ) / 10;
+			partnumber_change(partnumber, this);
 		}
 		
-		var index = $(evt.currentTarget).data('id');
-		console.log(value);
-		//for client
-	    ClientTaskworktime.update(this, {
-	      $set: { plan: value, partnumber: partnumber },
-	    });
 	},
 	'keypress .calculatestatus': function(event){
 		let content = $(event.target).val();
@@ -1112,6 +1136,8 @@ Template.AddTasks.events({
 		return false;
 	},
 	'click .toggle-jobComplete': function(){
+		var $someItem = document.getElementById('commentsinput');
+  		$(window).scrollTop(200);
 		Session.set('changeover-starttime',Session.get('time'));
 		let cur_taks_index = absolute_displayindex;
 		let Taskrecord_object =  Taskrecord.findOne({cell:Cookie.get('cell')});
@@ -1187,7 +1213,7 @@ Template.AddTasks.events({
 		
 		var realtimeused = timeused;
 
-		console.log([timeused,sumchangeoverDuration]);
+		console.log('production time algo:', [timeused,sumchangeoverDuration]);
 		realtimeused = Math.floor((realtimeused/60)*plannedworktime);
 		
 		var timechanged = worktime-realtimeused;
@@ -1214,6 +1240,7 @@ Template.AddTasks.events({
 	    ClientTaskworktime.update({id:this.id}, {
 	      $set: { worktime: realtimeused, plan:plannumber },
 	    });
+	    Session.set('plannumber_value',plannumber);
 		// this.plan = this.plan * (sec/60);
 		var info = [true,ClientTaskworktime.findOne({id:this.id}),timechanged];
 		Session.set('taskIsComplete',info);
@@ -1260,7 +1287,7 @@ Template.AddTasks.events({
 		let celltable = Cookie.get('celltable');
 		//check if there no value set for multiple operator
 		var earnedtime = Session.get('earnedTimePPiecePOpe') == 0? worktime : Session.get('earnedTimePPiecePOpe') * actual;
-		console.log([Session.get('earnedTimePPiecePOpe'),actual,earnedtime])
+		console.log('Production submit',[Session.get('earnedTimePPiecePOpe'),actual,earnedtime])
     	
 		//check whether the last task process is incompelete
 		// let Taskrecord_object = Taskrecord.findOne({cell:Cookie.get('cell')});
@@ -1280,7 +1307,7 @@ Template.AddTasks.events({
 		// 	server_taskrecord_firstrun = false;
 		// }
 
-		console.log('count0',count);
+		// console.log('count0',count);
     	var info = Session.get('taskIsComplete');
     	if(info != null){
 	    	var trigger = info[0];
@@ -1328,7 +1355,6 @@ Template.AddTasks.events({
 
 
     	}else{
-    		// console.log(info[1].id);
 			ClientTaskworktime.remove({id:Session.get('togglecomp').id})
     		Meteor.call('inserttask', id, timespan, partnumber, worktime, plan, actual,
     		 reason, status,currentTime,comment,operatorIDarray,earnedtime,buildingnumber, cell, flagged, celltable);
@@ -1345,7 +1371,7 @@ Template.AddTasks.events({
 		var resetinputfiled = document.getElementById('commentsinput').value ="";
 		var resetselect = document.getElementById('popupselect').style.background= "rgba(099,099,099,.2)";
 		Session.set('toggle-hour-comp',null)
-		console.log('count2',count);
+		// console.log('count2',count);
 		return true;
 		
 	},
@@ -1452,5 +1478,12 @@ Template.AddTasks.events({
           }
         });
 	},
+ 	'click .hide-hint-button'(event, instance) {
+ 		if(Session.get("hideHint_addtask") == null){
+ 			Session.set("hideHint_addtask", false);
+ 		}else{
+ 			Session.set("hideHint_addtask", (Session.get("hideHint_addtask")) ? false : true);
+ 		} 
+    
+  	}
 });
-

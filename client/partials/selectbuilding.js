@@ -26,7 +26,7 @@ Template.selectbuilding.helpers({
 		}
 	},
 	selectbuilding:function(selected,type){
-		console.log(selected);
+		// console.log(selected);
 		if(type == 'add_tasks' && selected != ''){
 			return true;
 		}else{

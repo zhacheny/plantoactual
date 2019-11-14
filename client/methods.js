@@ -5,10 +5,10 @@ import moment from 'moment';
 //methods on client side
 var index = ['a1','a2','a3','a4','a5','a6'];
 var format = 'hh:mm:ss';
-var shift_1_start = moment('05:50:00',format);
-var shift_1_end = moment('14:59:00',format);
+var shift_1_start = moment('05:59:00',format);
+var shift_1_end = moment('14:59:59',format);
 var shift_2_start = moment('15:00:00',format);
-var shift_2_end = moment('23:29:00',format);
+var shift_2_end = moment('23:59:59',format);
 
 Meteor.methods({
 	initializeClientTaskworktime(currentTime,test_mode_flag){

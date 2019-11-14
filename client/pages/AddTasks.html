@@ -2,7 +2,20 @@
         <!-- for operator-->
         <!-- <h1>Not Authorized</h1> -->
             <!-- <button class="settesttime">testtime</button> -->
+    <div class="hint-box-container {{#if hideHint}}hidden{{/if}}">
+        <div class="hide-hint-button"></div>
+        <div class="hint-box">
+          <h2>Hint</h2>
+          <div>If you have any issues using this page please download user manual <a href="/User Manual/HxH Tracking System - User-Manual.pptx" download target="_blank">Here</a></div>
+        </div>
+      </div>
     {{> clock}}
+<!--             <div style="width: 250px;" id="">
+            <h4>Building:</h4>{{> selectbuilding}}
+        </div>
+        <div style="width: 250px;" id="">
+            <h4>Cell:</h4>{{> selectcell}}
+        </div> -->
     <div class="{{changeover}}">
         <div class="changover-popup">
             <h3>Change Over</h3>
@@ -33,7 +46,8 @@
                     </tr>
                     <tr>
                         <td>{{recordedtimespan}}</td>
-                        <td>{{recordedpartnumber}}</td>
+                        <!-- <td>{{recordedpartnumber}}</td> -->
+                        <td style="width: 175px;" class ="partnumberchange"  data-id="pop-box">{{> selectpart selected=recordedpartnumber isCurrent="true" type="addtask"}}</td>
                         <td>{{recordedworktime}}</td>
                         <td>{{recordedplantoactual}}</td>
                         <td><input style="width: 50px;" type="text" id="popupinput" class="calculatestatus"></td>
@@ -53,12 +67,6 @@
 
         </div>
     </div>
-<!--             <div style="width: 250px;" id="">
-            <h4>Building:</h4>{{> selectbuilding}}
-        </div>
-        <div style="width: 250px;" id="">
-            <h4>Cell:</h4>{{> selectcell}}
-        </div> -->
     <table class="{{addtasks}}">
         <thead>
             <tr>
@@ -206,6 +214,7 @@
             {{> loader}}
         {{/if}}
     </table>
+
     
 </template>
 
@@ -218,8 +227,6 @@
     </a>
   </li>
 </template>
-
-
 
 <template name="roundbox">
     <div class="wrap">

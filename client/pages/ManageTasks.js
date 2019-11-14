@@ -750,9 +750,15 @@ Template.ManageTasks.events({
 		document.getElementById('app-layout').style.padding = '40px 60px';
 		document.getElementById('app-layout').style.marginLeft = '80px';
 	},
-
+ 	'click .hide-hint-button'(event, instance) {
+	    Session.set("hideHint_addtask", (Session.get("hideHint_addtask")) ? false : true);
+    
+  	}
 })
 Template.ManageTasks.helpers({
+	hideHint: function() {
+    	return Session.get("hideHint_addtask") == null ? true : Session.get("hideHint_addtask"); 
+  	},
 	checkbox_flagged_ischecked:function(){
 		return this.flagged == true ? true : false;
 		

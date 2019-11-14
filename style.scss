@@ -311,7 +311,7 @@ button {
 }
 
 table {
-    font-size: 1vw;
+    font-size: 1.1vw;
     width: 100%;
     position: relative;
     transition: all 0.4s cubic-bezier(0.68, -0.65, 0.265, 1.20);
@@ -335,7 +335,6 @@ table {
         background: $dblue;
         color: #fff;
     }
-
     &.edit-mode {
         transform: translate3d(300px, 0, 0);
     }
@@ -348,6 +347,8 @@ table {
     &.toggle-changeover {
         transform: translate3d(0, 80px, 0);
     }
+
+
  /*   thead1{
         position: relative;
          td:nth-child(2),td:nth-child(4){
@@ -364,7 +365,7 @@ table {
 */
 }@media screen and (min-width: 1200px) {
     table {
-    font-size: 14px;
+    font-size: 15px;
     }
 }
 
@@ -713,7 +714,7 @@ table {
     float:right;
     background-color: #F5F5F5;
     margin: 15px 15px;
-    padding: 20px;
+    padding: 15px;
     width: 15%;
     text-align:center;
     font-size:1.3vw;
@@ -728,12 +729,12 @@ table {
     float:left;
     margin: 15px 15px;
     //background-color: #F5F5F5;
-    padding: 20px;
-    width: 15%;
+    padding: 15px;
+    width: 18%;
     text-align:center;
     font-size:1em;
     button{
-        max-width: 130px;
+        max-width: 140px;
         max-height:110px;
     }
 }
