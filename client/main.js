@@ -14,6 +14,16 @@ function getClientTime() {
 
 if (Meteor.isClient){
 	Meteor.startup(function () {
+		window.onbeforeunload = function() {
+		// Meteor.call('client_server_record', absolute_displayindex, Session.get('time'),Cookie.get('cell'), 
+		// 	base_worktime, Cookie.get('celltable'));
+			if(Session.get('changeover-showup') == true){
+				return "Data will be lost if you leave the page, are you sure?";
+			}else{
+				return;
+			}
+		  
+		};
 		Meteor.call('initializeClientTaskworktime',getClientTime(),test_mode_flag);
 		Meteor.subscribe('anouncements');
 		Meteor.subscribe('operator');
@@ -37,6 +47,10 @@ if (Meteor.isClient){
             Session.set("time", getClientTime());
 	    }, 1000);
 
+	    setInterval(function () {
+            Session.set("time", getClientTime());
+	    }, 1000);
+
 	    if(Cookie.get('operatorcount') == 'null'){
 			Cookie.set('operatorcount', 0);
 
@@ -47,7 +61,6 @@ if (Meteor.isClient){
 	    // var operatorinitial = [['null','null','null'],['null','null','null']];
 	    // Session.set('operatorarray',operatorinitial);
 	    Session.set('tempchangeoverid',"a");
-
      // console.log("Meteor.log.file.path", Meteor.log.file.path);
 	    // Session.set('changeover-showup',false);
 		// Meteor.call('initializeClientTaskworktime');

@@ -6,7 +6,7 @@
         <div class="hide-hint-button"></div>
         <div class="hint-box">
           <h2>Hint</h2>
-          <div>If you have any issues using this page please download user manual <a href="/User Manual/HxH Tracking System - User-Manual.pptx" download target="_blank">Here</a></div>
+          <div>If you have any issues using this page please download user manual <a href="/User Manual/HxH Tracking System - User-Manual.pdf?download" target="_parent">Here</a></div>
         </div>
       </div>
     {{> clock}}
@@ -16,57 +16,7 @@
         <div style="width: 250px;" id="">
             <h4>Cell:</h4>{{> selectcell}}
         </div> -->
-    <div class="{{changeover}}">
-        <div class="changover-popup">
-            <h3>Change Over</h3>
-            <h3>{{changeoverCounter}}</h3>
-            <button class="changeover-close">Finish</button>
-        </div>
-    </div>
 
-    <div class="{{addtasks}}">
-        <div class="addtask-popup">
-<!--                 <div class="clock-row">
-            <a><il id="counter">{{changeoverCounter}}<i class="fa fa-close close-addtask-popup"></i></il></a>
-            </div> -->
-            <!-- <i class="fa fa-close close-addtask-popup"></i> -->
-            <h3>Hour Complete</h3>
-            <table class="addtasks">
-                <thead>
-                    <tr>
-                        <th>Time Span</th>
-                        <th>Part Number</th>
-                        <th>Work Time</th>
-                        <th>Plan</th>
-                        <th>Actual</th>
-                        <th>Reason</th>
-                        <th>Comment</th>
-                        <th>Status</th>
-                        <th></th>
-                    </tr>
-                    <tr>
-                        <td>{{recordedtimespan}}</td>
-                        <!-- <td>{{recordedpartnumber}}</td> -->
-                        <td style="width: 175px;" class ="partnumberchange"  data-id="pop-box">{{> selectpart selected=recordedpartnumber isCurrent="true" type="addtask"}}</td>
-                        <td>{{recordedworktime}}</td>
-                        <td>{{recordedplantoactual}}</td>
-                        <td><input style="width: 50px;" type="text" id="popupinput" class="calculatestatus"></td>
-                        <td>{{recordedcomment}}</td>
-                        <td>
-                            <!-- <input id="commentsinput" style="width: 15vw;" type="comment" class="inputreports"> -->
-                            <textarea style="width: 80%;" id="commentsinput" class="inputreports" name="Text1" cols="40" rows="3"></textarea>
-                        </td>
-                        <td><div name="Ignore Select" id="popupselect" style="background:rgba(099,099,099,.2);" class="outline"></div> </td>
-                        <td><button class="toggle-submit">Submit</button></td>
-                    </tr>
-                </thead>
-            </table>
-            <br>
-            <h3>What went Wrong?</h3>
-            {{> gowrongcheck}}
-
-        </div>
-    </div>
     <table class="{{addtasks}}">
         <thead>
             <tr>
@@ -214,7 +164,57 @@
             {{> loader}}
         {{/if}}
     </table>
+    <div class="{{changeover}}">
+        <div class="changover-popup">
+            <h3>Change Over</h3>
+            <h3>{{changeoverCounter}}</h3>
+            <button class="changeover-close">Finish</button>
+        </div>
+    </div>
 
+    <div class="{{addtasks}}">
+        <div class="addtask-popup">
+<!--                 <div class="clock-row">
+            <a><il id="counter">{{changeoverCounter}}<i class="fa fa-close close-addtask-popup"></i></il></a>
+            </div> -->
+            <!-- <i class="fa fa-close close-addtask-popup"></i> -->
+            <h3>Hour Complete</h3>
+            <table class="addtasks">
+                <thead>
+                    <tr>
+                        <th>Time Span</th>
+                        <th>Part Number</th>
+                        <th>Work Time</th>
+                        <th>Plan</th>
+                        <th>Actual</th>
+                        <th>Reason</th>
+                        <th>Comment</th>
+                        <th>Status</th>
+                        <th></th>
+                    </tr>
+                    <tr>
+                        <td>{{recordedtimespan}}</td>
+                        <!-- <td>{{recordedpartnumber}}</td> -->
+                        <td style="width: 175px;" class ="partnumberchange"  data-id="pop-box">{{> selectpart selected=recordedpartnumber isCurrent="true" type="addtask"}}</td>
+                        <td>{{recordedworktime}}</td>
+                        <td>{{recordedplantoactual}}</td>
+                        <td><input style="width: 50px;" type="text" id="popupinput" class="calculatestatus"></td>
+                        <td>{{recordedcomment}}</td>
+                        <td>
+                            <!-- <input id="commentsinput" style="width: 15vw;" type="comment" class="inputreports"> -->
+                            <textarea style="width: 80%;" id="commentsinput" class="inputreports" name="Text1" cols="40" rows="3"></textarea>
+                        </td>
+                        <td><div name="Ignore Select" id="popupselect" style="background:rgba(099,099,099,.2);" class="outline"></div> </td>
+                        <td><button class="toggle-submit">Submit</button></td>
+                    </tr>
+                </thead>
+            </table>
+            <br>
+            <h3>What went Wrong?</h3>
+            {{> gowrongcheck}}
+
+        </div>
+    </div>
     
 </template>
 
