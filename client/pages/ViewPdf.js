@@ -30,7 +30,9 @@ var shift_2_end = moment('23:50:00',format);
 
 Template.ViewPdf.helpers({
 	url:function(){
-		return Session.get('url') == null ? 'http://datuswes008/SOLIDWORKSPDM/List/EWS%20DB/'
+		// return Session.get('url') == null ? 'http://datuswes008/SOLIDWORKSPDM/List/EWS%20DB/'
+		// : Session.get('url');
+		return Session.get('url') == null ? 'http://datuswes008/SOLIDWORKSPDM/EWS%20DB/Material/WM/'
 		: Session.get('url');
 	},
 	// setCurrtime:function(){

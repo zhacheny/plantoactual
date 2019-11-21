@@ -7,10 +7,13 @@ function getearnedtimesum(tasks_object){
 	let sum = 0;
 	for (var i = tasks_object.length - 1; i >= 0; i--) {
 		if(tasks_object[i].status != 'changeover'){
-			let earnedtime = tasks_object[i].earnedtime;
-			if(earnedtime != null){
-				sum += parseFloat(tasks_object[i].earnedtime);
+			if (tasks_object[i].flagged == null || tasks_object[i].flagged != true) {
+				let earnedtime = tasks_object[i].earnedtime;
+				if(earnedtime != null){
+					sum += parseFloat(tasks_object[i].earnedtime);
+				}
 			}
+
 			
 		}
 	}
@@ -23,11 +26,14 @@ function gettotaleff(tasks_object){
 	let sum_worktime = 0;
 	for (var i = tasks_object.length - 1; i >= 0; i--) {
 		if(tasks_object[i].status != 'changeover'){
-			let earnedtime = tasks_object[i].earnedtime;
-			if(earnedtime != null){
-				sum_earnetime += parseFloat(tasks_object[i].earnedtime);
-				sum_worktime += parseFloat(tasks_object[i].worktime);
+			if (tasks_object[i].flagged == null || tasks_object[i].flagged != true) {
+				let earnedtime = tasks_object[i].earnedtime;
+				if(earnedtime != null){
+					sum_earnetime += parseFloat(tasks_object[i].earnedtime);
+					sum_worktime += parseFloat(tasks_object[i].worktime);
+				}	
 			}
+			
 		}
 
 	}

@@ -1,5 +1,6 @@
 import { Tasks, Partnumber, Plan, Operator, EarnedTimePP, Cell } from '/lib/collections.js';
-var pre_url = "http://datuswes008/SOLIDWORKSPDM/Contains/EWS%20DB/Material/WM/Finished%20Goods?file=";
+// var pre_url = "http://datuswes008/SOLIDWORKSPDM/Contains/EWS%20DB/Material/WM/Finished%20Goods?file=";
+var pre_url = "http://datuswes008/SOLIDWORKSPDM/EWS%20DB/Material/WM/Components?view=preview&file=";
 this.log_part_edit = new Logger();
 this.log_part_delete = new Logger();
 this.log_part_add = new Logger();
@@ -220,7 +221,7 @@ Template.PartMaintenance.events({
           } else {
           	log_part_edit.warn('part add: ' + ' | Part Number: ' 
 				+ part, Meteor.user().username);
-            Bert.alert( 'cell updated!', 'success', 'growl-top-right' );
+            Bert.alert( 'part updated!', 'success', 'growl-top-right' );
           }
         });
 		Session.set('toggle-maintenance-edit','');
@@ -467,8 +468,9 @@ Template.PartMaintenance.helpers({
 	viewXMLname:function(){
 		let url = this.XMLname;
 		if(url != null){
-			let XMLname = url.split("=")[1];
-			return XMLname;
+			// let XMLname = url.split("=")[1];
+			// return XMLname;
+			return url;
 		}else{
 			return null;
 		}

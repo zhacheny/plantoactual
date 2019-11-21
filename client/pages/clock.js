@@ -5,6 +5,15 @@ import { Tasks, Cell, Partnumber, Plan, Operator, EarnedTimePP, Anouncements,
 // var clock = new ReactiveVar(new Date());
 var clock = new ReactiveVar(Session.get('time'));
 
+function checkbuttoncolor(flag_value){
+  if( flag_value ){
+    return 'background: black';
+  }
+  else{
+    return '';
+  }
+}
+
 Template.clock.onCreated(function() {
   Meteor.setInterval(function() {
     clock.set(new Date());
@@ -12,6 +21,31 @@ Template.clock.onCreated(function() {
 });
 
 Template.clock.helpers({
+  isblack_supervisor:function(){
+    if(Template.instance().subscriptionsReady()){
+      let object = Taskrecord.findOne({cell: Cookie.get('cell')});
+      if ( Cookie.get('celltable') != 'null' ) {
+        object = Taskrecord.findOne({cell: Cookie.get('cell'), celltable: Cookie.get('celltable')})
+      }
+      if( !object ){
+        return;
+      }
+      return checkbuttoncolor(object.addon_flag_supervisor);
+    }
+
+  },
+  isblack_quality:function(){
+    if(Template.instance().subscriptionsReady()){
+      let object = Taskrecord.findOne({cell: Cookie.get('cell')});
+      if ( Cookie.get('celltable') != 'null' ) {
+        object = Taskrecord.findOne({cell: Cookie.get('cell'), celltable: Cookie.get('celltable')})
+      }
+      if( !object ){
+        return;
+      }
+      return checkbuttoncolor(object.addon_flag_quality);
+    }
+  },
   time: function() {
     var currentTime = clock.get();
     return moment(currentTime).format('LTS');
@@ -38,9 +72,9 @@ Template.clock.events({
         Bert.alert(error.reason, 'danger', 'growl-top-right');
       }else{
         if( res_flag ){
-          Bert.alert('And on!', 'success', 'growl-top-right' );
+          Bert.alert('Call Supervisor Requested!', 'success', 'growl-top-right' );
         }else{
-          Bert.alert('And off!', 'success', 'growl-top-right' );
+          Bert.alert('Call Supervisor Cancelled!', 'success', 'growl-top-right' );
         }
         
       }
@@ -63,9 +97,9 @@ Template.clock.events({
         Bert.alert(error.reason, 'danger', 'growl-top-right');
       }else{
         if( res_flag ){
-          Bert.alert('And on!', 'success', 'growl-top-right' );
+          Bert.alert('Call Quality Team Requested!', 'success', 'growl-top-right' );
         }else{
-          Bert.alert('And off!', 'success', 'growl-top-right' );
+          Bert.alert('Call Quality Team Requested!', 'success', 'growl-top-right' );
         }
         
       }

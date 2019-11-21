@@ -2,6 +2,8 @@ export const ClientTaskworktime = new Mongo.Collection(null);
 import moment from 'moment';
 import { Logger } from 'meteor/ostrio:logger';
 import { LoggerFile } from 'meteor/ostrio:loggerfile';
+// this.SystemError = new Logger();
+// (new LoggerFile(this.SystemError)).enable();
 
 function getClientTime() {
         // var _time = (new Date).toTimeString();
@@ -14,10 +16,12 @@ function getClientTime() {
 
 if (Meteor.isClient){
 	Meteor.startup(function () {
+		// SystemError.info('SYSTEM RESTART', new Date);
 		window.onbeforeunload = function() {
 		// Meteor.call('client_server_record', absolute_displayindex, Session.get('time'),Cookie.get('cell'), 
 		// 	base_worktime, Cookie.get('celltable'));
 			if(Session.get('changeover-showup') == true){
+				// SystemError.warn('SYSTEM RELOAD' + 'on table' + Cookie.get('cell'), new Date);
 				return "Data will be lost if you leave the page, are you sure?";
 			}else{
 				return;
@@ -47,11 +51,7 @@ if (Meteor.isClient){
             Session.set("time", getClientTime());
 	    }, 1000);
 
-	    setInterval(function () {
-            Session.set("time", getClientTime());
-	    }, 1000);
-
-	    if(Cookie.get('operatorcount') == 'null'){
+	    if(Cookie.get('operatorcount') == null){
 			Cookie.set('operatorcount', 0);
 
 			let operatorinitial = [['null','null','null','null'],['null','null','null','null']];

@@ -28,13 +28,13 @@ var restend6 = moment('23:30:00',format);
 var shift_1_start = moment('05:59:00',format);
 var shift_1_start_1 = moment('05:59:58',format);
 var shift_1_start_2 = moment('05:59:59',format);
-var shift_1_end = moment('14:30:59',format);
+var shift_1_end = moment('14:59:59',format);
 var shift_2_start = moment('15:00:00',format);
-var shift_2_start_1 = moment('14:59:58',format);
-var shift_2_start_2 = moment('14:59:59',format);
-// var shift_2_start_1 = moment('16:45:58',format);
-// var shift_2_start_2 = moment('16:45:59',format);
-var shift_2_end = moment('23:30:59',format);
+// var shift_2_start_1 = moment('14:59:58',format);
+// var shift_2_start_2 = moment('14:59:59',format);
+var shift_2_start_1 = moment('17:12:58',format);
+var shift_2_start_2 = moment('17:12:59',format);
+var shift_2_end = moment('23:59:59',format);
 
 var timespan1 = ['6:00-7:00 am','7:00-8:00 am','8:00-9:00 am','9:00-10:00 am','10:00-11:00 am','11:00-12:00 am','12:30-1:30 pm','1:30-2:30 pm'];
 var timespan2 = ['3:00-4:00 pm','4:00-5:00 pm', '5:00-6:00 pm', '6:00-7:00 pm','7:30-8:30 pm', '8:30-9:30 pm', '9:30-10:30 pm','10:30-11:30 pm'];
@@ -272,6 +272,7 @@ function inserttaskAschangover(iscomplete,currentTime){
 Template.AddTasks.onCreated(function(){
 	// console.log(document.body.scrollHeight)
 	// window.scrollTo(0,document.body.scrollHeight);
+	// console.log(Cookie.get('operatorarray'));
 	Session.set('addtaskcountsum',0);
 	window.name = "parent";
 	// Template.instance().initializing = new ReactiveVar( false );
@@ -371,7 +372,9 @@ Tracker.autorun(function(){
 	let currentTime = Session.get('time');
 	let timeformat = moment(currentTime,format);
 	if(timeformat.isBetween(shift_1_start_1, shift_1_start_2)){
-			Meteor.call('initializeClientTaskworktime',new Date,false);
+			Meteor.call('initializeClientTaskworktime', null, false, 1);
+			Session.set('addtaskcountsum_server',0);
+			Session.set('addtaskcountsum',0);
 			//remove all signed in operators
 			Meteor.call( 'operator_Signout_All', JSON.parse(Cookie.get('operatorarray'))[1], ( error, response ) => {
 				console.log('operator_Signout_All',);
@@ -382,16 +385,18 @@ Tracker.autorun(function(){
 				var operatorinitial = [['null','null','null','null'],['null','null','null','null']];
 				Cookie.set('operatorarray',JSON.stringify(operatorinitial));
 				Cookie.set('operatorcount', 0);
-				Session.set('addtaskcountsum_server',0);
 				// document.location.reload(true);
 		      }
 		    });
 
 			// alert('shift 1 start!');
+			
 		}else if (timeformat.isBetween(shift_2_start_1, shift_2_start_2)) {
 			// currentTime2 = moment('10:29:59',format);
 			// timeformat2 = moment(currentTime2,format);
-			Meteor.call('initializeClientTaskworktime',new Date,false);
+			Meteor.call('initializeClientTaskworktime', null ,false, 2);
+			Session.set('addtaskcountsum_server',0);
+			Session.set('addtaskcountsum',0);
 			// Meteor.call('initializeClientTaskworktime',moment('7:29:59',format),false);
 			// console.log('operator_Signout_All',111);
 				//remove all signed in operators
@@ -404,7 +409,6 @@ Tracker.autorun(function(){
 				var operatorinitial = [['null','null','null','null'],['null','null','null','null']];
 				Cookie.set('operatorarray',JSON.stringify(operatorinitial));
 				Cookie.set('operatorcount', 0);
-				Session.set('addtaskcountsum_server',0);
 				// document.location.reload(true);
 		      }
 		    });
@@ -453,15 +457,19 @@ Template.AddTasks.helpers({
 		return moment(currentTime-starttime).format('mm:ss');
 	},
 	displayoperatorone: function(){
+		if(Cookie.get('operatorarray') == null){return false;}
 		return JSON.parse(Cookie.get('operatorarray'))[0][0] != 'null' ? true : false;
 	},
 	displayoperatortwo: function(){
+		if(Cookie.get('operatorarray') == null){return false;}
 		return JSON.parse(Cookie.get('operatorarray'))[0][1] != 'null' ? true : false;
 	},
 	displayoperatorthree: function(){
+		if(Cookie.get('operatorarray') == null){return false;}
 		return JSON.parse(Cookie.get('operatorarray'))[0][2] != 'null' ? true : false;
 	},
 	displayoperatorfour: function(){
+		if(Cookie.get('operatorarray') == null){return false;}
 		return JSON.parse(Cookie.get('operatorarray'))[0][3] != 'null' ? true : false;
 	},
 	operatorone: function(){
@@ -986,15 +994,17 @@ Template.AddTasks.events({
 		let url = Partnumber.findOne({part:part}).XMLname;
 		if (url == null){
 			alert('drawing not exists!');
-			return;
+			// FlowRouter.go('/admin/viewPdf');
+			// Session.set('url',url);
+			url = 'http://datuswes008/SOLIDWORKSPDM/';
 		}else{
-			// let win = window.open(url, '_blank');
-			// win.focus();
-			FlowRouter.go('/admin/viewPdf');
-			Session.set('url',url);
-			return;
+			// FlowRouter.go('/admin/viewPdf');
+			// Session.set('url',url);
+			// return;
 		}
-		
+		let win = window.open(url, url);
+		win.focus();
+		return;
 	},
 	'click .add-operator': function(){
 		var operatorcount = Cookie.get('operatorcount');

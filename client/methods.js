@@ -11,12 +11,15 @@ var shift_2_start = moment('15:00:00',format);
 var shift_2_end = moment('23:59:59',format);
 
 Meteor.methods({
-	initializeClientTaskworktime(currentTime,test_mode_flag){
+	initializeClientTaskworktime(currentTime,test_mode_flag,shift){
 		if (test_mode_flag){
 			currentTime = moment('15:29:59',format);
 		}
-		
 		var timeformat = moment(currentTime,format);
+		if(currentTime == null){
+			timeformat = shift == 1 ? moment('06:29:59',format): moment('15:29:59',format);
+		}
+		
 		// Session.set('test-mode-time-log',currentTime)
 		// console.log(currentTime);
 		if(timeformat.isBetween(shift_1_start, shift_1_end)){
