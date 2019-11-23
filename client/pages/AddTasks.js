@@ -365,6 +365,21 @@ Tracker.autorun(function() {
 // 	Meteor.call('errortype',wrongtype);
 
 // });
+//send update request to sever when opretor trying to reload page during changeover
+Meteor.startup(function () {
+	// SystemError.info('SYSTEM RESTART', new Date);
+	window.addEventListener("pagehide", function(){
+		if(Session.get('changeover-showup') == true){
+			console.log('reload on changeover!!');
+			var currentTime = Session.get('time');
+			updatechangeover(true,currentTime);
+			inserttaskAschangover(false, currentTime);
+		}else{
+			return;
+		}
+	}, false);
+});
+
 Tracker.autorun(function(){
 	if(Cookie.get('operatorcount') == '0'){
 		return;
@@ -879,106 +894,106 @@ Template.AddTasks.helpers({
 		}
 	},
 	getlastedtasksum:function(){
+		let celltable = Cookie.get('celltable');
+		let clienttask = ClientTaskworktime.find().fetch();
+  		let servertask = celltable == 'null' ? Tasks.find({cell:Cookie.get('cell')}, { sort: { id: 1 }}).fetch()
+		: Tasks.find({celltable: celltable, cell:Cookie.get('cell')}, { sort: { id: 1 }}).fetch();
 
-			let celltable = Cookie.get('celltable');
-			let clienttask = ClientTaskworktime.find().fetch();
-	  		let servertask = celltable == 'null' ? Tasks.find({cell:Cookie.get('cell')}, { sort: { id: 1 }}).fetch()
-			: Tasks.find({celltable: celltable, cell:Cookie.get('cell')}, { sort: { id: 1 }}).fetch();
+		let last_server_index = absolute_displayindex;
+		let per_timespan_count = 0;
+		let cur_timespan_count = 0;
+		let changeover_duration = 0;
+		if(servertask.length == 0 || getlastedtasksum_hasruned){
+			// console.log('test',[servertask.length, getlastedtasksum_hasruned]);
+  			return true;
+  		}
+  		// console.log('runtime','XXX');
+		// console.log('running_time0',clienttask,last_server_index);	
+		let pre_id = servertask[servertask.length - 1].id;
+		let all_pre_worktime = 0;
+  		for (var j = servertask.length - 1; j >= 0; j--) {
+  			//sum the task form server side per time span
+  			// console.log('cur_timespan_count0',servertask[j]);
 
-			let last_server_index = absolute_displayindex;
-			let per_timespan_count = 0;
-			let cur_timespan_count = 0;
-			let changeover_duration = 0;
-			if(servertask.length == 0 || getlastedtasksum_hasruned){
-	  			return;
-	  		}
-	  		// console.log('runtime','XXX');
-			// console.log('running_time0',clienttask,last_server_index);	
-			let pre_id = servertask[servertask.length - 1].id;
-			let all_pre_worktime = 0;
-	  		for (var j = servertask.length - 1; j >= 0; j--) {
-	  			//sum the task form server side per time span
-	  			// console.log('cur_timespan_count0',servertask[j]);
+			if(servertask[j].id.substring(0,1) == index[last_server_index]){
+  				// console.log('server_baseid',servertask[j].id);
+  				if(servertask[j].status != 'changeover' && Session.get('addtaskcountsum') == 0){
+  					cur_timespan_count++;
+  				}else if (servertask[j].status == 'changeover'){
+					changeover_duration += servertask[j].worktime;
+  				}
 
-				if(servertask[j].id.substring(0,1) == index[last_server_index]){
-	  				// console.log('server_baseid',servertask[j].id);
-	  				if(servertask[j].status != 'changeover' && Session.get('addtaskcountsum') == 0){
-	  					cur_timespan_count++;
-	  				}else if (servertask[j].status == 'changeover'){
-						changeover_duration += servertask[j].worktime;
-	  				}
-
-	  				all_pre_worktime += servertask[j].worktime;
-	  				// console.log('cur_timespan_count1',all_pre_worktime);
-	  				// console.log('cur_timespan_count0',cur_timespan_count);
-	  			}else if(servertask[j].id.length > 1 && servertask[j].status != 'changeover' ){
-					per_timespan_count++;
-	  			}
-
-
-	  		}
+  				all_pre_worktime += servertask[j].worktime;
+  				// console.log('cur_timespan_count1',all_pre_worktime);
+  				// console.log('cur_timespan_count0',cur_timespan_count);
+  			}else if(servertask[j].id.length > 1 && servertask[j].status != 'changeover' ){
+				per_timespan_count++;
+  			}
 
 
-	  		getlastedtasksum_hasruned = true;
+  		}
 
-	  		// console.log('cur_timespan_count0',cur_timespan_count , per_timespan_count);
-	  		Session.set('all_pre_worktime',all_pre_worktime);
-	  		count = cur_timespan_count == 0? count:cur_timespan_count;
-	  		// console.log('count_server',count);
-	  		Session.set('cur_timespan_count',cur_timespan_count);
-	  		Session.set('sumchangeoverDuration_server',changeover_duration);
-	  		Session.set('addtaskcountsum_server',cur_timespan_count + per_timespan_count);
-	  		return;
+
+  		getlastedtasksum_hasruned = true;
+
+  		// console.log('cur_timespan_count0',cur_timespan_count , per_timespan_count);
+  		Session.set('all_pre_worktime',all_pre_worktime);
+  		count = cur_timespan_count == 0? count:cur_timespan_count;
+  		// console.log('count_server',count);
+  		Session.set('cur_timespan_count',cur_timespan_count);
+  		Session.set('sumchangeoverDuration_server',changeover_duration);
+  		Session.set('addtaskcountsum_server',cur_timespan_count + per_timespan_count);
+  		return true;
 	  	
 	},
   	mixedtask:function(){
-	  		let celltable = Cookie.get('celltable');
-	  		let clienttask = ClientTaskworktime.find().fetch();
-	  		let servertask = celltable == 'null' ? Tasks.find({cell:Cookie.get('cell'),status:{ $ne: 'changeover'}}, { sort: { id: 1 }}).fetch()
-			: Tasks.find({celltable: celltable, cell:Cookie.get('cell'),status:{ $ne: 'changeover'}}, { sort: { id: 1 }}).fetch();
-			let last_server_index = absolute_displayindex;	
-	  		if(servertask.length == 0){
-	  			return ClientTaskworktime.find();
-	  		}
-	  		let cur_timespan_count = Session.get('cur_timespan_count');
-	  		let all_pre_worktime = Session.get('all_pre_worktime');
-	  		console.log('running_time',clienttask, absolute_displayindex);	
-			// let last_server_baseid = servertask[servertask.length - 1].id.substring(0,1);
-	  		// console.log('servertask.length',servertask.length);
-	  		if(servertask.length != 0){
-	  			for (var i = clienttask.length - 1; i >= 0; i--) {
-	  				for (var j = servertask.length - 1; j >= 0; j--) {
-	  					let server_baseid = servertask[j].id.substring(0,1);
-	  					if( clienttask[i].id == server_baseid){
-	  						// console.log(clienttask[i],last_server_index);
-	  						if(i == last_server_index){
-	  							Session.set('tempchangeoverid',server_baseid);
-	  							let Taskrecord_object = Taskrecord.findOne({cell:Cookie.get('cell')});
-	  							let newserver_baseid = server_baseid + (cur_timespan_count);	
-	  							let	new_worktime = clienttask[i].worktime - all_pre_worktime;
-								ClientTaskworktime.update({id:server_baseid}, {
-									$set: { id:newserver_baseid, worktime:new_worktime},
-								});
-								//check whether thre task record is needed
+  		let celltable = Cookie.get('celltable');
+  		let clienttask = ClientTaskworktime.find().fetch();
+  		let servertask = celltable == 'null' ? Tasks.find({cell:Cookie.get('cell'),status:{ $ne: 'changeover'}}, { sort: { id: 1 }}).fetch()
+		: Tasks.find({celltable: celltable, cell:Cookie.get('cell'),status:{ $ne: 'changeover'}}, { sort: { id: 1 }}).fetch();
+		let last_server_index = absolute_displayindex;	
+  		if(servertask.length == 0){
+  			return ClientTaskworktime.find();
+  		}
+  		let cur_timespan_count = Session.get('cur_timespan_count');
+  		let all_pre_worktime = Session.get('all_pre_worktime');
+  		console.log('running_time',clienttask, absolute_displayindex);	
+		// let last_server_baseid = servertask[servertask.length - 1].id.substring(0,1);
+  		// console.log('servertask.length',servertask.length);
+  		if(servertask.length != 0){
+  			for (var i = clienttask.length - 1; i >= 0; i--) {
+  				for (var j = servertask.length - 1; j >= 0; j--) {
+  					let server_baseid = servertask[j].id.substring(0,1);
+  					if( clienttask[i].id == server_baseid){
+  						// console.log(clienttask[i],last_server_index);
+  						if(i == last_server_index){
+  							Session.set('tempchangeoverid',server_baseid);
+  							let Taskrecord_object = Taskrecord.findOne({cell:Cookie.get('cell')});
+  							let newserver_baseid = server_baseid + (cur_timespan_count);	
+  							let	new_worktime = clienttask[i].worktime - all_pre_worktime;
+							ClientTaskworktime.update({id:server_baseid}, {
+								$set: { id:newserver_baseid, worktime:new_worktime},
+							});
+							//check whether thre task record is needed
+							
+							if(Taskrecord_object && server_taskrecord_firstrun){
+								Meteor.call('client_server_record',absolute_displayindex, null,Cookie.get('cell'), clienttask[i].worktime, Cookie.get('celltable'));
 								
-								if(Taskrecord_object && server_taskrecord_firstrun){
-									Meteor.call('client_server_record',absolute_displayindex, null,Cookie.get('cell'), clienttask[i].worktime, Cookie.get('celltable'));
-									
-								}
-								break;
-	  						}else{
-		  						ClientTaskworktime.remove({id:server_baseid});
-		  						break;
-	  						}
+							}
+							break;
+  						}else{
+	  						ClientTaskworktime.remove({id:server_baseid});
+	  						break;
+  						}
 
-	  					}
-	  				}
-	  			}
-	  		}
-	  		// console.log(ClientTaskworktime.find({}).fetch());
-	  		let mixeddoc = clienttask.concat(servertask);
-	  		return _.sortBy(mixeddoc, function(mixeddoc) {return mixeddoc.id;});
-	  		// return mixeddoc;
+  					}
+  				}
+  			}
+  		}
+  		// console.log(ClientTaskworktime.find({}).fetch());
+  		let mixeddoc = clienttask.concat(servertask);
+  		return _.sortBy(mixeddoc, function(mixeddoc) {return mixeddoc.id;});
+  		// return mixeddoc;
 	  	
   	},
   	// initializing() {

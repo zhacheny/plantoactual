@@ -100,65 +100,65 @@
         </thead>
         {{#if Template.subscriptionsReady}}
         <tbody>
-            {{getlastedtasksum}}
-            {{#each mixedtask}}
-                {{#if timepassed @index displayRow}}
-                    <tr style="{{isgrey @index displayRow}}">
-                        <td>
-                            <a style="font-size: 30px;" class="viewPdf" href=""><i class="fa fa-search"></i></a>
-                        </td>
-                        <td>{{timespan}}</td>
-                        <!-- <td>{{worktime_underchangeover timespan}}</td> -->
-                        <td>{{worktime}} min</td>
-                        {{#if isCurrent @index displayRow}}
-                            <td class ="partnumberchange" data-id="{{@index}}">{{> selectpart selected=selectedpart pre_selected=pre_selected isCurrent="true" documentid=documentid type="addtask"}}</td>
-                        {{else}}
-                            <td class ="partnumberchange" data-id="{{@index}}">{{> selectpart selected=selectedpart pre_selected=pre_selected isCurrent="false" type="addtask"}}</td>
-                        {{/if}}
-
-                        <td type="text">{{plan}}</td>
-                        <td type="text">{{actual}}</td>
-
-                        {{#if isred status}}
-                            <td><div name="Ignore Select" id="select" style="background:rgba(224, 97, 0,1);" class="outlineinactive"></div></td>
-                        {{else}}
-                            {{#if isgreen status}}
-                                <td><div name="Ignore Select" id="select" style="background:rgba(141,198,63,1);" class="outlineinactive"></div></td>
+            {{#if getlastedtasksum}}
+                {{#each mixedtask}}
+                    {{#if timepassed @index displayRow}}
+                        <tr style="{{isgrey @index displayRow}}">
+                            <td>
+                                <a style="font-size: 30px;" class="viewPdf" href=""><i class="fa fa-search"></i></a>
+                            </td>
+                            <td>{{timespan}}</td>
+                            <!-- <td>{{worktime_underchangeover timespan}}</td> -->
+                            <td>{{worktime}} min</td>
+                            {{#if isCurrent @index displayRow}}
+                                <td class ="partnumberchange" data-id="{{@index}}">{{> selectpart selected=selectedpart pre_selected=pre_selected isCurrent="true" documentid=documentid type="addtask"}}</td>
                             {{else}}
-                                <td><div name="Ignore Select" id="select" style="background:rgba(099,099,099,.2);" class="outlineinactive"></div></td>
+                                <td class ="partnumberchange" data-id="{{@index}}">{{> selectpart selected=selectedpart pre_selected=pre_selected isCurrent="false" type="addtask"}}</td>
                             {{/if}}
-                        {{/if}}
 
-                        <td>{{reason}}</td>
-                        {{#if isNoprod @index displayRow}}
-                            <td>No Production</td>
-                        {{else}}
+                            <td type="text">{{plan}}</td>
+                            <td type="text">{{actual}}</td>
+
+                            {{#if isred status}}
+                                <td><div name="Ignore Select" id="select" style="background:rgba(224, 97, 0,1);" class="outlineinactive"></div></td>
+                            {{else}}
+                                {{#if isgreen status}}
+                                    <td><div name="Ignore Select" id="select" style="background:rgba(141,198,63,1);" class="outlineinactive"></div></td>
+                                {{else}}
+                                    <td><div name="Ignore Select" id="select" style="background:rgba(099,099,099,.2);" class="outlineinactive"></div></td>
+                                {{/if}}
+                            {{/if}}
+
+                            <td>{{reason}}</td>
+                            {{#if isNoprod @index displayRow}}
+                                <td>No Production</td>
+                            {{else}}
+                                {{#if $eq @index displayRow}}
+                                    <td>
+                                        <!-- <input id="inputcomment2" style="width: 15vw;" type="comment" class="inputcomments"> -->
+                                        <textarea style="width: 90%;" class="inputcomments" name="Text1" cols="40" rows="3"></textarea>
+                                    </td>
+                                {{else}}
+                                    <td>{{comment}}</td>
+                                {{/if}}
+                            {{/if}}
                             {{#if $eq @index displayRow}}
+                            <!-- {{#if displaybutton @index displayRow}} -->
+                                {{gettaskdata}}
                                 <td>
-                                    <!-- <input id="inputcomment2" style="width: 15vw;" type="comment" class="inputcomments"> -->
-                                    <textarea style="width: 90%;" class="inputcomments" name="Text1" cols="40" rows="3"></textarea>
+                                    <button class="toggle-jobComplete">Job Complete</button>
                                 </td>
                             {{else}}
-                                <td>{{comment}}</td>
+                                <td>
+                                    <!-- <input type="checkbox" id="{{@index}}" class="toggle-flagged">
+                                    <label for="{{@index}}"></label> -->
+                                    <a style="font-size: 30px; color:{{isflagged_color}}" href=""><i class="fa fa-flag toggle-flagged"></i></a>
+                                </td>
                             {{/if}}
-                        {{/if}}
-                        {{#if $eq @index displayRow}}
-                        <!-- {{#if displaybutton @index displayRow}} -->
-                            {{gettaskdata}}
-                            <td>
-                                <button class="toggle-jobComplete">Job Complete</button>
-                            </td>
-                        {{else}}
-                            <td>
-                                <!-- <input type="checkbox" id="{{@index}}" class="toggle-flagged">
-                                <label for="{{@index}}"></label> -->
-                                <a style="font-size: 30px; color:{{isflagged_color}}" href=""><i class="fa fa-flag toggle-flagged"></i></a>
-                            </td>
-                        {{/if}}
-                    </tr> 
-                {{/if}}
-            {{/each}}
-           
+                        </tr> 
+                    {{/if}}
+                {{/each}}
+           {{/if}}
         </tbody>
         {{else}}
             {{> loader}}

@@ -17,10 +17,18 @@ function getClientTime() {
 if (Meteor.isClient){
 	Meteor.startup(function () {
 		// SystemError.info('SYSTEM RESTART', new Date);
-		window.addEventListener("pagehide", function(){
-			console.log('111');
-		    setTimeout(function(){},1000);
-		}, false);
+		// window.addEventListener("pagehide", function(){
+		// 	if(Session.get('changeover-showup') == true){
+		// 		// SystemError.warn('SYSTEM RELOAD' + 'on table' + Cookie.get('cell'), new Date);
+		// 		console.log('reload on changeover!');
+		// 		return "Data will be lost if you leave the page, are you sure?";
+		// 	}else{
+		// 		return;
+		// 	}
+			
+		//     // setTimeout(function(){},1000);
+		// }, false);
+		
 		// window.onbeforeunload = function() {
 		// // Meteor.call('client_server_record', absolute_displayindex, Session.get('time'),Cookie.get('cell'), 
 		// // 	base_worktime, Cookie.get('celltable'));
