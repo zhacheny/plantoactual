@@ -1,6 +1,19 @@
 import { Tasks, Partnumber, Plan, Operator, EarnedTimePP, Cell } from '/lib/collections.js';
 var part = '';
 var cell = '';
+
+function download_data(data){
+	const revised_data = JSON.parse(JSON.stringify(data));
+
+	var CSVData = Papa.unparse(revised_data);
+	var reportName = "Export_" + ".csv";
+
+	// console.log(CSVData);
+	var blob = new Blob([CSVData], 
+        {type: "text/csv;charset=utf-8"});
+		saveAs(blob, reportName);
+}
+
 Template.upload.onCreated( () => {
   	Template.instance().uploading = new ReactiveVar( false );
 });
@@ -17,6 +30,12 @@ Template.upload.helpers({
   }
 });
 Template.upload.events({
+	'click .file-export': function(){
+		let data = Partnumber.find().fetch();
+		// console.log(data);
+		download_data(data);
+		Bert.alert( 'Exporting file...', 'success', 'growl-top-right' );
+	},
 	'change [name="operator"]' ( event, template ) {
 	    template.uploading.set( true );
 

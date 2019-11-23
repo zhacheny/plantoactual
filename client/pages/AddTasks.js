@@ -30,10 +30,10 @@ var shift_1_start_1 = moment('05:59:58',format);
 var shift_1_start_2 = moment('05:59:59',format);
 var shift_1_end = moment('14:59:59',format);
 var shift_2_start = moment('15:00:00',format);
-// var shift_2_start_1 = moment('14:59:58',format);
-// var shift_2_start_2 = moment('14:59:59',format);
-var shift_2_start_1 = moment('17:12:58',format);
-var shift_2_start_2 = moment('17:12:59',format);
+var shift_2_start_1 = moment('14:59:58',format);
+var shift_2_start_2 = moment('14:59:59',format);
+// var shift_2_start_1 = moment('17:12:58',format);
+// var shift_2_start_2 = moment('17:12:59',format);
 var shift_2_end = moment('23:59:59',format);
 
 var timespan1 = ['6:00-7:00 am','7:00-8:00 am','8:00-9:00 am','9:00-10:00 am','10:00-11:00 am','11:00-12:00 am','12:30-1:30 pm','1:30-2:30 pm'];

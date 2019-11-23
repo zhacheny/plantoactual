@@ -1,5 +1,5 @@
 
-.file {
+.file{
 	width: 100%;
 	height: 175px;
 	background-color: #f9f9f9;
@@ -9,6 +9,26 @@
 	text-align: center;
 	padding-top: 45px;
 	margin: 50px auto;
+	span {
+		font-size: 30px;
+		position: relative;
+	}
+}
+
+.file-export{
+	width: 100%;
+	height: 100px;
+	background-color: #f9f9f9;
+	z-index: 1;
+	color: #888888;
+	position: relative;
+	text-align: center;
+	padding-top: 40px;
+	margin: 50px auto;
+	span {
+		font-size: 25px;
+		position: relative;
+	}
 }
 .full-page {
 	position: absolute;
@@ -25,10 +45,22 @@
 	display: none;
 	//transition: opacity .3s ease;
 }
-.file span {
-	font-size: 30px;
-	position: relative;
+.half-page {
+	position: absolute;
+	width: 100vw;
+	height: 60vh;
+	top: 0;
+	left: 0;
+	line-height: 60vh;
+	z-index: 1;
+	font-size: 50px;
+	text-align: center;
+	background: rgba(218, 215, 215, 0.64);
+	opacity: 0;
+	display: none;
+	//transition: opacity .3s ease;
 }
+
 .file span:after {
 	content: "";
 	background-image: url(http://laassari.me/assets/upload.png);

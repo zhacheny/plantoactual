@@ -9,7 +9,7 @@
   {{#each getcell}}
   {{/each}}
 
-	  <form>
+<!-- 	  <form>
 		 <div class="full-page">
 		  Drop your file here...
 		 </div>
@@ -21,5 +21,26 @@
 		    <p><i class="fa fa-spin fa-refresh"></i> Uploading files...</p>
 		  {{/unless}}
 		 </div>
+	</form> -->
+	<form>
+		 <div class="full-page">
+		  Drop your file here...
+		 </div>
+		 <div class="file">
+		 	{{#unless uploading}}
+			  <span>Drag and drop you file here.</span>
+			  <input type="file" name="{{type}}">
+			  {{else}}
+		    <p><i class="fa fa-spin fa-refresh"></i> Uploading files...</p>
+		  {{/unless}}
+		 </div>
+		 {{#if $eq type "part"}}
+			 <div class="half-page">
+			  Drop your file here...
+			 </div>
+			 <div class="file-export">
+			 	<span>Export file here.</span>
+			 </div>
+		 {{/if}}
 	</form>
 </template>
