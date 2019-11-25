@@ -904,7 +904,6 @@ Template.AddTasks.helpers({
 		let cur_timespan_count = 0;
 		let changeover_duration = 0;
 		if(servertask.length == 0 || getlastedtasksum_hasruned){
-			// console.log('test',[servertask.length, getlastedtasksum_hasruned]);
   			return true;
   		}
   		// console.log('runtime','XXX');
@@ -943,6 +942,7 @@ Template.AddTasks.helpers({
   		Session.set('cur_timespan_count',cur_timespan_count);
   		Session.set('sumchangeoverDuration_server',changeover_duration);
   		Session.set('addtaskcountsum_server',cur_timespan_count + per_timespan_count);
+  		// console.log('taskgetsum');
   		return true;
 	  	
 	},
@@ -952,7 +952,9 @@ Template.AddTasks.helpers({
   		let servertask = celltable == 'null' ? Tasks.find({cell:Cookie.get('cell'),status:{ $ne: 'changeover'}}, { sort: { id: 1 }}).fetch()
 		: Tasks.find({celltable: celltable, cell:Cookie.get('cell'),status:{ $ne: 'changeover'}}, { sort: { id: 1 }}).fetch();
 		let last_server_index = absolute_displayindex;	
+  		// console.log('servertask.length', servertask.length);
   		if(servertask.length == 0){
+  			// console.log('servertask.length', 'true');
   			return ClientTaskworktime.find();
   		}
   		let cur_timespan_count = Session.get('cur_timespan_count');
@@ -992,6 +994,7 @@ Template.AddTasks.helpers({
   		}
   		// console.log(ClientTaskworktime.find({}).fetch());
   		let mixeddoc = clienttask.concat(servertask);
+  		// console.log('mixedtask');
   		return _.sortBy(mixeddoc, function(mixeddoc) {return mixeddoc.id;});
   		// return mixeddoc;
 	  	

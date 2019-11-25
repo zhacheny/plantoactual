@@ -1,6 +1,28 @@
 import { Tasks, Partnumber, Plan, Operator, EarnedTimePP, Cell } from '/lib/collections.js';
 var part = '';
 var cell = '';
+var old_pre_url = 'http://datuswes008/SOLIDWORKSPDM/Contains/EWS%20DB/Material/WM/Finished%20Goods?file='
+var pre_url = "http://datuswes008/SOLIDWORKSPDM/EWS%20DB/Material/WM/Components?view=preview&file=";
+
+function batchUpdateURL(data){
+	let part = [];
+	let old_XML = [];
+	for (var i = data.length - 1; i >= 0; i--) {
+		part.push(data[i].part);
+		old_XML.push(data[i].XMLname);
+	}
+	// console.log('part', part, part.length);
+	// console.log('XML',old_XML, old_XML.length);
+	Meteor.call( 'partnumer_updatewithnewURL', part, old_XML, old_pre_url, pre_url, ( error, response ) => {
+      if ( error ) {
+        // console.log( error.reason );
+        // throw new Meteor.Error('bad', 'stuff happened');
+        Bert.alert( error.reason, 'danger', 'growl-top-right' );
+      } else {
+        Bert.alert( 'Upload complete!', 'success', 'growl-top-right' );
+      }
+    });
+}
 
 function download_data(data){
 	const revised_data = JSON.parse(JSON.stringify(data));
@@ -35,6 +57,7 @@ Template.upload.events({
 		// console.log(data);
 		download_data(data);
 		Bert.alert( 'Exporting file...', 'success', 'growl-top-right' );
+		// batchUpdateURL(data);
 	},
 	'change [name="operator"]' ( event, template ) {
 	    template.uploading.set( true );

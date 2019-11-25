@@ -762,6 +762,27 @@ Meteor.methods({
 	submitLogic(){
 		return;
 	},
-
+	partnumer_updatewithnewURL(partnumber, XMLname,  old_pre_url, pre_url){
+		for ( let i = 0; i < partnumber.length; i++ ) {
+			let part = partnumber[i];
+			let xmlname = XMLname[i];
+			if(xmlname != null && xmlname != '#N/A'){
+				let new_XMLname = pre_url + part + '.xml';
+				// console.log(new_XMLname);
+				let exists = Partnumber.findOne( { part: part } );
+				if ( !exists ) {
+					throw new Meteor.Error('bad', 'Rejected. Not exists' + operator_isSigned.cell + ' please sign out!');
+				} else{
+					Partnumber.update({ part:part }, {
+				      $set: { 
+						      XMLname:new_XMLname,
+						    },
+				    });
+				}
+			}
+			
+		}
+		return;
+	},
 
 })

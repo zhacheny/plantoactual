@@ -7,7 +7,6 @@ import { LoggerFile } from 'meteor/ostrio:loggerfile';
 
 function getClientTime() {
         // var _time = (new Date).toTimeString();
-        // var _time = (new Date);
         var _time = (new Date);
         // _time.setHours(15);
         // console.log(_time);
