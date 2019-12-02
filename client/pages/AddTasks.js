@@ -32,8 +32,8 @@ var shift_1_end = moment('14:59:59',format);
 var shift_2_start = moment('15:00:00',format);
 var shift_2_start_1 = moment('14:59:58',format);
 var shift_2_start_2 = moment('14:59:59',format);
-// var shift_2_start_1 = moment('17:12:58',format);
-// var shift_2_start_2 = moment('17:12:59',format);
+// var shift_2_start_1 = moment('17:11:58',format);
+// var shift_2_start_2 = moment('17:11:59',format);
 var shift_2_end = moment('23:59:59',format);
 
 var timespan1 = ['6:00-7:00 am','7:00-8:00 am','8:00-9:00 am','9:00-10:00 am','10:00-11:00 am','11:00-12:00 am','12:30-1:30 pm','1:30-2:30 pm'];
@@ -47,6 +47,7 @@ var haverun = false;
 var displayindex = 0;
 var getlastedtasksum_hasruned = false;
 var server_taskrecord_firstrun = true;
+var operatorNestarray = [];
 
 function partnumber_change(partnumber, object){
 		Session.set('partnumber',partnumber);
@@ -339,12 +340,36 @@ Template.AddTasks.onRendered(function () {
 });
 
 Tracker.autorun(function() {
+	let trigger = Session.get('shiftchange_trigger');
+	if(trigger == null){
+		return;
+	}
+	Meteor.call('initializeClientTaskworktime', null, false, 1, Cookie.get('buildingnumber'));
+	Session.set('addtaskcountsum_server',0);
+	Session.set('addtaskcountsum',0);
+	console.log('shiftchange_trigger chenged');
+	//remove all signed in operators
+	Meteor.call( 'operator_Signout_All', operatorNestarray, ( error, response ) => {
+		console.log('operator_Signout_All',);
+      if ( error ) {
+        Bert.alert( error.reason, 'danger', 'growl-top-right' );
+      } else {
+        Bert.alert( 'All Operator has been signed out!', 'success', 'growl-top-right' );
+		var operatorinitial = [['null','null','null','null'],['null','null','null','null']];
+		Cookie.set('operatorarray',JSON.stringify(operatorinitial));
+		Cookie.set('operatorcount', 0);
+		// document.location.reload(true);
+      }
+    });
+});
+
+Tracker.autorun(function() {
 	const cell = Cookie.get('cell');
 	// Meteor.subscribe('taskrecord', Cookie.get('cell'), function(){
 	// });
 	Session.set('addtaskcountsum_server',0);
 	getlastedtasksum_hasruned = false;
-	Meteor.call('initializeClientTaskworktime',new Date,false);
+	Meteor.call('initializeClientTaskworktime',new Date,false, null, Cookie.get('buildingnumber'));
 	//change the flag when the page is already created
 	operator_array_firstrun = false;
 });
@@ -387,48 +412,35 @@ Tracker.autorun(function(){
 	let currentTime = Session.get('time');
 	let timeformat = moment(currentTime,format);
 	if(timeformat.isBetween(shift_1_start_1, shift_1_start_2)){
-			Meteor.call('initializeClientTaskworktime', null, false, 1);
-			Session.set('addtaskcountsum_server',0);
-			Session.set('addtaskcountsum',0);
-			//remove all signed in operators
-			Meteor.call( 'operator_Signout_All', JSON.parse(Cookie.get('operatorarray'))[1], ( error, response ) => {
-				console.log('operator_Signout_All',);
-		      if ( error ) {
-		        Bert.alert( error.reason, 'danger', 'growl-top-right' );
-		      } else {
-		        Bert.alert( 'All Operator has been signed out!', 'success', 'growl-top-right' );
-				var operatorinitial = [['null','null','null','null'],['null','null','null','null']];
-				Cookie.set('operatorarray',JSON.stringify(operatorinitial));
-				Cookie.set('operatorcount', 0);
-				// document.location.reload(true);
-		      }
-		    });
-
-			// alert('shift 1 start!');
+		operatorNestarray = JSON.parse(Cookie.get('operatorarray'))[1];
+		Session.set('shiftchange_trigger', 1);
+		// alert('shift 1 start!');
 			
-		}else if (timeformat.isBetween(shift_2_start_1, shift_2_start_2)) {
-			// currentTime2 = moment('10:29:59',format);
-			// timeformat2 = moment(currentTime2,format);
-			Meteor.call('initializeClientTaskworktime', null ,false, 2);
-			Session.set('addtaskcountsum_server',0);
-			Session.set('addtaskcountsum',0);
-			// Meteor.call('initializeClientTaskworktime',moment('7:29:59',format),false);
-			// console.log('operator_Signout_All',111);
-				//remove all signed in operators
-			Meteor.call( 'operator_Signout_All', JSON.parse(Cookie.get('operatorarray'))[1], ( error, response ) => {
-				// console.log('operator_Signout_All',222);
-		      if ( error ) {
-		        Bert.alert( error.reason, 'danger', 'growl-top-right' );
-		      } else {
-		        Bert.alert( 'All Operator has been signed out!', 'success', 'growl-top-right' );
-				var operatorinitial = [['null','null','null','null'],['null','null','null','null']];
-				Cookie.set('operatorarray',JSON.stringify(operatorinitial));
-				Cookie.set('operatorcount', 0);
-				// document.location.reload(true);
-		      }
-		    });
-			// alert('shift 2 start!');
-		}
+	}else if (timeformat.isBetween(shift_2_start_1, shift_2_start_2)) {
+		operatorNestarray = JSON.parse(Cookie.get('operatorarray'))[1];
+		Session.set('shiftchange_trigger', 2);
+		// // currentTime2 = moment('10:29:59',format);
+		// // timeformat2 = moment(currentTime2,format);
+		// Meteor.call('initializeClientTaskworktime', null ,false, 2);
+		// Session.set('addtaskcountsum_server',0);
+		// Session.set('addtaskcountsum',0);
+		// // Meteor.call('initializeClientTaskworktime',moment('7:29:59',format),false);
+		// // console.log('operator_Signout_All',111);
+		// 	//remove all signed in operators
+		// Meteor.call( 'operator_Signout_All', JSON.parse(Cookie.get('operatorarray'))[1], ( error, response ) => {
+		// 	// console.log('operator_Signout_All',222);
+	 //      if ( error ) {
+	 //        Bert.alert( error.reason, 'danger', 'growl-top-right' );
+	 //      } else {
+	 //        Bert.alert( 'All Operator has been signed out!', 'success', 'growl-top-right' );
+		// 	var operatorinitial = [['null','null','null','null'],['null','null','null','null']];
+		// 	Cookie.set('operatorarray',JSON.stringify(operatorinitial));
+		// 	Cookie.set('operatorcount', 0);
+		// 	// document.location.reload(true);
+	 //      }
+	 //    });
+		// alert('shift 2 start!');
+	}
 
 })
 Tracker.autorun(function() {
@@ -1070,7 +1082,7 @@ Template.AddTasks.events({
 		Session.set('addtaskcountsum',0);
 		Session.set('addtaskcountsum_server',0);
 		Session.set('test-mode-time',timearray);
-		Meteor.call('initializeClientTaskworktime',currentTime,test_mode_flag);
+		Meteor.call('initializeClientTaskworktime', currentTime, test_mode_flag, null, Cookie.get('buildingnumber'));
 		// Session.set('test-mode','open');
 	},
 

@@ -1,7 +1,7 @@
 import { ClientTaskworktime } from '/client/main.js';
 import { Tasks, Cell, Partnumber, Changeover, Plan, Operator, EarnedTimePP,Anouncements,
 		Safetymessage, Department, Menu, Messages } from '/lib/collections.js';
-import { taskworktime_shift1, taskworktime_shift2 } from '/lib/timespan_shifts.js';
+import { taskworktime_shift1_23, taskworktime_shift1_4, taskworktime_shift1_4A, taskworktime_shift2 } from '/lib/timespan_shifts.js';
 import moment from 'moment';
 //methods on client side
 var index = ['a1','a2','a3','a4','a5','a6'];
@@ -12,15 +12,24 @@ var shift_2_start = moment('15:00:00',format);
 var shift_2_end = moment('23:59:59',format);
 
 Meteor.methods({
-	initializeClientTaskworktime(currentTime,test_mode_flag,shift){
+	initializeClientTaskworktime(currentTime, test_mode_flag, shift, buildingnumber){
+		//constraints
 		if (test_mode_flag){
-			currentTime = moment('15:29:59',format);
+			currentTime = moment('6:29:59',format);
 		}
 		var timeformat = moment(currentTime,format);
 		if(currentTime == null){
 			timeformat = shift == 1 ? moment('06:29:59',format): moment('15:29:59',format);
 		}
-		
+
+		var taskworktime_shift1 = [];
+		if(buildingnumber == '2' || buildingnumber == '3'){
+			taskworktime_shift1 = taskworktime_shift1_23;
+		}else if(buildingnumber == '4'){
+			taskworktime_shift1 = taskworktime_shift1_4;
+		}else if(buildingnumber == '4A'){
+			taskworktime_shift1 = taskworktime_shift1_4A;
+		}
 		// Session.set('test-mode-time-log',currentTime)
 		// console.log(currentTime);
 		if(timeformat.isBetween(shift_1_start, shift_1_end)){

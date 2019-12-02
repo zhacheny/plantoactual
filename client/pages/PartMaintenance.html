@@ -1,5 +1,12 @@
 <template name="PartMaintenance">
 	<h1 class="page-title">Parts Maintenance</h1>
+    <div class="hint-box-container {{#if hideHint}}hidden{{/if}}">
+        <div class="hide-hint-button"></div>
+        <div class="hint-box">
+          <h2>Hint</h2>
+          <div>If you're trying to import file please download template <a href="/User Manual/Production Data Template.csv?download" target="_parent">Here</a></div>
+        </div>
+    </div>
 	<!-- {{#if isInRole 'admin'}} -->
     	<div class="{{searchpage}}">
 	        <div class="Maintenance">

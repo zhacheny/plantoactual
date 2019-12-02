@@ -31,6 +31,14 @@ Template.PartMaintenance.onCreated(function(){
 
 
 Template.PartMaintenance.events({
+ 	'click .hide-hint-button'(event, instance) {
+ 		if(Session.get("hideHint_addtask") == null){
+ 			Session.set("hideHint_addtask", false);
+ 		}else{
+ 			Session.set("hideHint_addtask", (Session.get("hideHint_addtask")) ? false : true);
+ 		} 
+    
+  	},
 	'click .Modal-delete-yes': function(){
 		console.log(this._id);
 		Meteor.call('partnumberdelete',this._id);
@@ -433,6 +441,9 @@ Template.PartMaintenance.events({
 
 
 Template.PartMaintenance.helpers({
+	hideHint: function() {
+    	return Session.get("hideHint_addtask") == null ? true : Session.get("hideHint_addtask"); 
+  	},
 	inputCell_placeholder:function(){
 		if (Session.get('inputCell_id') != null) {
 			return Session.get('inputCell_id');

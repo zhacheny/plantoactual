@@ -751,9 +751,13 @@ Template.ManageTasks.events({
 		document.getElementById('app-layout').style.marginLeft = '80px';
 	},
  	'click .hide-hint-button'(event, instance) {
-	    Session.set("hideHint_addtask", (Session.get("hideHint_addtask")) ? false : true);
+ 		if(Session.get("hideHint_addtask") == null){
+ 			Session.set("hideHint_addtask", false);
+ 		}else{
+ 			Session.set("hideHint_addtask", (Session.get("hideHint_addtask")) ? false : true);
+ 		} 
     
-  	}
+  	},
 })
 Template.ManageTasks.helpers({
 	hideHint: function() {

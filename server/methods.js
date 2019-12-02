@@ -327,7 +327,7 @@ Meteor.methods({
 			let MinutesPP_two   = data[ i ]['2 Operator Minutes'];
 			let MinutesPP_three   = data[ i ]['3 Operator Minutes'];
 			// let statusCode = data[ i ]['Status Code'];
-			let XMLname = data[ i ]['Links'];
+			let XMLname = data[ i ]['Drawing Link'];
 			if(XMLname == ''){
 				XMLname = null;
 			}
